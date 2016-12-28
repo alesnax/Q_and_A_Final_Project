@@ -1,0 +1,92 @@
+package by.alesnax.qanda.command.impl.guest;
+
+import by.alesnax.qanda.command.Command;
+import by.alesnax.qanda.command.util.QueryUtil;
+import by.alesnax.qanda.entity.User;
+import by.alesnax.qanda.resource.ConfigurationManager;
+import by.alesnax.qanda.service.ServiceFactory;
+import by.alesnax.qanda.service.UserService;
+import by.alesnax.qanda.service.impl.ServiceException;
+import by.alesnax.qanda.validation.UserValidation;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.List;
+
+import static by.alesnax.qanda.constant.CommandConstants.ERROR_REQUEST_TYPE;
+import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
+import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
+
+/**
+ * Created by alesnax on 08.12.2016.
+ */
+public class UserAuthorizationCommand implements Command {
+    private static Logger logger = LogManager.getLogger(UserAuthorizationCommand.class);
+
+    private static final String EMAIL = "email";
+    private static final String PASSWORD = "Passwd";
+    private static final String USER = "user";
+
+    private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
+    private static final String ERROR_NOT_REGISTERED_YET_ATTR = "attr.not_registered_user_yet";
+    private static final String ERROR_WRONG_EMAIL_OR_PASS = "guest.user_authorization_page.wrong_email_or_password";
+
+    private static final String GO_TO_PROFILE_COMMAND = "command.go_to_profile";
+    private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
+
+    @Override
+    public String execute(HttpServletRequest request) {
+        String page = null;
+
+        String email = request.getParameter(EMAIL);
+        String password= request.getParameter(PASSWORD);
+
+        HttpSession session = request.getSession(true);
+        QueryUtil.savePreviousQueryToSession(request);
+
+        UserValidation userValidation = new UserValidation();
+        List<String> validationErrors = userValidation.validateUserInfo(email, password);
+
+        if(validationErrors.isEmpty()){
+            UserService userService = ServiceFactory.getInstance().getUserService();
+            //PostService postService = ServiceFactory.getInstance().getPostService();
+            try {
+                User user = userService.userAuthorization(email, password);
+                if(user != null){
+                    logger.log(Level.INFO, "User " + user.getLogin() + " has successfully login into the system.");
+                    int userId = user.getId();
+                    // postService.findUserStatistics(userId);
+
+                    session.setAttribute(USER, user);
+                   /* String gotoMainCommand = ConfigurationManager.getProperty(GO_TO_MAIN_COMMAND);
+                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoMainCommand;*/
+                    String gotoProfileCommand = ConfigurationManager.getProperty(GO_TO_PROFILE_COMMAND) + userId;
+                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoProfileCommand;
+                }else{
+                    logger.log(Level.WARN, "Failed try to get into the system with email: '" + email + "'.");
+                    validationErrors.add(ERROR_WRONG_EMAIL_OR_PASS);
+                    String errorNotRegisteredAttr = ConfigurationManager.getProperty(ERROR_NOT_REGISTERED_YET_ATTR);
+                    request.getSession(true).setAttribute(errorNotRegisteredAttr, validationErrors);
+                    String gotoAuthorizationCommand = ConfigurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
+                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoAuthorizationCommand;
+                }
+            } catch (ServiceException e) {
+                logger.log(Level.ERROR, e);
+                String errorMessageAttr = ConfigurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
+                request.setAttribute(errorMessageAttr, e.getMessage());
+                page = ERROR_REQUEST_TYPE;
+            }
+        } else {
+            logger.log(Level.WARN, "Failed try to get into the system with incorrect email or password.");
+            String errorNotRegisteredAttr = ConfigurationManager.getProperty(ERROR_NOT_REGISTERED_YET_ATTR);
+            request.getSession(true).setAttribute(errorNotRegisteredAttr, validationErrors);
+            String gotoAuthorizationCommand = ConfigurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
+            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoAuthorizationCommand;
+        }
+
+        return page;
+    }
+}

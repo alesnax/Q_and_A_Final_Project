@@ -1,0 +1,110 @@
+.ask_form_block {
+    width: 745px;
+    background-color: rgba(59, 182, 226, 0.55);
+}
+
+.q_ask_form {
+    padding: 5px 15px 10px;
+}
+
+.q_title_place {
+    box-sizing: border-box;
+    padding: 6px 10px;
+    height: 28px;
+    line-height: 16px;
+    width: 74%;
+    border-radius: 3px;
+    float: left;
+    margin: 5px 0;
+    border: 1px solid lightgray;
+    background-color: #f8fcff;
+}
+
+.q_select_place {
+    box-sizing: border-box;
+    padding: 2px 5px;
+    margin: 5px 0;
+    height: 28px;
+    line-height: 16px;
+    width: 23%;
+    border-radius: 3px;
+    float: right;
+    border: 1px solid lightgray;
+    background-color: #f8fcff;
+}
+
+.q_form_place {
+    min-height: 50px;
+    border-radius: 3px;
+    box-sizing: border-box;
+    background-color: #f8fcff;
+    padding: 7px 10px;
+    width: 100%;
+    max-width: 100%;
+    max-height: 300px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    border: 1px solid lightgray;
+}
+
+.q_form_submit {
+    box-sizing: border-box;
+    padding: 6px 12px 6px 12px;
+    margin: 5px 0 -15px;
+    height: 35px;
+    line-height: 16px;
+    border-radius: 6px;
+    border: 1px solid lightgray;
+    background-color: #f8fcff;
+    font-size: 16px;
+    font-weight: 400;
+    color: #0b4884;
+}
+
+input, select {
+    height: 35px;
+    padding: 0 8px;
+    border-radius: 2px;
+    border: 1px solid #c1bfbf;
+
+}
+
+input[type=text], input[type=password], input[type=number] {
+    border-radius: 3px;
+}
+
+
+.errormsg {
+    margin: 6px 0 0;
+    display: block;
+    color: #dd4b39;
+    line-height: 17px;
+}
+
+
+.q_form_clean{
+    float: right;
+    box-sizing: border-box;
+    padding: 6px 12px 6px 12px;
+    margin: 5px 0 -15px;
+    height: 35px;
+    line-height: 16px;
+    border-radius: 6px;
+    border: 1px solid lightgray;
+    background-color: #f7f9e1;
+    font-size: 16px;
+    font-weight: 400;
+    color: #0b4884;
+}
+
+.success_msg{
+    color: #7cfc00;
+
+}
+
+h3 {
+    font-size: 18px;
+    margin: 0;
+    color: #0b4884;
+    text-align: center;
+}

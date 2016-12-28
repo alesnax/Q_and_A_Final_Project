@@ -1,0 +1,297 @@
+body {
+    font-size: 14px;
+    font-weight: 400;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #333;
+    background-color: #F5F8FA;
+    margin: 0;
+    padding: 0;
+}
+
+.page_layout {
+    padding: 50px 15px 0;
+    margin: 0 auto;
+    position: relative;
+    width: 100%;
+}
+
+div {
+    position: relative;
+}
+
+.back {
+    position: absolute;
+    width: 100%;
+    background: #3BB6E2;
+    height: 50px;
+    box-sizing: border-box;
+}
+
+header {
+    position: fixed;
+    height: 50px;
+    width: 100%;
+    z-index: 120;
+}
+
+section {
+    width: 780px;
+    float: right;
+    text-align: left;
+    margin-bottom: 50px;
+}
+
+.header_logo {
+    height: 50px;
+}
+
+.fl_l {
+    float: left;
+}
+
+.fl_r {
+    float: right;
+}
+
+.h_links:hover, .lang_links:hover {
+    text-decoration: none;
+    background-color: #209ecc;
+}
+
+.h_link:hover {
+    text-decoration: none;
+}
+
+.h_link, #h_link, #sign_in, #registrate {
+    display: block;
+    padding: 17px 15px;;
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background-color .3s, color .15s, box-shadow .3s, opacity 0.3s, filter 0.3s;
+    transition-property: background-color, color, box-shadow, opacity, filter;
+    transition-duration: 0.3s, 0.15s, 0.3s, 0.3s, 0.3s;
+}
+
+.page_block {
+    position: relative;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+    margin: 15px 0 0;
+    padding: 20px 15px;
+}
+
+.wide_block {
+    position: relative;
+    float: left;
+    width: 100%;
+}
+
+.topbar_wrapper {
+    width: 960px;
+    position: relative;
+    margin: 0 auto;
+    height: 50px;
+}
+
+.content {
+    width: 960px;
+    margin: 0 auto;
+}
+
+a {
+    color: #42648b;
+    text-decoration: none;
+}
+
+li {
+    height: 28px;
+}
+
+.mini_img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.post_header {
+    position: relative;
+    min-height: 50px;
+    float: left;
+    width: 100%;
+
+}
+
+.post_header_left {
+    float: left;
+    width: 75%
+
+}
+
+.post_header_right {
+    float: right;
+}
+
+.post_header_info {
+    margin-left: 65px;
+    padding-top: 8px;
+}
+
+.post_image {
+    display: block;
+    float: left;
+}
+
+.post_author {
+    line-height: 16px;
+    padding-right: 20px;
+    color: #0b4884;
+}
+
+h5.post_author {
+
+    font-size: 14px;
+    margin: 0;
+    font-weight: 400;
+}
+
+.post_content {
+    width: 745px;
+    padding-bottom: 10px;
+}
+
+.rel_date {
+    color: #939393;
+    font-size: 13px;
+}
+
+.post_category {
+    float: right;
+    text-align: right;
+}
+
+.post_q_title {
+    display: inline-block;
+    font-size: 18px;
+    color: #333;
+    letter-spacing: -0.5px;
+    line-height: 1.25;
+    font-weight: bold;
+    padding: 5px;
+}
+
+.post_description {
+    font-family: Georgia, Times, "Times New Roman", serif;
+    font-size: 15px;
+    line-height: 1.4;
+    padding: 5px;
+}
+
+.wall_text {
+    display: inline-block;
+    border-bottom: 1px solid #e7e8ec;
+}
+
+.post_footer {
+    padding: 10px 0 0px;
+    margin: 0 20px;
+    width: 250px;
+}
+
+.rate_number {
+    display: block;
+    color: #0c7296;
+    font-size: 20px;
+    padding: 3px 0 0 210px;
+    width: 40px;
+}
+
+.star-full, .rate:hover {
+    background-repeat: no-repeat;
+    background-image: url(../img/star-full.png);
+    width: 20px;
+    height: 20px;
+    background-position: 0px 0px;
+}
+
+span[data-descr]:hover::after {
+    content: attr(data-descr);
+    position: absolute;
+    left: 0;
+    top: 40px;
+    min-width: 70px;
+    border: 1px #aaaaaa solid;
+    border-radius: 5px;
+    background-color: #ffffcc;
+    padding: 12px;
+    color: #000000;
+    font-size: 14px;
+    z-index: 1;
+}
+
+.answers_header {
+    margin: 5px;
+    width: 100%;
+    height: 40px;
+    background-color: #e2f0f9;
+    float: left;
+    border-radius: 4px;
+}
+
+.answers_title {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: 7px;
+    padding: 7px 3px 8px;
+    vertical-align: top;
+    line-height: 15px;
+    text-align: center;
+    color: #405a73;
+    font-size: 16px;
+}
+
+.gold_trophy {
+    background-repeat: no-repeat;
+    background-image: url(../img/trophy.png);
+    width: 20px;
+    height: 20px;
+    background-position: 0px 0px;
+}
+
+.delete, .complain, .correct_post {
+    display: block;
+    float: right;
+    padding-bottom: 10px;
+    padding-right: 10px;
+}
+
+.post_inner_content {
+    display: inline-block;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.page_main_header_block {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    text-align: center;
+    color: #405a73;
+}
+
+h3 {
+    font-size: 18px;
+    margin: 0;
+    color: #0b4884;
+    text-align: center;
+}
+
+
+h1 {
+    margin: 5px 0 10px;
+    text-transform: uppercase;
+}

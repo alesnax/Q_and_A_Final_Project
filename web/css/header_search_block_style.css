@@ -1,0 +1,37 @@
+.s_back_img {
+    float: left;
+    background-repeat: no-repeat;
+    background-image: url(../img/search.png);
+    background-position: 5px 5px;
+}
+
+.search_input {
+    box-sizing: border-box;
+    padding: 6px 6px 6px 30px;
+    margin: 10px 0;
+    height: 28px;
+    line-height: 16px;
+    width: 230px;
+    border-radius: 8px 0 0 8px;
+    border: 1px solid lightgray;
+    background-color: #f8fcff;
+}
+
+.search_submit {
+    box-sizing: border-box;
+    padding: 6px 6px;
+    padding-right: 8px;
+    margin: 10px 0;
+    height: 28px;
+    line-height: 16px;
+    border-radius: 0 10px 10px 0;
+    border: 1px solid lightgray;
+    background-color: #dde4e8;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0b4884;
+}
+
+.fl_l {
+    float: left;
+}

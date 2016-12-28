@@ -1,0 +1,46 @@
+.fl_r {
+    float: right;
+}
+
+.left_row {
+    display: block;
+    color: #2182a5;
+    white-space: nowrap;
+    margin: 5px 0;
+    padding: 3px 5px;
+    border-radius: 3px;
+    width: 100%;
+}
+
+
+.bottom_line {
+    border-bottom: 1px solid #e7e8ec;
+    margin: 10px 0;
+}
+
+.left_label {
+    padding-left: 10px;
+    height: 25px;
+    line-height: 27px;
+}
+
+nav {
+    position: relative;
+    width: 165px;
+    padding: 10px 0 10px;
+    margin-left: -8px;
+}
+
+ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+li {
+    height: 28px;
+}
+
+li a:hover {
+    background-color: #e2f0f9;
+    text-decoration: none;
+}
