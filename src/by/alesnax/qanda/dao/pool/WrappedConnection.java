@@ -16,6 +16,7 @@ public class WrappedConnection {
             DriverManager.registerDriver(new com.mysql.jdbc.Driver());
         } catch (SQLException e) {
             logger.log(Level.FATAL, e + " DriverManager wasn't found");
+            throw new RuntimeException(e);
         }
     }
 
@@ -26,7 +27,7 @@ public class WrappedConnection {
 
     private Connection connection;
 
-     WrappedConnection() throws DAOException {
+    WrappedConnection() throws DAOException {
         try {
             connection = createConnection();
         } catch (SQLException e) {
@@ -52,6 +53,9 @@ public class WrappedConnection {
         connection.setAutoCommit(autoCommit);
     }
 
+    public boolean getAutoCommit() throws SQLException {
+        return connection.getAutoCommit();
+    }
 
     public Statement getStatement() throws SQLException {
         if (connection != null) {
@@ -75,18 +79,9 @@ public class WrappedConnection {
 
     public void closeConnection() throws SQLException {
         if (connection != null) {
-            /*try {*/
-                connection.close();
-         /*   } catch (SQLException e) {
-                System.err.println(" wrong connection" + e);
-            }*/
+            connection.close();
         }
     }
-
-   /* public void close()throws SQLException{
-        connection.close();
-    }
-    */
 
     public void closeResultSet(ResultSet rs) throws DAOException {
         if (rs != null) {
@@ -109,6 +104,14 @@ public class WrappedConnection {
 
     public PreparedStatement prepareStatement(String sql) throws SQLException {
         return connection.prepareStatement(sql);
+    }
+
+    public void commit() throws SQLException {
+        connection.commit();
+    }
+
+    public void rollback() throws SQLException {
+        connection.rollback();
     }
 
 // другие необходимые делегированные методы интерфейса Connection

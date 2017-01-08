@@ -17,9 +17,7 @@ import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
  */
 
 public class GotoAuthorizationPageCommand implements Command {
-    private static final String USER_ROLE = "user";
-    private static final String MODERATOR_ROLE = "moder";
-    private static final String ADMIN_ROLE = "admin";
+
     private static final String USER_ATTR = "user";
 
     private static final String AUTHORIZATION_PAGE = "path.page.user_authorization";
@@ -38,19 +36,8 @@ public class GotoAuthorizationPageCommand implements Command {
             String path = ConfigurationManager.getProperty(AUTHORIZATION_PAGE);
             page = REQUEST_TYPE + TYPE_PAGE_DELIMITER + path;
         } else {
-            String role = user.getRole().getValue();
-            switch (role) {
-                case USER_ROLE:
-                case MODERATOR_ROLE:
-                case ADMIN_ROLE:
-                    String gotoProfileCommand = ConfigurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
-                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoProfileCommand;
-                    break;
-                default:
-                    String path = ConfigurationManager.getProperty(AUTHORIZATION_PAGE);
-                    page = REQUEST_TYPE + TYPE_PAGE_DELIMITER + path;
-                    break;
-            }
+            String gotoProfileCommand = ConfigurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
+            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoProfileCommand;
         }
         return page;
     }

@@ -29,6 +29,8 @@ public class UserAuthorizationCommand implements Command {
     private static final String EMAIL = "email";
     private static final String PASSWORD = "Passwd";
     private static final String USER = "user";
+    private static final String NONE_LANG = "none";
+    private static final String LOCALE = "locale";
 
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String ERROR_NOT_REGISTERED_YET_ATTR = "attr.not_registered_user_yet";
@@ -42,7 +44,7 @@ public class UserAuthorizationCommand implements Command {
         String page = null;
 
         String email = request.getParameter(EMAIL);
-        String password= request.getParameter(PASSWORD);
+        String password = request.getParameter(PASSWORD);
 
         HttpSession session = request.getSession(true);
         QueryUtil.savePreviousQueryToSession(request);
@@ -50,22 +52,21 @@ public class UserAuthorizationCommand implements Command {
         UserValidation userValidation = new UserValidation();
         List<String> validationErrors = userValidation.validateUserInfo(email, password);
 
-        if(validationErrors.isEmpty()){
+        if (validationErrors.isEmpty()) {
             UserService userService = ServiceFactory.getInstance().getUserService();
-            //PostService postService = ServiceFactory.getInstance().getPostService();
             try {
                 User user = userService.userAuthorization(email, password);
-                if(user != null){
+                if (user != null) {
                     logger.log(Level.INFO, "User " + user.getLogin() + " has successfully login into the system.");
                     int userId = user.getId();
-                    // postService.findUserStatistics(userId);
-
                     session.setAttribute(USER, user);
-                   /* String gotoMainCommand = ConfigurationManager.getProperty(GO_TO_MAIN_COMMAND);
-                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoMainCommand;*/
+                    String lang = user.getLanguage().name().toLowerCase();
+                    if (!lang.equals(NONE_LANG)) {
+                        session.setAttribute(LOCALE, lang);
+                    }
                     String gotoProfileCommand = ConfigurationManager.getProperty(GO_TO_PROFILE_COMMAND) + userId;
                     page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoProfileCommand;
-                }else{
+                } else {
                     logger.log(Level.WARN, "Failed try to get into the system with email: '" + email + "'.");
                     validationErrors.add(ERROR_WRONG_EMAIL_OR_PASS);
                     String errorNotRegisteredAttr = ConfigurationManager.getProperty(ERROR_NOT_REGISTERED_YET_ATTR);
@@ -75,7 +76,7 @@ public class UserAuthorizationCommand implements Command {
                 }
             } catch (ServiceException e) {
                 logger.log(Level.ERROR, e);
-                String errorMessageAttr = ConfigurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
+                String errorMessageAttr = ConfigurationManager.getProperty(ERROR_MESSAGE_ATTR);
                 request.setAttribute(errorMessageAttr, e.getMessage());
                 page = ERROR_REQUEST_TYPE;
             }
@@ -86,7 +87,6 @@ public class UserAuthorizationCommand implements Command {
             String gotoAuthorizationCommand = ConfigurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoAuthorizationCommand;
         }
-
         return page;
     }
 }

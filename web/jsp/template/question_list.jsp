@@ -16,190 +16,163 @@
 
 <html>
 <head>
-
+    <link rel="stylesheet" href="/css/question_list_style.css">
 </head>
 <body>
 
+<fmt:message bundle="${config}" key="command.go_to_profile" var="go_to_profile"/>
+<fmt:message bundle="${config}" key="command.go_to_question" var="go_to_q"/>
+<fmt:message bundle="${config}" key="command.show_question_marks" var="show_question_marks"/>
+<fmt:message bundle="${config}" key="command.go_to_category" var="go_to_category"/>
 
-<div class="wall_content wide_block">
 
+<fmt:message bundle="${loc}" key="common.post.show_quest_marks_title" var="show_quest_marks_title"/>
+<fmt:message bundle="${loc}" key="common.post.correction.title_text" var="correction_title"/>
+<fmt:message bundle="${loc}" key="common.post.deleting.title_text" var="deleting_title"/>
+<fmt:message bundle="${loc}" key="common.post.complaint.title_text" var="complaint_title"/>
+<fmt:message bundle="${loc}" key="common.rate_post.submit_text" var="submit_text"/>
+<fmt:message bundle="${loc}" key="category.txt.category_span" var="category_span"/>
+<fmt:message bundle="${loc}" key="common.post.show_answers_text" var="show_answers_text"/>
 
+<div id="question_block"></div>
+<c:forEach var="post" items="${requestScope.questions}">
     <div class="page_block wide_block post_content">
         <div class="post_header">
             <div class="post_header_left">
-                <a href="alesnax" class="post_image">
-                    <img class="mini_img" src="/img/sapronchic.jpg" alt="some">
+                <a href="${go_to_profile}${post.user.id}" class="post_image">
+                    <img class="mini_img" src="${post.user.avatar}" alt="avatar">
                 </a>
                 <div class="post_header_info">
                     <h5 class="post_author">
-                        <a class="user" href="sapronchic"><span>Maxim Sapronchik</span></a>
+                        <a class="user" href="${go_to_profile}${post.user.id}">
+                            <span>
+                                    ${post.user.login}
+                            </span>
+                        </a>
                     </h5>
                     <div class="post_date">
-                        <a href="apost_date">
-                            <span class="rel_date">20 mar 2016</span>
-                        </a>
-
+                        <span class="rel_date apost_date">
+                            <fmt:formatDate value="${post.publishedTime}" type="both" dateStyle="long" timeStyle="medium"/><br/>
+                        </span>
                     </div>
                 </div>
             </div>
             <div class="post_header_right">
                 <div>
-                    <a class="complain" href="complaint">
-                                    <span class="icon icon_cross"
-                                          title="If you found bad content, please say to admin about this"></span>
-                    </a>
-                    <a class="delete" href="complaint">
-                                    <span class="icon icon_bin"
-                                          title="If you found bad content, please say to admin about this"></span>
-                    </a>
+                    <c:if test="${sessionScope.user.id ne post.user.id}">
+                        <form action="/Controller" method="post">
+                            <input type="hidden" name="command" value="go_to_post_complaint"/>
+                            <input type="hidden" name="post_id" value="${post.id}"/>
+                            <input type="hidden" name="post_user_id" value="${post.user.id}"/>
+                            <button type="submit" class="delete">
+                                <span class="icon icon_pacman" title="${complaint_title}"></span>
+                            </button>
+                        </form>
+                    </c:if>
+                    <c:if test="${sessionScope.user.id eq post.user.id}">
+                        <form action="/Controller" method="post">
+                            <input type="hidden" name="command" value="delete_post"/>
+                            <input type="hidden" name="post_id" value="${post.id}"/>
+                            <input type="hidden" name="post_user_id" value="${post.user.id}"/>
+                            <button type="submit" class="correct_post">
+                                <span class="icon icon_cross" title="${deleting_title}"></span>
+                            </button>
+                        </form>
+
+                        <form action="/Controller" method="post">
+                            <input type="hidden" name="command" value="go_to_post_correction"/>
+                            <input type="hidden" name="post_id" value="${post.id}"/>
+                            <input type="hidden" name="post_user_id" value="${post.user.id}"/>
+                            <button type="submit" class="correct_post">
+                                <span class="icon icon_pencil" title="${correction_title}"></span>
+                            </button>
+                        </form>
+                    </c:if>
                 </div>
                 <div class="post_category">
-                    <span>Category:</span>
-                    <a href="science" title="go to all category questions">History</a>
+                    <span>
+                        ${category_span}
+                    </span>
+                    <a href="${go_to_category}${post.categoryInfo.id}"
+                       title="go to all category questions">
+                        <c:choose>
+                            <c:when test="${sessionScope.locale eq 'ru'}">
+                                ${post.categoryInfo.titleRu}
+                            </c:when>
+                            <c:otherwise>
+                                ${post.categoryInfo.titleEn}
+                            </c:otherwise>
+                        </c:choose>
+                    </a>
                 </div>
-
             </div>
         </div>
         <div class="post_inner_content">
             <div class="wall_text">
-                <div class="post_q_title">
-                    <span>What did hippies from the 60's look like?</span>
-                </div>
+                <a class="post_q_title" href="${go_to_q}${post.id}">
+                    <span>${post.title}</span>
+                </a>
                 <div class="post_description">
-										<span>What did hippies from the 60's look like?
-										What I mean is you tried it, you all tried it,
-										and it didn’t work. All these years later and look at the results.</span>
+                    <span>
+                            ${post.content}
+                    </span>
                 </div>
             </div>
-
-
-
-
             <div class="post_footer">
-                <a href="rate_1"><span data-descr="set your mark"
-                                       class="rate icon icon_star-full"></span></a>
-                <a href="rate_2"><span data-descr="set your mark"
-                                       class="rate icon icon_star-full"></span></a>
-                <a href="rate_3"><span data-descr="set your mark"
-                                       class="rate icon icon_star-full"></span></a>
-                <a href="rate_4"><span data-descr="set your mark"
-                                       class="rate icon icon_star-full"></span></a>
-                <a href="rate_5"><span data-descr="set your mark"
-                                       class="rate icon icon_star-full"></span></a>
-                <a href="rate_6"><span data-descr="set your mark"
-                                       class="rate icon icon_star-full"></span></a>
-                <a href="rate_7"><span data-descr="set your mark"
-                                       class="rate icon icon_star-full"></span></a>
-                <a href="rate_9"><span data-descr="set your mark"
-                                       class="rate icon icon_star-half"></span></a>
-                <a href="rate_10"><span data-descr="set your mark" class="rate icon icon_star-empty"></span></a>
-                <a href="rate_10"><span data-descr="set your mark" class="rate icon icon_star-empty"></span></a>
-                <a href="show_all_marks" title="average mark. Click to show all marks">
-                    <span class="rate_number">7.6</span>
-                </a>
+                <div>
+
+                    <c:forEach begin="1" end="10" varStatus="status">
+                        <c:choose>
+                            <c:when test="${not empty post.currentUserMark and post.currentUserMark eq status.count }">
+                                <span class="icon star-full" data-descr="your current mark"></span>
+                            </c:when>
+                            <c:when test="${post.averageMark >= status.count}">
+                                <span class="icon icon_star-full"></span>
+                            </c:when>
+                            <c:when test="${post.averageMark < status.count - 0.7 }">
+                                <span class="icon icon_star-empty"></span>
+                            </c:when>
+                            <c:otherwise>
+                                <span class="icon icon_star-half"></span>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+
+
+                    <a href="${show_question_marks}${post.id}" title="${show_quest_marks_title}">
+                    <span class="rate_number">
+                        <fmt:formatNumber type="number" maxFractionDigits="1" value="${post.averageMark}"/>
+                    </span>
+                    </a>
+
+                </div>
+                <div>
+                    <form class="rate_form" action="/Controller" method="post">
+                        <input type="hidden" name="command" value="rate_post"/>
+                        <input type="hidden" name="post_id" value="${post.id}"/>
+                        <select class="rate_select" name="mark">
+                            <option disabled selected="selected" value="0"> -</option>
+                            <c:forEach begin="1" end="10" varStatus="status">
+                                <option value="${status.count}">${status.count}</option>
+                            </c:forEach>
+                        </select>
+                        <input class="rate_submit" type="submit" name="rate" value="${submit_text}"/>
+                    </form>
+                </div>
+
             </div>
         </div>
         <div class="answers_block">
             <div class="answers_header">
-                <div class="answers_title">
-                    <span>Answers:</span>
-                    <span>1</span>
-                </div>
+                <a class="answers_title" href="${go_to_q}${post.id}">
+                    <span>
+                        ${show_answers_text}
+                    </span>
+                </a>
             </div>
-            <div class="answer_block">
-                <div class="answer_header wide_block">
-
-                    <div class="post_header_left">
-                        <a class="post_image" href="/falkovich">
-                            <img class="little_img" src="/img/falkovich.jpg" alt="some">
-                        </a>
-                        <div class="post_header_info">
-                            <h5 class="post_author">
-                                <a class="user" href="falkovich"><span>Anastasia Falkovich</span></a>
-                            </h5>
-                            <div class="post_date">
-                                <a href="apost_date">
-                                    <span class="rel_date">26 mar 2016</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="post_header_right">
-                        <div>
-
-                            <a class="complain" href="complaint">
-                                            <span class="icon icon_cross"
-                                                  title="If you found bad content, please say to admin about this"></span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="post_inner_content">
-                    <div class="answer_text">
-                        <div class="post_description">
-												<span>Listen to this with an open mind,” Noel began. “Let me think of the best way to say this.”
-												She paused for a minute. “Let’s say that there were a hundred of you who jumped into the movement;
-												that is the correct term, right?’ Jay nodded. OK. One hundred of you decided to get involved one hundred percent,
-												because you all believed in it completely. That includes your friends from
-												Orange, and the guys who played in the bands, and their girlfriends, all of them.” Noel looked at Jay with her
-												palms up and lifter her eyebrows in a tacit request for assent. He gave it with another nod.</span>
-                        </div>
-                    </div>
-                    <div class="answer_footer">
-                        <div>
-                            <a class="check_best" href="check_best" title="Marked as the best answer">
-                                <span class="icon gold_trophy" style="width: 35px;"></span>
-                            </a>
-                            <a class="repost" href="" title="repost this answer">
-                                <span class="icon icon_undo2" style="width: 35px;"></span>
-                            </a>
-                        </div>
-                        <div class="rate_block fl_r">
-                            <a href="rate_1"><span data-descr="set your mark"
-                                                   class="rate icon icon_star-full"></span></a>
-                            <a href="rate_2"><span data-descr="set your mark"
-                                                   class="rate icon icon_star-full"></span></a>
-                            <a href="rate_3"><span data-descr="set your mark"
-                                                   class="rate icon icon_star-full"></span></a>
-                            <a href="rate_4"><span data-descr="set your mark"
-                                                   class="rate icon icon_star-full"></span></a>
-                            <a href="rate_5"><span data-descr="set your mark"
-                                                   class="rate icon icon_star-full"></span></a>
-                            <a href="rate_6"><span data-descr="set your mark"
-                                                   class="rate icon icon_star-full"></span></a>
-                            <a href="rate_7"><span data-descr="set your mark"
-                                                   class="rate icon icon_star-full"></span></a>
-                            <a href="rate_8"><span data-descr="set your mark"
-                                                   class="rate icon icon_star-empty"></span></a>
-                            <a href="rate_9"><span data-descr="your current mark"
-                                                   class="rate icon star-full"></span></a>
-                            <a href="rate_10"><span data-descr="set your mark"
-                                                    class="rate icon icon_star-empty"></span></a>
-                            <a href="show_all_marks" title="average mark. Click to show all marks">
-                                <span class="rate_number">7.0</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="add_answer_block">
-                <form class="answer_form" action="ask_about" method="post">
-                                <textarea class="q_place" rows="3" maxlength="10000"
-                                          placeholder="Add another answer here..."></textarea>
-                    <input type="hidden" name="command" value="publish_question"/>
-                    <input class="q_submit" type="submit" name="publish" value="publish"/>
-                </form>
-            </div>
-
-
         </div>
     </div>
-    <!-- end of post -->
-
-</div>
-
-
-
+</c:forEach>
 
 
 </body>

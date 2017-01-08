@@ -18,18 +18,12 @@
     <link rel="stylesheet" href="/css/add_question_style.css">
 </head>
 <body>
-<div class="page_block wide_block ask_form_block">
+<div class="ask_form_block">
+    <h3>
+        <fmt:message bundle="${loc}" key="common.ask_form_block.h3_text"/>
+    </h3>
 
-    <fmt:message bundle="${loc}" key="common.ask_form_block.h3_text" var="ask_form_h3_text"/>
-    <fmt:message bundle="${loc}" key="common.ask_form_block.input_placeholder" var="quest_title_ph"/>
-    <fmt:message bundle="${loc}" key="common.ask_form_block.select_category" var="select_cat"/>
-    <fmt:message bundle="${loc}" key="common.ask_form_block.textarea_placeholder" var="textarea_placeholder"/>
-
-
-    <h3>${ask_form_h3_text}</h3>
-
-
-    <form id="ask_form" class="q_ask_form" action="/Controller" method="get">
+    <form class="q_ask_form" action="/Controller" method="get">
         <input type="hidden" name="command" value="add_question"/>
 
         <div class="">
@@ -54,12 +48,15 @@
             </span>
         </c:if>
 
+        <fmt:message bundle="${loc}" key="common.ask_form_block.input_placeholder" var="quest_title_ph"/>
         <input class="q_title_place" type="text" name="question_title" value="${sessionScope.get('question_title')}"
                placeholder="${quest_title_ph}"/>
 
         <select class="q_select_place" name="category">
 
-            <option selected="selected" disabled>${select_cat}</option>
+            <option selected="selected" disabled>
+                <fmt:message bundle="${loc}" key="common.ask_form_block.select_category"/>
+            </option>
 
 
             <c:forEach var="cat" items="${sessionScope.categories_info}">
@@ -90,8 +87,8 @@
 
         </select>
 
-        <textarea class="q_form_place" name="description" rows="3"
-                  placeholder="${textarea_placeholder}"><c:out value="${sessionScope.get('description')}"/></textarea>
+        <fmt:message bundle="${loc}" key="common.ask_form_block.textarea_placeholder" var="textarea_placeholder"/>
+        <textarea class="q_form_place" name="description" rows="3" placeholder="${textarea_placeholder}"><c:out value="${sessionScope.get('description')}"/></textarea>
 
 
         <input class="q_form_submit" type="submit" name="publish" value="publish"/>

@@ -4,8 +4,10 @@ import by.alesnax.qanda.command.Command;
 import by.alesnax.qanda.command.impl.guest.GotoFirstPageCommand;
 import by.alesnax.qanda.command.impl.guest.GotoMainPageCommand;
 import by.alesnax.qanda.command.client.CommandHelper;
+import by.alesnax.qanda.command.impl.user.UploadFileCommand;
 import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 import java.util.MissingResourceException;
 
 /**
@@ -36,29 +39,40 @@ public class CommandFactory {
         Command command = new GotoMainPageCommand();
         String commandName = request.getParameter(COMMAND);
         String role = GUEST;
-        if (commandName != null && !commandName.isEmpty()) {
-            HttpSession session = request.getSession(false);
-            if (session != null) {
-                User user = (User) session.getAttribute(USER);
-                if (user != null) {
-                    role = user.getRole().getValue();
+        try {
+            if (commandName != null && !commandName.isEmpty()) {
+                HttpSession session = request.getSession(false);
+                if (session != null) {
+                    User user = (User) session.getAttribute(USER);
+                    if (user != null) {
+                        role = user.getRole().getValue();
+                    }
+                } else {
+                    logger.log(Level.ERROR, "Illegal access to session from client, session time is over ");
+                    request.getSession();
+                    addWrongCommandMessage(request, ILLEGAL_SESSION_ACCESS_MESSAGE, commandName);
+                    return new GotoFirstPageCommand();
                 }
+                command = CommandHelper.getInstance().getCommand(role, commandName);
+                if (command == null) {
+                    logger.log(Level.ERROR, "Illegal access, Command " + commandName + " wasn't found for role " + role);
+                    addWrongCommandMessage(request, UNDEFINED_COMMAND_MESSAGE, commandName);
+                    command = new GotoMainPageCommand();
+                }
+            } else if (ServletFileUpload.isMultipartContent(request)) {
+                command = new UploadFileCommand();
+
             } else {
-                logger.log(Level.ERROR, "Illegal access to session from client, session time is over ");
-                request.getSession();
-                addWrongCommandMessage(request, ILLEGAL_SESSION_ACCESS_MESSAGE, commandName);
-                return new GotoFirstPageCommand();
+                logger.log(Level.ERROR, "Empty command found for role " + role);
+                addWrongCommandMessage(request, EMPTY_COMMAND_MESSAGE, commandName);
+
             }
-            command = CommandHelper.getInstance().getCommand(role, commandName);
-            if (command == null) {
-                logger.log(Level.ERROR, "Illegal access, Command " + commandName + " wasn't found for role " + role);
-                addWrongCommandMessage(request, UNDEFINED_COMMAND_MESSAGE, commandName);
-                command = new GotoMainPageCommand();
-            }
-        } else {
-            logger.log(Level.ERROR, "Empty command found for role " + role);
-            addWrongCommandMessage(request, EMPTY_COMMAND_MESSAGE, commandName);
+        } catch (IllegalArgumentException e) {
+            logger.log(Level.ERROR, "Command " + commandName + " wasn't found for role " + role);
+            addWrongCommandMessage(request, UNDEFINED_COMMAND_MESSAGE, commandName);
+            command = new GotoMainPageCommand();
         }
+
         return command;
     }
 

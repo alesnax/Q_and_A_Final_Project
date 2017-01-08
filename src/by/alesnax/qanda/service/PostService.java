@@ -25,7 +25,11 @@ public interface PostService {
 
     List<Post> findMyPosts(int userId, String lowLimit, String highLimit) throws ServiceException;
 
-    List<Post> takeQuestionsByCategoryList(String categoryId) throws ServiceException;
+    List<Post> takeQuestionsByCategoryList(String categoryId, int userId) throws ServiceException;
 
-    List<Post> findQuestionsByUserId(int userId)  throws ServiceException;
+    List<Post> findQuestionsByUserId(int profileUserId, int userId)  throws ServiceException;
+
+    List<Post> findLikedPosts(int userId) throws ServiceException;
+
+    void deletePost(int postId) throws ServiceException;
 }

@@ -1,0 +1,183 @@
+body {
+    font-size: 14px;
+    font-weight: 400;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #333;
+    background-color: #F5F8FA;
+    margin: 0;
+    padding: 0;
+}
+
+.page_layout {
+    padding: 50px 15px 0;
+    margin: 0 auto;
+    position: relative;
+    width: 100%;
+}
+
+div {
+    position: relative;
+}
+
+section {
+    width: 780px;
+    float: right;
+    text-align: left;
+    margin-bottom: 50px;
+}
+
+.fl_l {
+    float: left;
+}
+
+.fl_r {
+    float: right;
+}
+
+.page_block {
+    position: relative;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+    margin: 15px 0 0;
+    padding: 20px 15px;
+}
+
+.wide_block {
+    position: relative;
+    float: left;
+}
+
+.content {
+    width: 960px;
+    margin: 0 auto;
+}
+
+a {
+    color: #42648b;
+    text-decoration: none;
+}
+
+.count {
+    font-size: 17px;
+    color: #42648b;
+    padding-bottom: 3px;
+    line-height: 21px;
+}
+
+.post_content {
+    width: 745px;
+    padding-bottom: 10px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.page_main_header_block {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    text-align: center;
+    color: #405a73;
+}
+
+.wrong_message_block {
+    background-color: #ffc9c9;
+}
+
+.error_msg {
+    text-align: center;
+    color: #405a73;
+    font-size: 16px;
+    padding: 0 15px 0;
+    font-weight: 600;
+}
+
+h1 {
+    margin: 5px 0 10px;
+    text-transform: uppercase;
+}
+
+.user_img {
+    float: left;
+    width: 90px;
+}
+
+.friend_description {
+    float: left;
+    width: 520px;
+    min-height: 50px;
+
+}
+
+.login_title {
+    color: #42648b;
+    font-size: 16px;
+    margin-bottom: 3px;
+    font-weight: 600;
+}
+
+.cat_content {
+
+}
+
+.cat_autor {
+
+}
+
+.mini_img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+
+}
+
+.friend_status {
+    margin: 0 0 5px;
+    border-bottom: 1px solid lightgray;
+    display: block;
+    box-sizing: border-box;
+    vertical-align: top;
+    text-align: center;
+    text-transform: lowercase;
+    font-size: 16px;
+
+}
+
+.right_info {
+    float: right;
+    width: 125px;
+
+}
+
+.q_counter {
+    text-align: center;
+    color: #42648b;
+
+}
+
+.cat_moderator {
+    float: right;
+    margin-right: 10px;
+
+}
+
+h3 {
+    font-size: 18px;
+    margin: 0;
+    color: #0b4884;
+    text-align: center;
+}
+.f_status_msg_block{
+    margin-top: 30px;
+}
+
+
+.no_friends{
+    text-align: center;
+    color: #405a73;
+    font-size: 16px;
+    padding: 0 15px 0;
+    font-weight: 600;
+}

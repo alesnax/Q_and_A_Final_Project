@@ -39,8 +39,6 @@ public class GotoFirstPageCommand implements Command {
         String page = null;
 
         HttpSession session = request.getSession(false);
-
-
         QueryUtil.savePreviousQueryToSession(request);
 
         PostService postService = ServiceFactory.getInstance().getPostService();

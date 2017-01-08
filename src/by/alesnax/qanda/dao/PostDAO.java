@@ -18,9 +18,15 @@ public interface PostDAO {
 
     void addNewQuestion(int id, String category, String title, String description) throws DAOException;
 
-    List<Post> findMyPosts(int userId, String lowLimit, String highLimit) throws DAOException;
+    List<Post> takeMyPosts(int userId, String lowLimit, String highLimit) throws DAOException;
 
-    List<Post> findQuestionsByCategory(String categoryId) throws DAOException;
+    List<Post> takeQuestionsByCategory(String categoryId, int userId) throws DAOException;
 
-    List<Post> findQuestionsByUserId(int userId) throws DAOException;
+    List<Post> takeQuestionsByUserId(int profileUserId, int userId) throws DAOException;
+
+    CategoryInfo takeCategoryInfoById(String categoryId) throws DAOException;
+
+    List<Post> takeLikedPosts(int userId) throws DAOException;
+
+    void deletePostById(int postId) throws DAOException;
 }

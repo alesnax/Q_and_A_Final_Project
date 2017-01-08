@@ -1,13 +1,12 @@
 package by.alesnax.qanda.entity;
 
-import java.io.File;
+
 import java.util.Date;
 
 /**
  * Created by alesnax on 04.12.2016.
  */
 public class User extends ShortUser  {
-
     private String name;
     private String surname;
     private String password;
@@ -19,11 +18,12 @@ public class User extends ShortUser  {
     private String country;
     private String city;
     private String status;
+    private Language language;
+    private FriendState friendState;
 
     public User() {
         super();
     }
-
 
     public String getPassword() {
         return password;
@@ -81,7 +81,13 @@ public class User extends ShortUser  {
         this.registrationDate = registrationDate;
     }
 
+    public FriendState getFriendState() {
+        return friendState;
+    }
 
+    public void setFriendState(FriendState friendState) {
+        this.friendState = friendState;
+    }
 
     public UserState getState() {
         return state;
@@ -108,6 +114,14 @@ public class User extends ShortUser  {
         this.city = city;
     }
 
+    public Language getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -129,6 +143,14 @@ public class User extends ShortUser  {
         }
     }
 
+    public enum Language{
+        RU,
+        EN,
+        NONE
+
+
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -148,7 +170,9 @@ public class User extends ShortUser  {
         if (state != user.state) return false;
         if (country != null ? !country.equals(user.country) : user.country != null) return false;
         if (city != null ? !city.equals(user.city) : user.city != null) return false;
-        return status != null ? status.equals(user.status) : user.status == null;
+        if (status != null ? !status.equals(user.status) : user.status != null) return false;
+        if (language != user.language) return false;
+        return friendState == user.friendState;
 
     }
 
@@ -166,6 +190,8 @@ public class User extends ShortUser  {
         result = 31 * result + (country != null ? country.hashCode() : 0);
         result = 31 * result + (city != null ? city.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (language != null ? language.hashCode() : 0);
+        result = 31 * result + (friendState != null ? friendState.hashCode() : 0);
         return result;
     }
 
@@ -183,6 +209,8 @@ public class User extends ShortUser  {
                 ", country='" + country + '\'' +
                 ", city='" + city + '\'' +
                 ", status='" + status + '\'' +
+                ", language=" + language +
+                ", friendState=" + friendState +
                 '}';
     }
 }

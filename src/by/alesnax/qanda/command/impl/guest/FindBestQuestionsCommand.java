@@ -35,11 +35,9 @@ public class FindBestQuestionsCommand implements Command {
 
         PostService postService = ServiceFactory.getInstance().getPostService();
 
-        String lowLimit = ConfigurationManager.getProperty(LOW_LIMIT);
-        String highLimit = ConfigurationManager.getProperty(HIGH_LIMIT);
-        List<Post> bestQuestions = postService.findBestQuestions(lowLimit, highLimit);//расширить пост инфой про юзеров
+//        List<Post> bestQuestions = postService.findBestQuestions(lowLimit, highLimit);//расширить пост инфой про юзеров
         String bestQuestionsAttr = ConfigurationManager.getProperty(BEST_QUESTIONS_ATTR);
-        request.setAttribute(bestQuestionsAttr, bestQuestions);
+  //      request.setAttribute(bestQuestionsAttr, bestQuestions);
 
         String bestQuestionsPath = ConfigurationManager.getProperty(BEST_QUESTIONS_PATH);
         page = REQUEST_TYPE + TYPE_PAGE_DELIMITER + bestQuestionsPath;

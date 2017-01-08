@@ -49,7 +49,9 @@ public class ConnectionPool {
         for (int i = 0; i < connectionCount; i++) {
             try {
                 WrappedConnection connection = new WrappedConnection();
-                connection.setAutoCommit(true);
+                if (!connection.getAutoCommit()) {
+                    connection.setAutoCommit(true);
+                }
                 freeConnections.put(connection);
             } catch (DAOException e) {
                 throw new ConnectionPoolException("Fatal error, not obtained connection ", e);
@@ -64,7 +66,6 @@ public class ConnectionPool {
 
     public WrappedConnection takeConnection() throws ConnectionPoolException {
         WrappedConnection connection;
-
         try {
             connection = freeConnections.take();
             givenConnections.put(connection);
@@ -77,12 +78,13 @@ public class ConnectionPool {
 
     public void returnConnection(WrappedConnection connection) throws ConnectionPoolException {
         try {
-            if (connection.isNull() || connection.isClosed() == true) {
+            if (connection.isNull() || connection.isClosed()) {
                 throw new ConnectionPoolException("ConnectionWasLostWhileReturning Error");
             }
-
             try {
-                connection.setAutoCommit(true);
+                if (!connection.getAutoCommit()) {
+                    connection.setAutoCommit(true);
+                }
                 givenConnections.remove(connection);
                 freeConnections.put(connection);
             } catch (SQLException e) {
@@ -95,22 +97,15 @@ public class ConnectionPool {
         }
     }
 
-
     public void destroyPool() throws ConnectionPoolException {
         for (int i = 0; i < freeConnections.size(); i++) {
-            WrappedConnection connection = freeConnections.poll();
             try {
+                WrappedConnection connection = freeConnections.take();
                 connection.closeConnection();
             } catch (SQLException e) {
                 throw new ConnectionPoolException("DestroyPoolException in freeConnections");
-            }
-        }
-        for (int i = 0; i < givenConnections.size(); i++) {
-            WrappedConnection connection = givenConnections.poll();
-            try {
-                connection.closeConnection();
-            } catch (SQLException e) {
-                throw new ConnectionPoolException("DestroyPoolException in givenConnections");
+            } catch (InterruptedException e) {
+                throw new ConnectionPoolException("Interrupted exception while taking connection from freeConnections for close connection and destroying pool", e);
             }
         }
     }

@@ -8,96 +8,103 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Q&amp;A - Answers and Questions for curious people</title>
-    <link rel="shortcut icon" href="/img/q_logo.png" type="image/png">
-    <link rel="stylesheet" href="/css/user_authorization_style.css">
-    <link rel="stylesheet" href="/css/sprite.css">
 
-</head>
-<body>
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="resources.locale" var="loc"/>
 <fmt:setBundle basename="resources.config" var="config"/>
 
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>
+        <fmt:message bundle="${loc}" key="authorization.page_title"/>
+    </title>
+    <fmt:message bundle="${config}" key="img.common.logo_icon" var="logo_icon"/>
+    <link rel="shortcut icon" href="${logo_icon}" type="image/png">
+    <link rel="stylesheet" href="/css/user_authorization_style.css">
 
+</head>
+<body>
 
 
 <header>
     <div class="back"></div>
     <div class="topbar_wrapper">
+        <fmt:message bundle="${config}" key="command.go_to_main_page" var="go_to_main"/>
+        <fmt:message bundle="${config}" key="img.common.logo" var="main_logo"/>
         <div class="fl_l ">
-            <a href="../Controller?command=go_to_main_page"><img class="header_logo" src="/img/logo.png" alt="Q&amp;A logo"></a>
+            <a href="${go_to_main}">
+                <img class="header_logo" src="${main_logo}" alt="Q&A logo">
+            </a>
         </div>
 
+        <c:import url="template/header_search_block.jsp"/>
 
-        <c:import url="template/header_search_block.jsp" />
-
-
-        <c:import url="template/switch_language.jsp" />
-
+        <c:import url="template/switch_language.jsp"/>
 
         <div class="fl_r h_links">
-            <a class="h_link" href="../Controller?command=go_to_registration_page">Sign up</a>
+            <fmt:message bundle="${config}" key="command.go_to_registration_page" var="go_to_registration_page"/>
+            <a class="h_link" href="${go_to_registration_page}">
+                <fmt:message bundle="${loc}" key="common.sign_up_text"/>
+            </a>
         </div>
     </div>
 </header>
 <div class="page_layout">
     <div class="content">
 
-        <c:import url="template/left_bar.jsp" />
+        <c:import url="template/left_bar.jsp"/>
 
         <section>
             <div class="wall_content wide_block">
                 <div class="validation_header page_block ">
                     <div class="logo_block">
-                        <a href="../Controller?command=go_to_main_page">
-                            <img class="link_logo" src="/img/logo.png" alt="Q&amp;A logo">
+                        <a href="${go_to_main}">
+                            <img class="link_logo" src="${main_logo}" alt="Q&A logo">
                         </a>
                     </div>
                     <div class="welcome_block">
                         <h1>
                             <c:choose>
                                 <c:when test="${not empty welcome_msg}">
-                                    <fmt:message bundle="${loc}" key="${welcome_msg}" var="msg"/>
-                                    <c:out value="${msg}"/>
-                                    <c:remove var="welcome_msg" />
+                                    <fmt:message bundle="${loc}" key="${welcome_msg}"/>
+                                    <c:remove var="welcome_msg"/>
                                 </c:when>
                                 <c:otherwise>
-                                    <fmt:message bundle="${loc}" key="guest.user_authorization_page.welcome_simple_msg" var="simple_msg"/>
-                                    <c:out value="${simple_msg}"/>
+                                    <fmt:message bundle="${loc}"
+                                                 key="guest.user_authorization_page.welcome_simple_msg"/>
+
                                 </c:otherwise>
                             </c:choose>
                         </h1>
-
-                        <h2>Please log in!</h2>
+                        <h2>
+                            <fmt:message bundle="${loc}" key="guest.user_authorization_page.please_log"/>
+                        </h2>
                     </div>
                 </div>
                 <div class="validation_block ">
                     <div class="fl_l left_block">
                         <div class="create_account_form_block page_block">
-                            <form onsubmit="return validateLoginForm()" class="create_account_form" id="create_account"
-                                  name="create_account" action="../Controller" method="post">
+                            <form onsubmit="return validateLoginForm()" class="create_account_form" id="create_account" name="create_account" action="../Controller" method="post">
                                 <input type="hidden" name="command" value="user_authorization">
                                 <div class="form_element name">
                                     <c:if test="${not empty not_registered_user_yet}">
                                         <c:forEach var="error" items="${not_registered_user_yet}">
-                                            <fmt:message bundle="${loc}" key="${error}" var="msg"/>
                                             <span class="errormsg">
-                                                    ${msg}
+                                                    <fmt:message bundle="${loc}" key="${error}"/>
                                             </span>
                                         </c:forEach>
-                                        <c:remove var="not_registered_user_yet" />
+                                        <c:remove var="not_registered_user_yet"/>
                                     </c:if>
                                 </div>
 
                                 <div class="form_element login">
                                     <label>
-                                        <strong>Email</strong>
-                                        <input type="text" value="" name="email" id="email" class=""
-                                               placeholder="Email">
+                                        <strong>
+                                            <fmt:message bundle="${loc}" key="guest.user_authorization_page.email_text" var="email_text"/>
+                                            ${email_text}
+                                        </strong>
+                                        <input type="text" value="" name="email" id="email" class="" placeholder="${email_text}">
                                     </label>
                                     <span class="errormsg" id="error_0_email"></span>
                                 </div>
@@ -105,52 +112,60 @@
                                 <div class="form_element password_form_element">
                                     <label>
                                         <strong></strong>
-                                        <input type="password" value="" name="Passwd" id="Passwd" class=""
-                                               placeholder="Password">
+                                        <fmt:message bundle="${loc}" key="guest.user_authorization_page.password_text"
+                                                     var="password_text"/>
+                                        <input type="password" value="" name="Passwd" id="Passwd" class="" placeholder="${password_text}">
                                     </label>
                                     <span class="errormsg" id="error_0_Passwd"></span>
                                 </div>
                                 <div class="form_element password_forgot_element">
-                                    <a class="forgot_pass" href="Controller">Forgot Password?</a>
+                                    <fmt:message bundle="${config}" key="command.go_to_password_recovery" var="forgot_pass_command"/>
+                                    <a class="forgot_pass" href="${forgot_pass_command}">
+                                        <fmt:message bundle="${loc}" key="guest.user_authorization_page.forgot_password"/>
+                                    </a>
                                 </div>
                                 <div class="form_element submit_button">
                                     <span class="errormsg" id="error_0_enter"></span>
-                                    <input type="submit" value="Login" name="submit" class="login_button">
+                                    <fmt:message bundle="${loc}" key="guest.user_authorization_page.enter_button" var="enter_button"/>
+                                    <input type="submit" value="${enter_button}" name="submit" class="login_button">
                                 </div>
                             </form>
                         </div>
                         <div class="or_register_block page_block">
                             <div class="form_element password_form_element">
                                 <div class="register_header">
-                                    <span>Don't have account? </span>
+                                    <span>
+                                        <fmt:message bundle="${loc}" key="guest.user_authorization_page.have_account"/>
+                                    </span>
                                 </div>
                                 <div class="register_link_block">
-                                    <a class="or_reg_link" href="../Controller?command=go_to_registration_page">Create it!</a>
+
+                                    <a class="or_reg_link" href="${go_to_registration_page}">
+                                        <fmt:message bundle="${loc}" key="guest.user_authorization_page.create_acc"/>
+                                    </a>
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
                     <div class="sample_block page_block">
                         <div>
-                            <h3>Q&amp;A is a simple way to find out something new, don't wait, registrate and explore.
-                                You have question, other have answers!</h3>
+                            <h3>
+                                <fmt:message bundle="${loc}"
+                                             key="guest.user_authorization_page.qa_welcome_description"/>
+                            </h3>
                         </div>
                         <img class="sample_img" src="/img/page_sample.jpg" alt="page_sample">
                     </div>
                 </div>
             </div>
         </section>
-        <footer>
-            <span>© Aliaksandar Nakhankou</span>
-            <address><a href="mailto:alesnax@gmail.com">alesnax@gmail.com</a></address>
-        </footer>
+
+        <c:import url="template/footer.jsp"/>
+
     </div>
 </div>
-<script src="/js/user_login_validation_script.js">
+<fmt:message bundle="${config}" key="path.js.user_login_validation_script" var="login_script"/>
+<script src="${login_script}">
 </script>
-
-
 </body>
 </html>

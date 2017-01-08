@@ -9,6 +9,8 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,7 +22,9 @@ import static by.alesnax.qanda.constant.CommandConstants.REQUEST_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
-@WebServlet(name = "Controller", urlPatterns = {"/Controller"})
+@WebServlet(name = "Controller",
+        urlPatterns = {"/Controller"})
+
 public class Controller extends HttpServlet {
     private static Logger logger = LogManager.getLogger(Controller.class);
 

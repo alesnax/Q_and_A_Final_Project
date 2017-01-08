@@ -59,21 +59,18 @@ public class UserValidation {
     private static final String PASSWORD_IS_EMPTY = "user_authorization.error_msg.password_empty";
     private static final String PASSWORD_IS_FALSE = "user_authorization.error_msg.password_false";
 
+    private static final int MIN_MONTH = 1;
+    private static final int MAX_MONTH = 12;
+    private static final int MIN_DAY = 1;
+    private static final int MAX_DAY = 31;
+
 
     public ArrayList<String> validateNewUser(String login, String password, String passwordCopy, String name, String surname, String email, String bDay, String bMonth, String bYear, String sex, String country, String city) {
-        ArrayList<String> errorMessages = new ArrayList<>();
         boolean successful = true;
 
-        // 1. login
-        String loginRegex = ConfigurationManager.getProperty(LOGIN_REGEX);
-        Pattern pLogin = Pattern.compile(loginRegex);
-        Matcher mLogin = pLogin.matcher(login);
-        if (login == null || login.isEmpty()) {
+        ArrayList<String> errorMessages = checkCommonUserParameters(login, name, surname, email, bDay, bMonth, bYear, sex, country, city);
+        if (!errorMessages.isEmpty()) {
             successful = false;
-            errorMessages.add(LOGIN_EMPTY);
-        } else if (!mLogin.matches()) {
-            successful = false;
-            errorMessages.add(LOGIN_FALSE);
         }
 
         // 2. passwords
@@ -95,131 +92,7 @@ public class UserValidation {
             errorMessages.add(PASSWORD_FALSE);
         }
 
-
-        // 3. name
-        String nameRegex = ConfigurationManager.getProperty(NAME_REGEX);
-        Pattern pName = Pattern.compile(nameRegex);
-        Matcher mName = pName.matcher(name);
-
-        if (name == null || name.isEmpty()) {
-            successful = false;
-            errorMessages.add(NAME_EMPTY);
-        } else if (!mName.matches()) {
-            successful = false;
-            errorMessages.add(NAME_FALSE);
-        }
-
-        // 4. surname
-        Pattern pSurname = Pattern.compile(nameRegex);
-        Matcher mSurname = pSurname.matcher(name);
-
-        if (surname == null || surname.isEmpty()) {
-            successful = false;
-            errorMessages.add(SURNAME_EMPTY);
-        } else if (!mSurname.matches()) {
-            successful = false;
-            errorMessages.add(SURNAME_FALSE);
-        }
-
-        // 5. email
-        String emailRegex = ConfigurationManager.getProperty(EMAIL_REGEX);
-        Pattern pEmail = Pattern.compile(emailRegex);
-        Matcher mEmail = pEmail.matcher(email);
-
-        if (email == null || email.isEmpty()) {
-            errorMessages.add(EMAIL_EMPTY);
-        } else if (!mEmail.matches()) {
-            successful = false;
-            errorMessages.add(EMAIL_FALSE);
-        }
-
-        //6. date
-        // реализовать для високосных годов февраля и тд
-        if (bDay == null || bDay.isEmpty()) {
-            successful = false;
-            errorMessages.add(DAY_EMPTY);
-        } else {
-            try {
-                int day = Integer.parseInt(bDay);
-                if (day < 1 || day > 31) {
-                    successful = false;
-                    errorMessages.add(DAY_OUT_LIMIT);
-                }
-            } catch (NumberFormatException e) {
-                //log
-                successful = false;
-                errorMessages.add(DATE_NOT_NUMBER);
-            }
-        }
-
-        if (bMonth == null || bMonth.isEmpty()) {
-            successful = false;
-            errorMessages.add(MONTH_EMPTY);
-        } else {
-            try {
-                int month = Integer.parseInt(bMonth);
-                if (month < 1 || month > 12) {
-                    successful = false;
-                    errorMessages.add(MONTH_OUT_LIMIT);
-                }
-            } catch (NumberFormatException e) {
-                //log
-                successful = false;
-                errorMessages.add(DATE_NOT_NUMBER);
-            }
-        }
-
-        int minYear = Integer.parseInt(ConfigurationManager.getProperty(YEAR_LOW_LIMIT));
-        int maxYear = Integer.parseInt(ConfigurationManager.getProperty(YEAR_TOP_LIMIT));
-        if (bYear == null || bYear.isEmpty()) {
-            successful = false;
-            errorMessages.add(YEAR_EMPTY);
-        } else {
-            try {
-                int year = Integer.parseInt(bYear);
-                if (year < minYear || year > maxYear) {
-                    successful = false;
-                    errorMessages.add(YEAR_OUT_LIMIT);
-                }
-            } catch (NumberFormatException e) {
-                //log
-                successful = false;
-                errorMessages.add(DATE_NOT_NUMBER);
-            }
-
-        }
-
-        String sexUnchosen = ConfigurationManager.getProperty(SEX_UNCHOSEN);
-        String male = ConfigurationManager.getProperty(MALE);
-        String female = ConfigurationManager.getProperty(FEMALE);
-
-        if (sex == null || sex.isEmpty() || sex.equals(sexUnchosen)) {
-            successful = false;
-            errorMessages.add(SEX_EMPTY);
-        } else if (!(male.equals(sex) || female.equals(sex))) {
-            successful = false;
-            errorMessages.add(SEX_WRONG_TYPE);
-        }
-
-        String geoRegex = ConfigurationManager.getProperty(GEO_REGEX);
-        if (!(country == null || country.isEmpty())) {
-            Pattern pCountry = Pattern.compile(geoRegex);
-            Matcher mCountry = pCountry.matcher(country);
-            if (!mCountry.matches()) {
-                successful = false;
-                errorMessages.add(COUNTRY_FALSE);
-            }
-        }
-        if (!(city == null || city.isEmpty())) {
-            Pattern pCity = Pattern.compile(geoRegex);
-            Matcher mCity = pCity.matcher(city);
-            if (!mCity.matches()) {
-                successful = false;
-                errorMessages.add(CITY_FALSE);
-            }
-        }
-
-        if (successful == true) {
+        if (successful) {
             return errorMessages;
         } else {
             errorMessages.add(0, ERROR_HEADER);
@@ -254,7 +127,173 @@ public class UserValidation {
             errorMessages.add(PASSWORD_IS_FALSE);
         }
 
-        if (successful == true) {
+        if (successful) {
+            return errorMessages;
+        } else {
+            errorMessages.add(0, ERROR_VALID_HEADER);
+            return errorMessages;
+        }
+    }
+
+    public ArrayList<String> validateUserMainData(String login, String name, String surname, String email, String bDay, String bMonth, String bYear, String sex, String country, String city) {
+        ArrayList<String> errorMessages = checkCommonUserParameters(login, name, surname, email, bDay, bMonth, bYear, sex, country, city);
+        if (!errorMessages.isEmpty()) {
+            errorMessages.add(0, ERROR_HEADER);
+            return errorMessages;
+        } else {
+            return errorMessages;
+        }
+    }
+
+    private ArrayList<String> checkCommonUserParameters(String login, String name, String surname, String email, String bDay, String bMonth, String bYear, String sex, String country, String city) {
+        ArrayList<String> errorMessages = new ArrayList<>();
+
+        // 1. login
+        String loginRegex = ConfigurationManager.getProperty(LOGIN_REGEX);
+        Pattern pLogin = Pattern.compile(loginRegex);
+        Matcher mLogin = pLogin.matcher(login);
+        if (login == null || login.isEmpty()) {
+            errorMessages.add(LOGIN_EMPTY);
+        } else if (!mLogin.matches()) {
+            errorMessages.add(LOGIN_FALSE);
+        }
+
+        // 3. name
+        String nameRegex = ConfigurationManager.getProperty(NAME_REGEX);
+        Pattern pName = Pattern.compile(nameRegex);
+        Matcher mName = pName.matcher(name);
+
+        if (name == null || name.isEmpty()) {
+            errorMessages.add(NAME_EMPTY);
+        } else if (!mName.matches()) {
+            errorMessages.add(NAME_FALSE);
+        }
+
+        // 4. surname
+        Pattern pSurname = Pattern.compile(nameRegex);
+        Matcher mSurname = pSurname.matcher(name);
+
+        if (surname == null || surname.isEmpty()) {
+            errorMessages.add(SURNAME_EMPTY);
+        } else if (!mSurname.matches()) {
+            errorMessages.add(SURNAME_FALSE);
+        }
+
+        // 5. email
+        String emailRegex = ConfigurationManager.getProperty(EMAIL_REGEX);
+        Pattern pEmail = Pattern.compile(emailRegex);
+        Matcher mEmail = pEmail.matcher(email);
+
+        if (email == null || email.isEmpty()) {
+            errorMessages.add(EMAIL_EMPTY);
+        } else if (!mEmail.matches()) {
+            errorMessages.add(EMAIL_FALSE);
+        }
+
+        //6. date
+        // реализовать для високосных годов февраля и тд
+        if (bDay == null || bDay.isEmpty()) {
+            errorMessages.add(DAY_EMPTY);
+        } else {
+            try {
+                int day = Integer.parseInt(bDay);
+                if (day < MIN_DAY || day > MAX_DAY) {
+                    errorMessages.add(DAY_OUT_LIMIT);
+                }
+            } catch (NumberFormatException e) {
+                errorMessages.add(DATE_NOT_NUMBER);
+            }
+        }
+
+        if (bMonth == null || bMonth.isEmpty()) {
+            errorMessages.add(MONTH_EMPTY);
+        } else {
+            try {
+                int month = Integer.parseInt(bMonth);
+                if (month < MIN_MONTH || month > MAX_MONTH) {
+                    errorMessages.add(MONTH_OUT_LIMIT);
+                }
+            } catch (NumberFormatException e) {
+                errorMessages.add(DATE_NOT_NUMBER);
+            }
+        }
+
+        int minYear = Integer.parseInt(ConfigurationManager.getProperty(YEAR_LOW_LIMIT));
+        int maxYear = Integer.parseInt(ConfigurationManager.getProperty(YEAR_TOP_LIMIT));
+        if (bYear == null || bYear.isEmpty()) {
+            errorMessages.add(YEAR_EMPTY);
+        } else {
+            try {
+                int year = Integer.parseInt(bYear);
+                if (year < minYear || year > maxYear) {
+                    errorMessages.add(YEAR_OUT_LIMIT);
+                }
+            } catch (NumberFormatException e) {
+                errorMessages.add(DATE_NOT_NUMBER);
+            }
+        }
+
+        String sexUnchosen = ConfigurationManager.getProperty(SEX_UNCHOSEN);
+        String male = ConfigurationManager.getProperty(MALE);
+        String female = ConfigurationManager.getProperty(FEMALE);
+
+        if (sex == null || sex.isEmpty() || sex.equals(sexUnchosen)) {
+            errorMessages.add(SEX_EMPTY);
+        } else if (!(male.equals(sex) || female.equals(sex))) {
+            errorMessages.add(SEX_WRONG_TYPE);
+        }
+
+        String geoRegex = ConfigurationManager.getProperty(GEO_REGEX);
+        if (!(country == null || country.isEmpty())) {
+            Pattern pCountry = Pattern.compile(geoRegex);
+            Matcher mCountry = pCountry.matcher(country);
+            if (!mCountry.matches()) {
+                errorMessages.add(COUNTRY_FALSE);
+            }
+        }
+        if (!(city == null || city.isEmpty())) {
+            Pattern pCity = Pattern.compile(geoRegex);
+            Matcher mCity = pCity.matcher(city);
+            if (!mCity.matches()) {
+                errorMessages.add(CITY_FALSE);
+            }
+        }
+
+        return errorMessages;
+    }
+
+    public List<String> validateNewPassword(String password1, String password2, String password3) {
+        ArrayList<String> errorMessages = new ArrayList<>();
+        boolean successful = true;
+
+        String passwordRegex = ConfigurationManager.getProperty(PASSWORD_REGEX);
+        Pattern pPassword = Pattern.compile(passwordRegex);
+        Matcher mPassword1 = pPassword.matcher(password1);
+        Matcher mPassword2 = pPassword.matcher(password2);
+
+        if (password1 == null || password1.isEmpty()) {
+            successful = false;
+            errorMessages.add(PASSWORD_IS_EMPTY);
+        } else if (!mPassword1.matches()) {
+            successful = false;
+            errorMessages.add(PASSWORD_IS_FALSE);
+        }
+
+        if (password2 == null || password2.isEmpty()) {
+            successful = false;
+            errorMessages.add(PASSWORD_EMPTY);
+        } else if (password3 == null || password3.isEmpty()) {
+            successful = false;
+            errorMessages.add(PASSWORD_EMPTY);
+        } else if (!password2.equals(password3)) {
+            successful = false;
+            errorMessages.add(PASSWORDS_NOT_EQUAL);
+        } else if (!mPassword2.matches()) {
+            successful = false;
+            errorMessages.add(PASSWORD_FALSE);
+        }
+
+        if (successful) {
             return errorMessages;
         } else {
             errorMessages.add(0, ERROR_VALID_HEADER);

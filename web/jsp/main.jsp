@@ -21,15 +21,11 @@
     <title><c:out value="${page_title}"/></title>
     <fmt:message bundle="${config}" key="img.common.logo_icon" var="logo_icon"/>
     <link rel="shortcut icon" href="${logo_icon}" type="image/png">
-    <link rel="stylesheet" href="/css/sprite.css">
     <link rel="stylesheet" href="/css/main_page_style.css">
 </head>
 <body>
         <fmt:message bundle="${config}" key="command.go_to_main_page" var="go_to_main"/>
         <fmt:message bundle="${config}" key="img.common.logo" var="logo"/>
-
-
-
 
 
 <header>

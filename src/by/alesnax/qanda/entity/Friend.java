@@ -3,30 +3,14 @@ package by.alesnax.qanda.entity;
 /**
  * Created by alesnax on 05.12.2016.
  */
-public class Friend extends Entity {
-    private int userId;
-    private int friendId;
+public class Friend extends ShortUser {
     private FriendState state;
-    private FriendStatus status;
+    private String name;
+    private String surname;
+    private String userStatus;
+
 
     public Friend() {
-
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public int getFriendId() {
-        return friendId;
-    }
-
-    public void setFriendId(int friendId) {
-        this.friendId = friendId;
     }
 
     public FriendState getState() {
@@ -37,63 +21,64 @@ public class Friend extends Entity {
         this.state = state;
     }
 
-    public FriendStatus getStatus() {
-        return status;
+
+    public String getName() {
+        return name;
     }
 
-    public void setStatus(FriendStatus status) {
-        this.status = status;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    enum FriendState {
-        REQUEST("request"),
-        FRIEND("friend"),
-        SUBSCRIBER("subscriber"),
-        BANNED("banned");
-
-        private String state;
-
-        FriendState(String state) {
-            this.state = state;
-        }
+    public String getSurname() {
+        return surname;
     }
 
-    enum FriendStatus {
-        BEST_FRIEND("best friend"),
-        COLLEAGUE("colleague"),
-        RELATIVE("relative"),
-        WIFE("wife"),
-        HUSBAND("husband"),
-        OTHER("other");
-
-        private String status;
-
-        FriendStatus(String status) {
-            this.status = status;
-        }
-
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
+
+    public String getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(String userStatus) {
+        this.userStatus = userStatus;
+    }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         Friend friend = (Friend) o;
 
-        if (userId != friend.userId) return false;
-        if (friendId != friend.friendId) return false;
         if (state != friend.state) return false;
-        return status == friend.status;
+        if (name != null ? !name.equals(friend.name) : friend.name != null) return false;
+        if (surname != null ? !surname.equals(friend.surname) : friend.surname != null) return false;
+        return userStatus != null ? userStatus.equals(friend.userStatus) : friend.userStatus == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = userId;
-        result = 31 * result + friendId;
+        int result = super.hashCode();
         result = 31 * result + (state != null ? state.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (surname != null ? surname.hashCode() : 0);
+        result = 31 * result + (userStatus != null ? userStatus.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Friend{" +
+                "state=" + state +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", userStatus='" + userStatus + '\'' +
+                '}';
     }
 }

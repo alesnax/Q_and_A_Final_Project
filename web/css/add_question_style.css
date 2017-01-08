@@ -1,6 +1,12 @@
 .ask_form_block {
     width: 745px;
     background-color: rgba(59, 182, 226, 0.55);
+    position: relative;
+    float: left;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+    margin: 15px 0 0;
+    padding: 20px 15px;
 }
 
 .q_ask_form {

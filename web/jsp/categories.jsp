@@ -22,44 +22,13 @@
     </title>
     <fmt:message bundle="${config}" key="img.common.logo_icon" var="logo_icon"/>
     <link rel="shortcut icon" href="${logo_icon}" type="image/png">
-    <link rel="stylesheet" href="../css/sprite.css">
     <link rel="stylesheet" href="../css/categories_style.css">
 </head>
 <body>
+<fmt:message bundle="${config}" key="command.go_to_category" var="go_to_category"/>
 
+<c:import url="template/header_common.jsp"/>
 
-<header>
-    <div class="back"></div>
-    <div class="topbar_wrapper">
-        <div class="fl_l ">
-            <fmt:message bundle="${config}" key="command.go_to_main_page" var="go_to_main"/>
-            <a href="..${go_to_main}">
-                <img class="header_logo" src="../img/logo.png" alt="Q&A logo"/>
-            </a>
-        </div>
-        <c:import url="template/header_search_block.jsp"/>
-        <c:if test="${not empty sessionScope.user}">
-            <div class="fl_r h_links">
-                <a class="h_link" href="../Controller?command=log_out">log out</a>
-            </div>
-        </c:if>
-        <c:if test="${empty sessionScope.user}">
-            <c:import url="template/switch_language.jsp"/>
-            <div class="fl_r h_links">
-                <fmt:message bundle="${config}" key="command.go_to_registration_page" var="go_to_registration"/>
-                <a class="h_link" href="${go_to_registration}">
-                    <fmt:message bundle="${loc}" key="common.sign_up_text"/>
-                </a>
-            </div>
-            <div class="fl_r h_links">
-                <fmt:message bundle="${config}" key="command.go_to_authorization_page" var="go_to_login"/>
-                <a class="h_link" href="${go_to_login}">
-                    <fmt:message bundle="${loc}" key="common.sign_in_text"/>
-                </a>
-            </div>
-        </c:if>
-    </div>
-</header>
 <div class="page_layout">
     <div class="content">
 
@@ -75,7 +44,6 @@
                         </div>
                     </div>
                 </c:if>
-
                 <div class="page_block wide_block post_content">
                     <div class="page_main_header_block">
                         <h1>
@@ -86,14 +54,14 @@
                 <c:forEach var="cat" items="${requestScope.full_categories}">
                     <div class="page_block wide_block post_content">
                         <div class="cat_img">
-                            <a href="/Controller?command=go_to_category&cat_id=${cat.id}" class="cat_image">
+                            <a href="${go_to_category}${cat.id}" class="cat_image">
                                 <img class="cat_mini_img" src="${cat.imageLink}" alt="some">
                             </a>
                         </div>
                         <div class="cat_description">
                             <c:choose>
                                 <c:when test="${sessionScope.locale eq 'ru'}">
-                                    <a href="/Controller?command=go_to_category&cat_id=${cat.id}" class="cat_title">
+                                    <a href="${go_to_category}${cat.id}" class="cat_title">
                                         <c:out value="${cat.titleRu}"/>
                                     </a>
                                     <div class="cat_content">
@@ -101,7 +69,7 @@
                                     </div>
                                 </c:when>
                                 <c:otherwise>
-                                    <a href="/Controller?command=go_to_category&cat_id=${cat.id}" class="cat_title">
+                                    <a href="${go_to_category}${cat.id}" class="cat_title">
                                         <c:out value="${cat.titleEn}"/>
                                     </a>
                                     <div class="cat_content">
@@ -118,9 +86,8 @@
                                 <c:out value="${cat.status}"/>
                             </div>
                             <div class="q_counter">
-
                                 <div class="count">
-                                    <fmt:message bundle="${loc}" key="categories.txt.questions"/>
+                                    <fmt:message bundle="${loc}" key="categories.txt.posts"/>
                                     <c:out value=" ${cat.questionQuantity}"/>
                                 </div>
                             </div>

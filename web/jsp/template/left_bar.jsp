@@ -17,6 +17,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="/css/left_bar_style.css">
+    <link rel="stylesheet" href="/css/sprite.css">
 </head>
 <body>
 <nav class="fl_l">
@@ -27,45 +28,47 @@
                 <fmt:message bundle="${config}" key="command.go_to_main_page" var="go_to_main"/>
                 <a href="${go_to_main}" class="left_row">
                     <span class="icon icon_home "></span>
-
-                    <fmt:message bundle="${loc}" key="common.left_bar.my_profile" var="my_profile"/>
-                    <span class="left_label">${my_profile}</span>
+                    <span class="left_label">
+                        <fmt:message bundle="${loc}" key="common.left_bar.my_profile"/>
+                    </span>
                 </a>
             </li>
             <li>
                 <fmt:message bundle="${config}" key="command.go_to_reposts" var="go_to_reposts"/>
                 <a href="${go_to_reposts}" class="left_row">
                     <span class="icon  icon_star-empty "></span>
-                    <fmt:message bundle="${loc}" key="common.left_bar.reposts" var="reposts"/>
-                    <span class="left_label">${reposts}</span>
+                    <span class="left_label">
+                        <fmt:message bundle="${loc}" key="common.left_bar.reposts"/>
+                    </span>
                 </a>
             </li>
             <li>
                 <fmt:message bundle="${config}" key="command.go_to_my_news" var="go_to_my_news"/>
                 <a href="${go_to_my_news}" class="left_row">
                     <span class="icon icon_file-text"></span>
-                    <fmt:message bundle="${loc}" key="common.left_bar.news" var="my_news_text"/>
-                    <span class="left_label">${my_news_text}</span>
+                    <span class="left_label">
+                        <fmt:message bundle="${loc}" key="common.left_bar.news"/>
+                    </span>
                 </a>
             </li>
-
             <li>
                 <fmt:message bundle="${config}" key="command.go_to_friends" var="go_to_friends"/>
                 <a href="${go_to_friends}" class="left_row">
                     <span class="icon icon_users"></span>
-                    <fmt:message bundle="${loc}" key="common.left_bar.friends" var="friends_text"/>
-                    <span class="left_label">${friends_text}</span>
+                    <span class="left_label">
+                        <fmt:message bundle="${loc}" key="common.left_bar.friends"/>
+                    </span>
                 </a>
             </li>
             <div class="bottom_line"></div>
         </c:if>
-
         <li>
             <fmt:message bundle="${config}" key="command.go_to_quest_categories" var="go_to_quest_categories"/>
             <a href="${go_to_quest_categories}" class="left_row">
                 <span class="icon icon_list2"></span>
-                <fmt:message bundle="${loc}" key="common.left_bar.q_categories" var="q_categories"/>
-                <span class="left_label">${q_categories}</span>
+                <span class="left_label">
+                    <fmt:message bundle="${loc}" key="common.left_bar.q_categories"/>
+                </span>
             </a>
         </li>
         <div class="bottom_line"></div>
@@ -73,28 +76,29 @@
             <fmt:message bundle="${config}" key="command.find_best_questions" var="go_to_best_questions"/>
             <a href="${go_to_best_questions}" class="left_row">
                 <span class="icon icon_trophy"></span>
-                <fmt:message bundle="${loc}" key="common.left_bar.best_questions" var="best_questions"/>
-                <span class="left_label">${best_questions}</span>
+                <span class="left_label">
+                    <fmt:message bundle="${loc}" key="common.left_bar.best_questions"/>
+                </span>
             </a>
         </li>
         <li>
             <fmt:message bundle="${config}" key="command.find_best_answers" var="go_to_best_answers"/>
             <a href="${go_to_best_answers}" class="left_row">
                 <span class="icon icon_stats-bars2"></span>
-                <fmt:message bundle="${loc}" key="common.left_bar.best_answers" var="best_answers"/>
-                <span class="left_label">${best_answers}</span>
+                <span class="left_label">
+                    <fmt:message bundle="${loc}" key="common.left_bar.best_answers"/>
+                </span>
             </a>
         </li>
         <li>
             <fmt:message bundle="${config}" key="command.find_best_users" var="go_to_best_users"/>
             <a href="${go_to_best_users}" class="left_row">
                 <span class="icon icon_star-full"></span>
-                <fmt:message bundle="${loc}" key="common.left_bar.best_users" var="best_users"/>
-                <span class="left_label">${best_users}</span>
+                <span class="left_label">
+                    <fmt:message bundle="${loc}" key="common.left_bar.best_users"/>
+                </span>
             </a>
         </li>
-
-
     </ul>
 </nav>
 </body>

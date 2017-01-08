@@ -47,37 +47,22 @@ public class GotoMainPageCommand implements Command {
 
 
         HttpSession session = request.getSession(true);
-        QueryUtil.savePreviousQueryToSession(request);
+
+        //  было сохранение превкьюери стало лог
+        QueryUtil.logQuery(request);
         PostService postService = ServiceFactory.getInstance().getPostService();
 
         User user = (User) session.getAttribute(USER_ATTR);
         if (user == null) {
             String gotoCategoriesCommand = ConfigurationManager.getProperty(GO_TO_CATEGORIES_COMMAND);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoCategoriesCommand;
-
         } else {
-            //redirect to profile
-
             String role = user.getRole().getValue();
             int userId = user.getId();
             switch (role) {
                 case USER_ROLE:
                 case MODERATOR_ROLE:
                 case ADMIN_ROLE:
-                   /* String lowLimit = request.getParameter(LOW_LIMIT);
-                    String highLimit = request.getParameter(HIGH_LIMIT);
-                    if(lowLimit == null || lowLimit.isEmpty()){
-                        lowLimit = "0";
-                    }
-                    if(highLimit == null || highLimit.isEmpty()){
-                        highLimit = "10";
-                    }*/
-
-                    /*try {
-                        List<Post> myPosts = postService.findMyPosts(userId, lowLimit, highLimit);
-                    } catch (ServiceException e) {
-                        e.printStackTrace();
-                    }*/
                     String gotoProfileCommand = ConfigurationManager.getProperty(GO_TO_PROFILE_COMMAND) + userId;
                     page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoProfileCommand;
                     break;
@@ -87,7 +72,6 @@ public class GotoMainPageCommand implements Command {
                     break;
             }
         }
-
         return page;
     }
 }

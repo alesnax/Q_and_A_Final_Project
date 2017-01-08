@@ -19,30 +19,11 @@ div {
     position: relative;
 }
 
-.back {
-    position: absolute;
-    width: 100%;
-    background: #3BB6E2;
-    height: 50px;
-    box-sizing: border-box;
-}
-
-header {
-    position: fixed;
-    height: 50px;
-    width: 100%;
-    z-index: 120;
-}
-
 section {
     width: 780px;
     float: right;
     text-align: left;
     margin-bottom: 50px;
-}
-
-.header_logo {
-    height: 50px;
 }
 
 .fl_l {
@@ -51,23 +32,6 @@ section {
 
 .fl_r {
     float: right;
-}
-
-.h_links {
-    padding: 17px 15px;
-}
-
-.h_links:hover {
-    background-color: #209ecc;
-}
-
-.h_link {
-    color: #fff;
-    text-decoration: none;
-    text-transform: uppercase;
-    transition: background-color .3s, color .15s, box-shadow .3s, opacity 0.3s, filter 0.3s;
-    transition-property: background-color, color, box-shadow, opacity, filter;
-    transition-duration: 0.3s, 0.15s, 0.3s, 0.3s, 0.3s;
 }
 
 .page_block {
@@ -82,14 +46,6 @@ section {
 .wide_block {
     position: relative;
     float: left;
-    width: 100%;
-}
-
-.topbar_wrapper {
-    width: 960px;
-    position: relative;
-    margin: 0 auto;
-    height: 50px;
 }
 
 .content {
@@ -127,11 +83,10 @@ a:hover {
 }
 
 .wrong_message_block {
-
     background-color: #ffc9c9;
 }
 
-.error_msg{
+.error_msg {
     text-align: center;
     color: #405a73;
     font-size: 16px;

@@ -46,12 +46,6 @@ public class GotoQuestCategoriesCommand implements Command {
             List<Category> categories = postService.takeCategoriesList();
             String fullCategoriesAttr = ConfigurationManager.getProperty(FULL_CATEGORIES_ATTR);
             String questionCategoriesPath = ConfigurationManager.getProperty(QUEST_CATEGORIES_PAGE);
-
-           /* String showPagePoint = (String) session.getAttribute("show_page_point");
-            if(showPagePoint != null && !showPagePoint.isEmpty()){
-                questionCategoriesPath += showPagePoint;
-                session.removeAttribute("show_page_point");
-            }*/
             request.setAttribute(fullCategoriesAttr, categories);
             page = REQUEST_TYPE + TYPE_PAGE_DELIMITER + questionCategoriesPath;
         } catch (ServiceException e) {

@@ -224,4 +224,23 @@ public class Post extends Entity {
         result = 31 * result + currentUserMark;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", categoryInfo=" + categoryInfo +
+                ", type=" + type +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", parentId=" + parentId +
+                ", publishedTime=" + publishedTime +
+                ", status=" + status +
+                ", modifiedTime=" + modifiedTime +
+                ", averageMark=" + averageMark +
+                ", markCount=" + markCount +
+                ", user=" + user +
+                ", currentUserMark=" + currentUserMark +
+                '}';
+    }
 }

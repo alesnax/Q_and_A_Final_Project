@@ -55,7 +55,7 @@ public class QueryUtil {
     }
 
     private static String createHttpQueryString(HttpServletRequest request) {
-        StringBuffer URL = request.getRequestURL();
+        StringBuffer url = request.getRequestURL();
         StringBuffer query = new StringBuffer();
 
         Enumeration<String> params = request.getParameterNames();
@@ -70,10 +70,10 @@ public class QueryUtil {
 
         String result = null;
         if (query.length() == 0) {
-            result = URL.toString();
+            result = url.toString();
         } else {
             query.deleteCharAt(0);
-            result = URL.append(QUERY_START_SEPARATOR).append(query).toString();
+            result = url.append(QUERY_START_SEPARATOR).append(query).toString();
         }
         return result;
     }

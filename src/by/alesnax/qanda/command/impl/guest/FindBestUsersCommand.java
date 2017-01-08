@@ -36,12 +36,10 @@ public class FindBestUsersCommand implements Command {
 
         PostService postService = ServiceFactory.getInstance().getPostService();
 
-        String lowLimit = ConfigurationManager.getProperty(LOW_LIMIT);
-        String highLimit = ConfigurationManager.getProperty(HIGH_LIMIT);
-        List<Post> bestUsers = postService.findBestUsers(lowLimit, highLimit);//расширить пост инфой про юзеров
+       // List<Post> bestUsers = postService.findBestUsers(lowLimit, highLimit);//расширить пост инфой про юзеров
 
         String bestUsersAttr = ConfigurationManager.getProperty(BEST_USERS_ATTR);
-        request.setAttribute(bestUsersAttr, bestUsers);
+        //request.setAttribute(bestUsersAttr, bestUsers);
 
         String bestUsersPath = ConfigurationManager.getProperty(BEST_USERS_PATH);
         page = REQUEST_TYPE + TYPE_PAGE_DELIMITER + bestUsersPath;
