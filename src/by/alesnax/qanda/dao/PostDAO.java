@@ -4,6 +4,7 @@ import by.alesnax.qanda.dao.impl.DAOException;
 import by.alesnax.qanda.entity.Category;
 import by.alesnax.qanda.entity.CategoryInfo;
 import by.alesnax.qanda.entity.Post;
+import by.alesnax.qanda.pagination.PaginatedList;
 
 import java.util.List;
 
@@ -12,21 +13,43 @@ import java.util.List;
  */
 public interface PostDAO {
 
-    List<Category> takeAllCategories() throws DAOException;
+    PaginatedList<Category> takeAllCategories(int startCategory, int categoriesPerPage) throws DAOException;
+
+    PaginatedList<Category> takeModeratedCategories(int userId, int startCategory, int categoriesPerPage) throws DAOException;
 
     List<CategoryInfo> takeCategoriesInfo() throws DAOException;
 
+    PaginatedList<Post> takeQuestionsByCategory(String categoryId, int userId, int startPost, int postsPerPage) throws DAOException;
+
+    PaginatedList<Post> takePostsByUserId(int profileUserId, int userId, int startPost, int postsPerPage) throws DAOException;
+
+    PaginatedList<Post> takeLikedPosts(int userId, int startPost, int postsPerPage) throws DAOException;
+
+    PaginatedList<Post> takeFriendsPosts(int userId, int startPost, int postsPerPage) throws DAOException;
+
+    List<Post> takeQuestionWithAnswersById(int questionId, int userId) throws DAOException;
+
+    PaginatedList<Post> takeBestQuestions(int userId, int startPost, int postsPerPage) throws DAOException;
+
+    PaginatedList<Post> takeBestAnswers(int userId, int startPost, int postsPerPage) throws DAOException;
+
     void addNewQuestion(int id, String category, String title, String description) throws DAOException;
-
-    List<Post> takeMyPosts(int userId, String lowLimit, String highLimit) throws DAOException;
-
-    List<Post> takeQuestionsByCategory(String categoryId, int userId) throws DAOException;
-
-    List<Post> takeQuestionsByUserId(int profileUserId, int userId) throws DAOException;
 
     CategoryInfo takeCategoryInfoById(String categoryId) throws DAOException;
 
-    List<Post> takeLikedPosts(int userId) throws DAOException;
-
     void deletePostById(int postId) throws DAOException;
+
+    void addNewAnswer(int userId, String questionId, String categoryId, String description) throws DAOException;
+
+    void addNewRate(int postId, int mark, int userId) throws DAOException;
+
+    void addCorrectedAnswer(int answerId, String description) throws DAOException;
+
+    void addCorrectedQuestion(int questionId, int catId, String correctedTitle, String description) throws DAOException;
+
+    Post takePostById(int postId) throws DAOException;
+
+    void addNewComplaint(int userId, int complaintPostId, String description) throws DAOException;
+
+    PaginatedList<Post> searchPostsByKeyWords(int userId, String content, int startPost, int postsPerPage) throws DAOException;
 }

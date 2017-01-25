@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 // static import
 import static by.alesnax.qanda.constant.CommandConstants.REQUEST_TYPE;
+import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 /**
@@ -18,23 +19,23 @@ import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 public class GotoRegistrationPageCommand implements Command {
     private static final String USER_ROLE = "user";
-    private static final String MODERATOR_ROLE = "moder";
+    private static final String MODERATOR_ROLE = "moderator";
     private static final String ADMIN_ROLE = "admin";
     private static final String USER_ATTR = "user";
     private static final String REGISTRATION_PAGE = "path.page.register_new_user";
-    private static final String USER_MAIN_PAGE = "path.page.profile";
+    private static final String GO_TO_PROFILE_COMMAND = "command.go_to_profile";
 
     @Override
     public String execute(HttpServletRequest request) {
         String page = null;
-
+        ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession session = request.getSession(true);
 
         QueryUtil.savePreviousQueryToSession(request);
         User user = (User) session.getAttribute(USER_ATTR);
 
         if (user == null) {
-            String registrationPath = ConfigurationManager.getProperty(REGISTRATION_PAGE);
+            String registrationPath = configurationManager.getProperty(REGISTRATION_PAGE);
             page = REQUEST_TYPE + TYPE_PAGE_DELIMITER + registrationPath;
         } else {
             String role = user.getRole().getValue();
@@ -42,11 +43,11 @@ public class GotoRegistrationPageCommand implements Command {
                 case USER_ROLE:
                 case MODERATOR_ROLE:
                 case ADMIN_ROLE:
-                    String userProfilePath = ConfigurationManager.getProperty(USER_MAIN_PAGE);
-                    page = REQUEST_TYPE + TYPE_PAGE_DELIMITER + userProfilePath;
+                    String gotoProfileCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
+                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoProfileCommand;
                     break;
                 default:
-                    String registrationPath = ConfigurationManager.getProperty(REGISTRATION_PAGE);
+                    String registrationPath = configurationManager.getProperty(REGISTRATION_PAGE);
                     page = REQUEST_TYPE + TYPE_PAGE_DELIMITER + registrationPath;
                     break;
             }

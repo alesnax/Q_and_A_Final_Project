@@ -21,22 +21,18 @@
     display: block;
     float: right;
     margin-top: 14px;
-    background-repeat: no-repeat;
-    background-image: url(../img/usa_icon.png);
     width: 32px;
     height: 24px;
-    background-position: 0 -4px;
+    background: url(../img/usa_icon.png) no-repeat 0 -4px;
 }
 
 .ru_icon {
     display: block;
     float: right;
     margin-top: 14px;
-    background-repeat: no-repeat;
-    background-image: url(../img/ru_icon.png);
     width: 32px;
     height: 24px;
-    background-position: 0 -4px;
+    background: url(../img/ru_icon.png) no-repeat 0 -4px;
 }
 
 .lang_links:hover,.h_link:hover {
@@ -46,9 +42,7 @@
 
 .s_back_img {
     float: left;
-    background-repeat: no-repeat;
-    background-image: url(../img/search.png);
-    background-position: 5px 5px;
+    background: url(../img/search.png) no-repeat 5px 5px;
 }
 
 .search_input {
@@ -65,8 +59,7 @@
 
 .search_submit {
     box-sizing: border-box;
-    padding: 6px 6px;
-    padding-right: 8px;
+    padding: 6px 8px 6px 6px;
     margin: 10px 0;
     height: 28px;
     line-height: 16px;

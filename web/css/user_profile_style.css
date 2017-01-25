@@ -65,7 +65,7 @@ section {
 }
 
 .content {
-    width: 960px;
+    width: 980px;
     margin: 0 auto;
 }
 
@@ -76,7 +76,6 @@ a {
 
 .avatar {
     width: 200px;
-    height: 200px;
     border-radius: 4px;
 }
 
@@ -204,9 +203,6 @@ a:hover {
      background-color: #b4e3f5;
  }
 
-.follow_button:active{
-    margin-top: 2px;
-}
 
 .remove_submit_button{
     margin-top: 10px;
@@ -242,3 +238,4 @@ a:hover {
     padding-right: 10px;
 
 }
+

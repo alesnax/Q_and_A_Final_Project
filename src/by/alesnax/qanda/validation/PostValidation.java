@@ -8,15 +8,20 @@ import java.util.List;
 /**
  * Created by alesnax on 13.12.2016.
  */
+@SuppressWarnings("Duplicates")
 public class PostValidation {
     private static final String ERROR_HEADER = "common.add_new_question.error_msg.error_header";
+    private static final String ERROR_ANSWER_HEADER = "common.add_new_answer.error_msg.error_header";
     private static final String TITLE_EMPTY = "common.add_new_question.error_msg.title_empty";
     private static final String TITLE_TOO_SHORT = "common.add_new_question.error_msg.title_too_short";
     private static final String TITLE_TOO_LONG = "common.add_new_question.error_msg.title_too_long";
     private static final String CHOOSE_CATEGORY = "common.add_new_question.error_msg.choose_category";
     private static final String DESCRIPTION_EMPTY = "common.add_new_question.error_msg.description_empty";
+    private static final String ANSWER_EMPTY = "common.add_new_answer.error_msg.description_empty";
     private static final String DESCRIPTION_TOO_SHORT = "common.add_new_question.error_msg.description_too_short";
     private static final String DESCRIPTION_TOO_LONG = "common.add_new_question.error_msg.description_too_long";
+    private static final String WRONG_EXPECTED_PARAMETER = "common.add_new_answer.error_msg.wrong_parameter";
+
 
     private static final String MIN_TITLE_LENGTH = "add_new_question.min_title_length";
     private static final String MAX_TITLE_LENGTH = "add_new_question.max_title_length";
@@ -26,11 +31,11 @@ public class PostValidation {
 
     public List<String> validateQuestion(String title, String category, String content) {
         ArrayList<String> errorMessages = new ArrayList<>();
-
+        ConfigurationManager configurationManager = new ConfigurationManager();
         boolean successful = true;
 
-        int minTitleLength = Integer.parseInt(ConfigurationManager.getProperty(MIN_TITLE_LENGTH));
-        int maxTitleLength = Integer.parseInt(ConfigurationManager.getProperty(MAX_TITLE_LENGTH));
+        int minTitleLength = Integer.parseInt(configurationManager.getProperty(MIN_TITLE_LENGTH));
+        int maxTitleLength = Integer.parseInt(configurationManager.getProperty(MAX_TITLE_LENGTH));
         if (title == null || title.isEmpty()) {
             successful = false;
             errorMessages.add(TITLE_EMPTY);
@@ -47,8 +52,8 @@ public class PostValidation {
             errorMessages.add(CHOOSE_CATEGORY);
         }
 
-        int minContentLength = Integer.parseInt(ConfigurationManager.getProperty(MIN_CONTENT_LENGTH));
-        int maxContentLength = Integer.parseInt(ConfigurationManager.getProperty(MAX_CONTENT_LENGTH));
+        int minContentLength = Integer.parseInt(configurationManager.getProperty(MIN_CONTENT_LENGTH));
+        int maxContentLength = Integer.parseInt(configurationManager.getProperty(MAX_CONTENT_LENGTH));
         if (content == null || content.isEmpty()) {
             successful = false;
             errorMessages.add(DESCRIPTION_EMPTY);
@@ -64,6 +69,71 @@ public class PostValidation {
             return errorMessages;
         } else {
             errorMessages.add(0, ERROR_HEADER);
+            return errorMessages;
+        }
+    }
+
+    public List<String> validateAnswer(String questionId, String categoryId, String content) {
+        ArrayList<String> errorMessages = new ArrayList<>();
+        ConfigurationManager configurationManager = new ConfigurationManager();
+        boolean successful = true;
+
+        try {
+            int questId = Integer.parseInt(questionId);
+            int catId = Integer.parseInt(categoryId);
+            if (questId <= 0 || catId <= 0) {
+                errorMessages.add(WRONG_EXPECTED_PARAMETER);
+                successful = false;
+            }
+        } catch (NumberFormatException e) {
+            errorMessages.add(WRONG_EXPECTED_PARAMETER);
+            successful = false;
+        }
+
+        int minContentLength = Integer.parseInt(configurationManager.getProperty(MIN_CONTENT_LENGTH));
+        int maxContentLength = Integer.parseInt(configurationManager.getProperty(MAX_CONTENT_LENGTH));
+        if (content == null || content.isEmpty()) {
+            errorMessages.add(ANSWER_EMPTY);
+            successful = false;
+        } else if (content.length() > maxContentLength) {
+            errorMessages.add(DESCRIPTION_TOO_LONG);
+            successful = false;
+        } else if (content.length() < minContentLength) {
+            errorMessages.add(DESCRIPTION_TOO_SHORT);
+            successful = false;
+        }
+
+        if (successful) {
+            return errorMessages;
+        } else {
+            errorMessages.add(0, ERROR_ANSWER_HEADER);
+            return errorMessages;
+        }
+    }
+
+    public List<String> validateCorrectedAnswer(String content) {
+        ArrayList<String> errorMessages = new ArrayList<>();
+        ConfigurationManager configurationManager = new ConfigurationManager();
+        boolean successful = true;
+
+
+        int minContentLength = Integer.parseInt(configurationManager.getProperty(MIN_CONTENT_LENGTH));
+        int maxContentLength = Integer.parseInt(configurationManager.getProperty(MAX_CONTENT_LENGTH));
+        if (content == null || content.isEmpty()) {
+            errorMessages.add(ANSWER_EMPTY);
+            successful = false;
+        } else if (content.length() > maxContentLength) {
+            errorMessages.add(DESCRIPTION_TOO_LONG);
+            successful = false;
+        } else if (content.length() < minContentLength) {
+            errorMessages.add(DESCRIPTION_TOO_SHORT);
+            successful = false;
+        }
+
+        if (successful) {
+            return errorMessages;
+        } else {
+            errorMessages.add(0, ERROR_ANSWER_HEADER);
             return errorMessages;
         }
     }

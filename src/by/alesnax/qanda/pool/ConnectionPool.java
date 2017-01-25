@@ -1,4 +1,4 @@
-package by.alesnax.qanda.dao.pool;
+package by.alesnax.qanda.pool;
 
 import by.alesnax.qanda.dao.impl.DAOException;
 import org.apache.logging.log4j.Level;
@@ -9,12 +9,15 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by alesnax on 04.12.2016.
+ *
  */
 public class ConnectionPool {
     private static Logger logger = LogManager.getLogger(ConnectionPool.class);
+    private static ReentrantLock lock = new ReentrantLock();
 
     private static final ConnectionPool INSTANCE = new ConnectionPool();
 
@@ -30,7 +33,12 @@ public class ConnectionPool {
     }
 
     public static ConnectionPool getInstance() {
-        return INSTANCE;
+        try{
+            lock.lock();
+            return INSTANCE;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void init() throws ConnectionPoolException {
@@ -88,12 +96,12 @@ public class ConnectionPool {
                 givenConnections.remove(connection);
                 freeConnections.put(connection);
             } catch (SQLException e) {
-                throw new ConnectionPoolException("Connection SetAutoCommitException", e);
+                logger.log(Level.ERROR, "Connection SetAutoCommitException", e);
             } catch (InterruptedException e) {
-                throw new ConnectionPoolException("Interrupted exception while putting connection into freeConnectionPool", e);
+                logger.log(Level.ERROR, "Interrupted exception while putting connection into freeConnectionPool", e);
             }
         } catch (SQLException e) {
-            throw new ConnectionPoolException("ConnectionIsClosed Error", e);
+            logger.log(Level.ERROR, "ConnectionIsClosed Error", e);
         }
     }
 
@@ -103,9 +111,9 @@ public class ConnectionPool {
                 WrappedConnection connection = freeConnections.take();
                 connection.closeConnection();
             } catch (SQLException e) {
-                throw new ConnectionPoolException("DestroyPoolException in freeConnections");
+                logger.log(Level.ERROR, "DestroyPoolException in freeConnections", e);
             } catch (InterruptedException e) {
-                throw new ConnectionPoolException("Interrupted exception while taking connection from freeConnections for close connection and destroying pool", e);
+                logger.log(Level.ERROR, "Interrupted exception while taking connection from freeConnections for close connection and destroying pool", e);
             }
         }
     }

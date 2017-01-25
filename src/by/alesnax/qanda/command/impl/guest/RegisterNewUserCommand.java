@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 import static by.alesnax.qanda.constant.CommandConstants.ERROR_REQUEST_TYPE;
@@ -34,10 +35,12 @@ public class RegisterNewUserCommand implements Command {
     private static final String COUNTRY = "country";
     private static final String CITY = "city";
     private static final String BIRTH_DAY = "birth_day";
-    private static final String BIRH_MONTH = "birth_month";
+    private static final String BIRTH_MONTH = "birth_month";
     private static final String BIRTH_YEAR = "birth_year";
     private static final String GENDER = "gender";
     private static final String PAGE_STATUS = "page_status";
+    private static final String KEY_WORD_TYPE = "key_word";
+    private static final String KEY_WORD_VALUE = "key_word_value";
 
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String ERROR_USER_VALIDATION_ATTR = "attr.user_validation_error";
@@ -53,6 +56,7 @@ public class RegisterNewUserCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         String page = null;
+        ConfigurationManager configurationManager = new ConfigurationManager();
 
         String login = request.getParameter(LOGIN);
         String password = request.getParameter(PASSWORD);
@@ -61,51 +65,53 @@ public class RegisterNewUserCommand implements Command {
         String surname = request.getParameter(LAST_NAME);
         String email = request.getParameter(EMAIL);
         String bDay = request.getParameter(BIRTH_DAY);
-        String bMonth = request.getParameter(BIRH_MONTH);
+        String bMonth = request.getParameter(BIRTH_MONTH);
         String bYear = request.getParameter(BIRTH_YEAR);
         String sex = request.getParameter(GENDER);
         String country = request.getParameter(COUNTRY);
         String city = request.getParameter(CITY);
         String status = request.getParameter(PAGE_STATUS);
+        String keyWordType = request.getParameter(KEY_WORD_TYPE);
+        String keyWordValue = request.getParameter(KEY_WORD_VALUE);
 
+        HttpSession session = request.getSession(true);
         QueryUtil.savePreviousQueryToSession(request);
 
         UserValidation userValidation = new UserValidation();
         List<String> validationErrors = userValidation.validateNewUser(login, password, passwordCopy, name, surname, email,
-                bDay, bMonth, bYear, sex, country, city);
+                bDay, bMonth, bYear, sex, country, city, keyWordType, keyWordValue);
 
         if (validationErrors.isEmpty()) {
             UserService userService = ServiceFactory.getInstance().getUserService();
 
             try {
                 userService.registerNewUser(login, password, name, surname, email,
-                        bDay, bMonth, bYear, sex, country, city, status);
+                        bDay, bMonth, bYear, sex, country, city, status, keyWordType, keyWordValue);
                 logger.log(Level.INFO, "User " + login + " was successfully registered");
-                String welcomeMessageAttr = ConfigurationManager.getProperty(WELCOME_MSG_ATTR);
-                request.getSession(true).setAttribute(welcomeMessageAttr, WELCOME_NEW_USER_MSG);
-                String gotoAuthorizationCommand = ConfigurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
+                String welcomeMessageAttr = configurationManager.getProperty(WELCOME_MSG_ATTR);
+                session.setAttribute(welcomeMessageAttr, WELCOME_NEW_USER_MSG);
+                String gotoAuthorizationCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
                 page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoAuthorizationCommand;
             } catch (ServiceDuplicatedInfoException e) {
                 validationErrors.add(ERROR_USER_ALREADY_EXIST);
                 logger.log(Level.WARN, e);
-                String errorUserValidationAttr = ConfigurationManager.getProperty(ERROR_USER_VALIDATION_ATTR);// try-catch
-                request.getSession(true).setAttribute(errorUserValidationAttr, validationErrors);
-                String gotoRegistrationCommand = ConfigurationManager.getProperty(GO_TO_REGISTRATION_COMMAND);
+                String errorUserValidationAttr = configurationManager.getProperty(ERROR_USER_VALIDATION_ATTR);// try-catch
+                session.setAttribute(errorUserValidationAttr, validationErrors);
+                String gotoRegistrationCommand = configurationManager.getProperty(GO_TO_REGISTRATION_COMMAND);
                 page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoRegistrationCommand;
             } catch (ServiceException e) {
                 logger.log(Level.ERROR, e);
-                String errorMessageAttr = ConfigurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
+                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
                 request.setAttribute(errorMessageAttr, e.getMessage());
                 page = ERROR_REQUEST_TYPE;
             }
         } else {
             logger.log(Level.WARN, "Validation of user failed.");
-            String errorUserValidationAttr = ConfigurationManager.getProperty(ERROR_USER_VALIDATION_ATTR);// try-catch
-            request.getSession(true).setAttribute(errorUserValidationAttr, validationErrors);
-            String gotoRegistrationCommand = ConfigurationManager.getProperty(GO_TO_REGISTRATION_COMMAND);
+            String errorUserValidationAttr = configurationManager.getProperty(ERROR_USER_VALIDATION_ATTR);// try-catch
+            session.setAttribute(errorUserValidationAttr, validationErrors);
+            String gotoRegistrationCommand = configurationManager.getProperty(GO_TO_REGISTRATION_COMMAND);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoRegistrationCommand;
         }
-
         return page;
     }
 }

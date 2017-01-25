@@ -1,18 +1,18 @@
 package by.alesnax.qanda.listener;
 
-import by.alesnax.qanda.dao.pool.ConnectionPool;
-import by.alesnax.qanda.dao.pool.ConnectionPoolException;
+import by.alesnax.qanda.pool.ConnectionPool;
+import by.alesnax.qanda.pool.ConnectionPoolException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 /**
  * Created by alesnax on 08.12.2016.
+ *
  */
 @WebListener
 public class QAContextCreateListener implements ServletContextListener {

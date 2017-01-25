@@ -19,7 +19,7 @@ public class LogOutCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         String page = null;
-
+        ConfigurationManager configurationManager = new ConfigurationManager();
 
         QueryUtil.logQuery(request);
         HttpSession session = request.getSession(false);
@@ -27,7 +27,7 @@ public class LogOutCommand implements Command {
         if (session != null) {
             session.invalidate();
             request.getSession().setAttribute("locale", prevLang);
-            String indexPage = ConfigurationManager.getProperty(INDEX_PAGE);
+            String indexPage = configurationManager.getProperty(INDEX_PAGE);
             page = REQUEST_TYPE + TYPE_PAGE_DELIMITER + indexPage;
         }
         return page;

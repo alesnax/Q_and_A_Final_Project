@@ -62,6 +62,5 @@ function validateLoginForm() {
         result = false;
     }
 
-
     return result;
 }

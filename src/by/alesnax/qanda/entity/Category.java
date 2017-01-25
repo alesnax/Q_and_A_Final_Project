@@ -6,7 +6,6 @@ import java.util.Date;
  * Created by alesnax on 05.12.2016.
  */
 public class Category extends CategoryInfo {
-    private int userId;
     private Date creationDate;
     private String descriptionEn;
     private String descriptionRu;
@@ -19,14 +18,6 @@ public class Category extends CategoryInfo {
         super();
     }
 
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 
     public Date getCreationDate() {
         return creationDate;
@@ -120,7 +111,6 @@ public class Category extends CategoryInfo {
 
         Category category = (Category) o;
 
-        if (userId != category.userId) return false;
         if (questionQuantity != category.questionQuantity) return false;
         if (creationDate != null ? !creationDate.equals(category.creationDate) : category.creationDate != null)
             return false;
@@ -137,7 +127,6 @@ public class Category extends CategoryInfo {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + userId;
         result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
         result = 31 * result + (descriptionEn != null ? descriptionEn.hashCode() : 0);
         result = 31 * result + (descriptionRu != null ? descriptionRu.hashCode() : 0);
@@ -151,7 +140,6 @@ public class Category extends CategoryInfo {
     @Override
     public String toString() {
         return "Category{" +
-                "userId=" + userId +
                 ", creationDate=" + creationDate +
                 ", descriptionEn='" + descriptionEn + '\'' +
                 ", descriptionRu='" + descriptionRu + '\'' +

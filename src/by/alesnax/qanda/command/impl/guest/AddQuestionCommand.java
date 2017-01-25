@@ -48,6 +48,7 @@ public class AddQuestionCommand implements Command {
         String description = request.getParameter(DESCRIPTION);
 
         String page = null;
+        ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession session = request.getSession(true);
 
         QueryUtil.logQuery(request);
@@ -64,13 +65,13 @@ public class AddQuestionCommand implements Command {
                     session.removeAttribute(TITLE);
                     session.removeAttribute(CATEGORY);
                     session.removeAttribute(DESCRIPTION);
-                    String questionAddedAttr = ConfigurationManager.getProperty(QUEST_ADDED_STATUS_ATTR);
+                    String questionAddedAttr = configurationManager.getProperty(QUEST_ADDED_STATUS_ATTR);
                     session.setAttribute(questionAddedAttr, QUEST_ADDED_STATUS);
                     String nextCommand = QueryUtil.getPreviousQuery(request);
                     page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
                 } catch (ServiceException e) {
                     logger.log(Level.ERROR, e);
-                    String errorMessageAttr = ConfigurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
+                    String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
                     request.setAttribute(errorMessageAttr, e.getMessage());
                     page = ERROR_REQUEST_TYPE;
                 }
@@ -78,9 +79,9 @@ public class AddQuestionCommand implements Command {
                 session.setAttribute(TITLE, title);
                 session.setAttribute(CATEGORY, category);
                 session.setAttribute(DESCRIPTION, description);
-                String notRegUserAttr = ConfigurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
+                String notRegUserAttr = configurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
                 session.setAttribute(notRegUserAttr, WARN_LOGIN_BEFORE_ADD);
-                String nextCommand = ConfigurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
+                String nextCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
                 page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
             }
         } else {
@@ -88,7 +89,7 @@ public class AddQuestionCommand implements Command {
             session.setAttribute(TITLE, title);
             session.setAttribute(CATEGORY, category);
             session.setAttribute(DESCRIPTION, description);
-            String questionValidationFailedAttr = ConfigurationManager.getProperty(QUESTION_VALIDATION_FAILED_ATTR);
+            String questionValidationFailedAttr = configurationManager.getProperty(QUESTION_VALIDATION_FAILED_ATTR);
             session.setAttribute(questionValidationFailedAttr, validationErrors);
             String previousQuery = QueryUtil.getPreviousQuery(request);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + previousQuery;

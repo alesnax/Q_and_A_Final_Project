@@ -1,45 +1,31 @@
 package by.alesnax.qanda.resource;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-public enum ConfigurationManager {
-    INSTANCE;
-    private ResourceBundle resourceBundle;
-    private final static String PATH = "resources.config";
-
-    ConfigurationManager() {
-        resourceBundle = ResourceBundle.getBundle(PATH);
-    }
-
-    public static String getProperty(String key) {
-        return INSTANCE.resourceBundle.getString(key);
-    }
-}
-
-
-
-
-/*public enum ConfigurationManager {
-    INSTANCE;
-
+public class ConfigurationManager {
     private static Logger logger = LogManager.getLogger(ConfigurationManager.class);
 
-    private ResourceBundle resourceBundle;
     private final static String PATH = "resources.config";
 
-    ConfigurationManager() {
+    private ResourceBundle resourceBundle;
+
+    public ConfigurationManager() {
         resourceBundle = ResourceBundle.getBundle(PATH);
     }
 
-    public static String getProperty(String key) {
-        String result = null;
-
+    public String getProperty(String key) {
+        String property;
         try {
-            result = INSTANCE.resourceBundle.getString(key);
+            property = resourceBundle.getString(key);
         } catch (MissingResourceException e) {
             logger.log(Level.FATAL, e);
             throw new RuntimeException(e);
         }
-        return result;
+        return property;
     }
-}*/
+}

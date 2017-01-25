@@ -85,7 +85,7 @@ section {
 }
 
 .content {
-    width: 960px;
+    width: 980px;
     margin: 0 auto;
 }
 
@@ -109,11 +109,6 @@ a {
     position: relative;
     float: left;
     width: 100%;
-}
-
-.content {
-    width: 960px;
-    margin: 0 auto;
 }
 
 a {
@@ -209,12 +204,12 @@ input, select {
 
 }
 
-#FirstName, #LastName, #login, #Passwd, #PasswdAgain, #email, #page_status, #country, #city {
+#FirstName, #LastName, #login, #Passwd, #PasswdAgain, #email, #page_status, #country, #city, #key_word_value {
     width: 230px;
 }
 
 .gender {
-    width: 247px;
+    width: 240px;
 }
 
 .notice_star {
@@ -264,17 +259,6 @@ address {
 
 .form_error {
     border: 1px solid #dd4b39;
-}
-
-#h_link, #sign_in {
-    display: block;
-    padding: 17px 15px;;
-    color: #fff;
-    text-decoration: none;
-    text-transform: uppercase;
-    transition: background-color .3s, color .15s, box-shadow .3s, opacity 0.3s, filter 0.3s;
-    transition-property: background-color, color, box-shadow, opacity, filter;
-    transition-duration: 0.3s, 0.15s, 0.3s, 0.3s, 0.3s;
 }
 
 input[type=text], input[type=password], input[type=number] {

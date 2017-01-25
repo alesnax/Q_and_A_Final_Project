@@ -1,4 +1,4 @@
-package by.alesnax.qanda.dao.pool;
+package by.alesnax.qanda.pool;
 
 import by.alesnax.qanda.dao.impl.DAOException;
 import org.apache.logging.log4j.Level;
@@ -72,7 +72,7 @@ public class WrappedConnection {
             try {
                 statement.close();
             } catch (SQLException e) {
-                throw new DAOException("Statement closing exception ", e);
+                logger.log(Level.ERROR, "Statement closing exception ", e);
             }
         }
     }
@@ -83,23 +83,13 @@ public class WrappedConnection {
         }
     }
 
-    public void closeResultSet(ResultSet rs) throws DAOException {
-        if (rs != null) {
-            try {
-                rs.close();
-            } catch (SQLException e) {
-                throw new DAOException("ResultSet closing exception ", e);
-            }
-        }
-    }
-
 
     public boolean isClosed() throws SQLException {
         return connection.isClosed();
     }
 
     public boolean isNull() {
-        return connection == null ? true : false;
+        return connection == null;
     }
 
     public PreparedStatement prepareStatement(String sql) throws SQLException {
@@ -113,7 +103,5 @@ public class WrappedConnection {
     public void rollback() throws SQLException {
         connection.rollback();
     }
-
-// другие необходимые делегированные методы интерфейса Connection
 
 }

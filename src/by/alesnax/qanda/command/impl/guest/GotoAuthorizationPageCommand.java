@@ -17,7 +17,6 @@ import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
  */
 
 public class GotoAuthorizationPageCommand implements Command {
-
     private static final String USER_ATTR = "user";
 
     private static final String AUTHORIZATION_PAGE = "path.page.user_authorization";
@@ -26,17 +25,16 @@ public class GotoAuthorizationPageCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         String page = null;
-
+        ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession session = request.getSession(true);
-
         QueryUtil.savePreviousQueryToSession(request);
 
         User user = (User) session.getAttribute(USER_ATTR);
         if (user == null) {
-            String path = ConfigurationManager.getProperty(AUTHORIZATION_PAGE);
+            String path = configurationManager.getProperty(AUTHORIZATION_PAGE);
             page = REQUEST_TYPE + TYPE_PAGE_DELIMITER + path;
         } else {
-            String gotoProfileCommand = ConfigurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
+            String gotoProfileCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoProfileCommand;
         }
         return page;

@@ -16,9 +16,10 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="/css/header_common_style.css">
+    <link rel="stylesheet" href="../../css/header_common_style.css">
 </head>
 <body>
+<fmt:message bundle="${config}" key="img.common.logo" var="main_logo"/>
 
 <header>
     <div class="back"></div>
@@ -26,16 +27,16 @@
         <div class="fl_l ">
             <fmt:message bundle="${config}" key="command.go_to_main_page" var="go_to_main"/>
             <a href="..${go_to_main}">
-                <img class="header_logo" src="/img/logo.png" alt="Q&A logo"/>
+                <img class="header_logo" src="${main_logo}" alt="Q&A logo"/>
             </a>
         </div>
         <fmt:message bundle="${loc}" key="common.header.search_form.placeholder" var="s_form_ph"/>
         <fmt:message bundle="${loc}" key="common.header.search_form.submit_value" var="s_submit_v"/>
         <div class="fl_l search_block">
             <form class="search_form" action="/Controller" method="get">
-                <input type="hidden" name="command" value="search_answer_question"/>
-                <input class="s_back_img search_input" name="question" value="" type="text" placeholder="${s_form_ph}"/>
-                <input class="search_submit" type="submit" name="search" value="${s_submit_v}"/>
+                <input type="hidden" name="command" value="search_posts"/>
+                <input class="s_back_img search_input" name="content" value="${requestScope.search_query}" type="text" placeholder="${s_form_ph}"/>
+                <input class="search_submit" type="submit" value="${s_submit_v}"/>
             </form>
         </div>
         <c:if test="${not empty sessionScope.user}">

@@ -36,6 +36,7 @@ public class CommandFactory {
 
     public Command defineCommand(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+
         Command command = new GotoMainPageCommand();
         String commandName = request.getParameter(COMMAND);
         String role = GUEST;
@@ -50,13 +51,13 @@ public class CommandFactory {
                 } else {
                     logger.log(Level.ERROR, "Illegal access to session from client, session time is over ");
                     request.getSession();
-                    addWrongCommandMessage(request, ILLEGAL_SESSION_ACCESS_MESSAGE, commandName);
+                    addWrongCommandMessage(request, ILLEGAL_SESSION_ACCESS_MESSAGE);
                     return new GotoFirstPageCommand();
                 }
                 command = CommandHelper.getInstance().getCommand(role, commandName);
                 if (command == null) {
                     logger.log(Level.ERROR, "Illegal access, Command " + commandName + " wasn't found for role " + role);
-                    addWrongCommandMessage(request, UNDEFINED_COMMAND_MESSAGE, commandName);
+                    addWrongCommandMessage(request, UNDEFINED_COMMAND_MESSAGE);
                     command = new GotoMainPageCommand();
                 }
             } else if (ServletFileUpload.isMultipartContent(request)) {
@@ -64,26 +65,22 @@ public class CommandFactory {
 
             } else {
                 logger.log(Level.ERROR, "Empty command found for role " + role);
-                addWrongCommandMessage(request, EMPTY_COMMAND_MESSAGE, commandName);
+                addWrongCommandMessage(request, EMPTY_COMMAND_MESSAGE);
 
             }
         } catch (IllegalArgumentException e) {
             logger.log(Level.ERROR, "Command " + commandName + " wasn't found for role " + role);
-            addWrongCommandMessage(request, UNDEFINED_COMMAND_MESSAGE, commandName);
+            addWrongCommandMessage(request, UNDEFINED_COMMAND_MESSAGE);
             command = new GotoMainPageCommand();
         }
 
         return command;
     }
 
-    private void addWrongCommandMessage(HttpServletRequest request, String wrongCommandMessage, String commandName) {
-        try {
-            String wrongCommandMessageAttr = ConfigurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
-            request.getSession().setAttribute(wrongCommandMessageAttr, wrongCommandMessage);
-        } catch (MissingResourceException e) {
-            logger.log(Level.FATAL, e + " after command: " + commandName);
-            throw new RuntimeException(e);
-        }
+    private void addWrongCommandMessage(HttpServletRequest request, String wrongCommandMessage) {
+        ConfigurationManager configurationManager = new ConfigurationManager();
+        String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+        request.getSession().setAttribute(wrongCommandMessageAttr, wrongCommandMessage);
     }
 }
 

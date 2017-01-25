@@ -42,7 +42,7 @@ public class UserAuthorizationCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         String page = null;
-
+        ConfigurationManager configurationManager = new ConfigurationManager();
         String email = request.getParameter(EMAIL);
         String password = request.getParameter(PASSWORD);
 
@@ -64,27 +64,27 @@ public class UserAuthorizationCommand implements Command {
                     if (!lang.equals(NONE_LANG)) {
                         session.setAttribute(LOCALE, lang);
                     }
-                    String gotoProfileCommand = ConfigurationManager.getProperty(GO_TO_PROFILE_COMMAND) + userId;
+                    String gotoProfileCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + userId;
                     page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoProfileCommand;
                 } else {
                     logger.log(Level.WARN, "Failed try to get into the system with email: '" + email + "'.");
                     validationErrors.add(ERROR_WRONG_EMAIL_OR_PASS);
-                    String errorNotRegisteredAttr = ConfigurationManager.getProperty(ERROR_NOT_REGISTERED_YET_ATTR);
+                    String errorNotRegisteredAttr = configurationManager.getProperty(ERROR_NOT_REGISTERED_YET_ATTR);
                     request.getSession(true).setAttribute(errorNotRegisteredAttr, validationErrors);
-                    String gotoAuthorizationCommand = ConfigurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
+                    String gotoAuthorizationCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
                     page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoAuthorizationCommand;
                 }
             } catch (ServiceException e) {
                 logger.log(Level.ERROR, e);
-                String errorMessageAttr = ConfigurationManager.getProperty(ERROR_MESSAGE_ATTR);
+                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
                 request.setAttribute(errorMessageAttr, e.getMessage());
                 page = ERROR_REQUEST_TYPE;
             }
         } else {
             logger.log(Level.WARN, "Failed try to get into the system with incorrect email or password.");
-            String errorNotRegisteredAttr = ConfigurationManager.getProperty(ERROR_NOT_REGISTERED_YET_ATTR);
+            String errorNotRegisteredAttr = configurationManager.getProperty(ERROR_NOT_REGISTERED_YET_ATTR);
             request.getSession(true).setAttribute(errorNotRegisteredAttr, validationErrors);
-            String gotoAuthorizationCommand = ConfigurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
+            String gotoAuthorizationCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoAuthorizationCommand;
         }
         return page;

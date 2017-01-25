@@ -4,15 +4,12 @@ import by.alesnax.qanda.resource.ConfigurationManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Created by alesnax on 05.12.2016.
  */
-
-// сделать регистрацию через имэйл с подтверждением а затем вторая часть регистрации.
 
 
 @SuppressWarnings("Duplicates")
@@ -41,6 +38,11 @@ public class UserValidation {
     private static final String COUNTRY_FALSE = "user_registration.error_msg.country_false";
     private static final String CITY_FALSE = "user_registration.error_msg.city_false";
     private static final String DATE_NOT_NUMBER = "user_registration.error_msg.date_not_number";
+    private static final String KEY_WORD_TYPE_EMPTY = "user_registration.error_msg.key_word_type_unchosen";
+    private static final String KEY_WORD_TYPE_WRONG = "user_registration.error_msg.key_word_type_wrong";
+    private static final String KEY_WORD_EMPTY = "user_registration.error_msg.key_word_empty";
+    private static final String KEY_WORD_WRONG = "user_registration.error_msg.key_word_wrong";
+
 
     private static final String MALE = "user_registration_page.form_value.sex.male";
     private static final String FEMALE = "user_registration_page.form_value.sex.female";
@@ -50,6 +52,14 @@ public class UserValidation {
     private static final String PASSWORD_REGEX = "user_validation.password_regex";
     private static final String NAME_REGEX = "user_validation.name_regex";
     private static final String EMAIL_REGEX = "user_validation.email_regex";
+    private static final String KEY_WORD_REGEX = "user_validation.key_word_regex";
+
+    private static final String KEY_WORD_TYPE_UNCHOSEN = "user_registration_page.form_value.key_word.unchosen";
+    private static final String KEY_WORD_TYPE_MAIDEN_NAME = "user_registration_page.form_value.key_word.mothers_maiden_name";
+    private static final String KEY_WORD_TYPE_PET_NICK = "user_registration_page.form_value.key_word.first_pet_nickname";
+    private static final String KEY_WORD_TYPE_PASS_NO = "user_registration_page.form_value.key_word.passport_number";
+    private static final String KEY_WORD_TYPE_CODEWORD = "user_registration_page.form_value.key_word.codeword";
+
     private static final String YEAR_LOW_LIMIT = "user_registration_page.year_low_limit";
     private static final String YEAR_TOP_LIMIT = "user_registration_page.year_top_limit";
 
@@ -65,16 +75,19 @@ public class UserValidation {
     private static final int MAX_DAY = 31;
 
 
-    public ArrayList<String> validateNewUser(String login, String password, String passwordCopy, String name, String surname, String email, String bDay, String bMonth, String bYear, String sex, String country, String city) {
+    public ArrayList<String> validateNewUser(String login, String password, String passwordCopy, String name, String surname,
+                                             String email, String bDay, String bMonth, String bYear, String sex, String country,
+                                             String city, String keyWordType, String keyWord) {
         boolean successful = true;
-
-        ArrayList<String> errorMessages = checkCommonUserParameters(login, name, surname, email, bDay, bMonth, bYear, sex, country, city);
+        ConfigurationManager configurationManager = new ConfigurationManager();
+        ArrayList<String> errorMessages = checkCommonUserParameters(login, name, surname, email, bDay, bMonth, bYear, sex, country, city,
+                keyWordType, keyWord);
         if (!errorMessages.isEmpty()) {
             successful = false;
         }
 
         // 2. passwords
-        String passwordRegex = ConfigurationManager.getProperty(PASSWORD_REGEX);
+        String passwordRegex = configurationManager.getProperty(PASSWORD_REGEX);
         Pattern pPassword = Pattern.compile(passwordRegex);
         Matcher mPassword = pPassword.matcher(password);
 
@@ -102,9 +115,10 @@ public class UserValidation {
 
     public List<String> validateUserInfo(String email, String password) {
         ArrayList<String> errorMessages = new ArrayList<>();
+        ConfigurationManager configurationManager = new ConfigurationManager();
         boolean successful = true;
 
-        String emailRegex = ConfigurationManager.getProperty(EMAIL_REGEX);
+        String emailRegex = configurationManager.getProperty(EMAIL_REGEX);
         Pattern pEmail = Pattern.compile(emailRegex);
         Matcher mEmail = pEmail.matcher(email);
 
@@ -115,7 +129,7 @@ public class UserValidation {
             errorMessages.add(EMAIL_IS_FALSE);
         }
 
-        String passwordRegex = ConfigurationManager.getProperty(PASSWORD_REGEX);
+        String passwordRegex = configurationManager.getProperty(PASSWORD_REGEX);
         Pattern pPassword = Pattern.compile(passwordRegex);
         Matcher mPassword = pPassword.matcher(password);
 
@@ -135,8 +149,8 @@ public class UserValidation {
         }
     }
 
-    public ArrayList<String> validateUserMainData(String login, String name, String surname, String email, String bDay, String bMonth, String bYear, String sex, String country, String city) {
-        ArrayList<String> errorMessages = checkCommonUserParameters(login, name, surname, email, bDay, bMonth, bYear, sex, country, city);
+    public ArrayList<String> validateUserMainData(String login, String name, String surname, String email, String bDay, String bMonth, String bYear, String sex, String country, String city, String keyWordType, String keyWord) {
+        ArrayList<String> errorMessages = checkCommonUserParameters(login, name, surname, email, bDay, bMonth, bYear, sex, country, city, keyWordType, keyWord);
         if (!errorMessages.isEmpty()) {
             errorMessages.add(0, ERROR_HEADER);
             return errorMessages;
@@ -145,11 +159,11 @@ public class UserValidation {
         }
     }
 
-    private ArrayList<String> checkCommonUserParameters(String login, String name, String surname, String email, String bDay, String bMonth, String bYear, String sex, String country, String city) {
+    private ArrayList<String> checkCommonUserParameters(String login, String name, String surname, String email, String bDay, String bMonth, String bYear, String sex, String country, String city, String keyWordType, String keyWord) {
         ArrayList<String> errorMessages = new ArrayList<>();
-
+        ConfigurationManager configurationManager = new ConfigurationManager();
         // 1. login
-        String loginRegex = ConfigurationManager.getProperty(LOGIN_REGEX);
+        String loginRegex = configurationManager.getProperty(LOGIN_REGEX);
         Pattern pLogin = Pattern.compile(loginRegex);
         Matcher mLogin = pLogin.matcher(login);
         if (login == null || login.isEmpty()) {
@@ -159,7 +173,7 @@ public class UserValidation {
         }
 
         // 3. name
-        String nameRegex = ConfigurationManager.getProperty(NAME_REGEX);
+        String nameRegex = configurationManager.getProperty(NAME_REGEX);
         Pattern pName = Pattern.compile(nameRegex);
         Matcher mName = pName.matcher(name);
 
@@ -180,7 +194,7 @@ public class UserValidation {
         }
 
         // 5. email
-        String emailRegex = ConfigurationManager.getProperty(EMAIL_REGEX);
+        String emailRegex = configurationManager.getProperty(EMAIL_REGEX);
         Pattern pEmail = Pattern.compile(emailRegex);
         Matcher mEmail = pEmail.matcher(email);
 
@@ -218,8 +232,8 @@ public class UserValidation {
             }
         }
 
-        int minYear = Integer.parseInt(ConfigurationManager.getProperty(YEAR_LOW_LIMIT));
-        int maxYear = Integer.parseInt(ConfigurationManager.getProperty(YEAR_TOP_LIMIT));
+        int minYear = Integer.parseInt(configurationManager.getProperty(YEAR_LOW_LIMIT));
+        int maxYear = Integer.parseInt(configurationManager.getProperty(YEAR_TOP_LIMIT));
         if (bYear == null || bYear.isEmpty()) {
             errorMessages.add(YEAR_EMPTY);
         } else {
@@ -233,9 +247,9 @@ public class UserValidation {
             }
         }
 
-        String sexUnchosen = ConfigurationManager.getProperty(SEX_UNCHOSEN);
-        String male = ConfigurationManager.getProperty(MALE);
-        String female = ConfigurationManager.getProperty(FEMALE);
+        String sexUnchosen = configurationManager.getProperty(SEX_UNCHOSEN);
+        String male = configurationManager.getProperty(MALE);
+        String female = configurationManager.getProperty(FEMALE);
 
         if (sex == null || sex.isEmpty() || sex.equals(sexUnchosen)) {
             errorMessages.add(SEX_EMPTY);
@@ -243,7 +257,29 @@ public class UserValidation {
             errorMessages.add(SEX_WRONG_TYPE);
         }
 
-        String geoRegex = ConfigurationManager.getProperty(GEO_REGEX);
+        String keyWordNotChosen = configurationManager.getProperty(KEY_WORD_TYPE_UNCHOSEN);
+        String keyWord1 = configurationManager.getProperty(KEY_WORD_TYPE_MAIDEN_NAME);
+        String keyWord2 = configurationManager.getProperty(KEY_WORD_TYPE_PASS_NO);
+        String keyWord3 = configurationManager.getProperty(KEY_WORD_TYPE_PET_NICK);
+        String keyWord4 = configurationManager.getProperty(KEY_WORD_TYPE_CODEWORD);
+
+        if (keyWordType == null || keyWordType.isEmpty() || keyWordType.equals(keyWordNotChosen)) {
+            errorMessages.add(KEY_WORD_TYPE_EMPTY);
+        } else if (!(keyWord1.equals(keyWordType) || keyWord2.equals(keyWordType) || keyWord3.equals(keyWordType) || keyWord4.equals(keyWordType))) {
+            errorMessages.add(KEY_WORD_TYPE_WRONG);
+        }
+
+        String keyWordRegex = configurationManager.getProperty(KEY_WORD_REGEX);
+        Pattern pKeyWord = Pattern.compile(keyWordRegex);
+        Matcher mKeyWord = pKeyWord.matcher(keyWord);
+        if (keyWord == null || keyWord.isEmpty()) {
+            errorMessages.add(KEY_WORD_EMPTY);
+        } else if (!mKeyWord.matches()) {
+            errorMessages.add(KEY_WORD_WRONG);
+        }
+
+
+        String geoRegex = configurationManager.getProperty(GEO_REGEX);
         if (!(country == null || country.isEmpty())) {
             Pattern pCountry = Pattern.compile(geoRegex);
             Matcher mCountry = pCountry.matcher(country);
@@ -264,9 +300,10 @@ public class UserValidation {
 
     public List<String> validateNewPassword(String password1, String password2, String password3) {
         ArrayList<String> errorMessages = new ArrayList<>();
+        ConfigurationManager configurationManager = new ConfigurationManager();
         boolean successful = true;
 
-        String passwordRegex = ConfigurationManager.getProperty(PASSWORD_REGEX);
+        String passwordRegex = configurationManager.getProperty(PASSWORD_REGEX);
         Pattern pPassword = Pattern.compile(passwordRegex);
         Matcher mPassword1 = pPassword.matcher(password1);
         Matcher mPassword2 = pPassword.matcher(password2);
@@ -291,6 +328,56 @@ public class UserValidation {
         } else if (!mPassword2.matches()) {
             successful = false;
             errorMessages.add(PASSWORD_FALSE);
+        }
+
+        if (successful) {
+            return errorMessages;
+        } else {
+            errorMessages.add(0, ERROR_VALID_HEADER);
+            return errorMessages;
+        }
+    }
+
+    public List<String> validatePasswordRecovData(String email, String keyWordType, String keyWordValue) {
+        ArrayList<String> errorMessages = new ArrayList<>();
+        ConfigurationManager configurationManager = new ConfigurationManager();
+        boolean successful = true;
+
+        String emailRegex = configurationManager.getProperty(EMAIL_REGEX);
+        Pattern pEmail = Pattern.compile(emailRegex);
+        Matcher mEmail = pEmail.matcher(email);
+
+        if (email == null || email.isEmpty()) {
+            successful = false;
+            errorMessages.add(EMAIL_EMPTY);
+        } else if (!mEmail.matches()) {
+            successful = false;
+            errorMessages.add(EMAIL_FALSE);
+        }
+
+        String keyWordNotChosen = configurationManager.getProperty(KEY_WORD_TYPE_UNCHOSEN);
+        String keyWord1 = configurationManager.getProperty(KEY_WORD_TYPE_MAIDEN_NAME);
+        String keyWord2 = configurationManager.getProperty(KEY_WORD_TYPE_PASS_NO);
+        String keyWord3 = configurationManager.getProperty(KEY_WORD_TYPE_PET_NICK);
+        String keyWord4 = configurationManager.getProperty(KEY_WORD_TYPE_CODEWORD);
+
+        if (keyWordType == null || keyWordType.isEmpty() || keyWordType.equals(keyWordNotChosen)) {
+            successful = false;
+            errorMessages.add(KEY_WORD_TYPE_EMPTY);
+        } else if (!(keyWord1.equals(keyWordType) || keyWord2.equals(keyWordType) || keyWord3.equals(keyWordType) || keyWord4.equals(keyWordType))) {
+            successful = false;
+            errorMessages.add(KEY_WORD_TYPE_WRONG);
+        }
+
+        String keyWordRegex = configurationManager.getProperty(KEY_WORD_REGEX);
+        Pattern pKeyWord = Pattern.compile(keyWordRegex);
+        Matcher mKeyWord = pKeyWord.matcher(keyWordValue);
+        if (keyWordValue == null || keyWordValue.isEmpty()) {
+            successful = false;
+            errorMessages.add(KEY_WORD_EMPTY);
+        } else if (!mKeyWord.matches()) {
+            successful = false;
+            errorMessages.add(KEY_WORD_WRONG);
         }
 
         if (successful) {

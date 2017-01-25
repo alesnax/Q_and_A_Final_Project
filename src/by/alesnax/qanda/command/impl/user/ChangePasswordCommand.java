@@ -46,7 +46,7 @@ public class ChangePasswordCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         String page = null;
-
+        ConfigurationManager configurationManager = new ConfigurationManager();
         String password1 = request.getParameter(OLD_PASSWORD);
         String password2 = request.getParameter(NEW_PASSWORD);
         String password3 = request.getParameter(REPEATED_NEW_PASSWORD);
@@ -65,29 +65,29 @@ public class ChangePasswordCommand implements Command {
                 boolean changed = userService.changePassword(user.getId(), password1, password2);
                 if (changed) {
                     logger.log(Level.INFO, "User " + user.getId() + " has successfully change his profile information");
-                    String successChangeMessageAttr = ConfigurationManager.getProperty(SUCCESS_CHANGE_MSG_ATTR);
+                    String successChangeMessageAttr = configurationManager.getProperty(SUCCESS_CHANGE_MSG_ATTR);
                     request.getSession(true).setAttribute(successChangeMessageAttr, SUCCESS_CHANGE_PASSWORD_MESSAGE);
-                    String gotoEditProfileCommand = ConfigurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
+                    String gotoEditProfileCommand = configurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
                     page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoEditProfileCommand;
                 } else {
                     logger.log(Level.WARN, "User id=" + user.getId() + " :Wrong password was found while changing password try.");
-                    String wrongCommandMessageAttr = ConfigurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                    String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
                     request.getSession().setAttribute(wrongCommandMessageAttr, WRONG_PASSWORD_FOUND);
 
-                    String gotoEditProfileCommand = ConfigurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
+                    String gotoEditProfileCommand = configurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
                     page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoEditProfileCommand;
                 }
             } catch (ServiceException e) {
                 logger.log(Level.ERROR, e);
-                String errorMessageAttr = ConfigurationManager.getProperty(ERROR_MESSAGE_ATTR);
+                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
                 request.setAttribute(errorMessageAttr, e.getMessage());
                 page = ERROR_REQUEST_TYPE;
             }
         } else {
             logger.log(Level.WARN, "User id=" + user.getId() + " :Validation of user passwords while changing failed.");
-            String errorUserValidationAttr = ConfigurationManager.getProperty(ERROR_PASSWORD_VALIDATION_ATTR);// try-catch
+            String errorUserValidationAttr = configurationManager.getProperty(ERROR_PASSWORD_VALIDATION_ATTR);// try-catch
             request.getSession(true).setAttribute(errorUserValidationAttr, validationErrors);
-            String gotoEditProfileCommand = ConfigurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
+            String gotoEditProfileCommand = configurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoEditProfileCommand;
         }
         return page;

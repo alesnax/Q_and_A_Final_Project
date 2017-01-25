@@ -17,32 +17,28 @@
     <title>
         <fmt:message bundle="${loc}" key="common.page_title"/>
     </title>
-    <link rel="shortcut icon" href="/img/q_logo.png" type="image/png">
-    <link rel="stylesheet" href="/css/user_registration_style.css">
-
+    <fmt:message bundle="${config}" key="img.common.logo_icon" var="logo_icon"/>
+    <link rel="shortcut icon" href="${logo_icon}" type="image/png">
+    <link rel="stylesheet" href="../css/user_registration_style.css">
 </head>
 <body>
-
+<fmt:message bundle="${config}" key="command.go_to_main_page" var="go_to_main"/>
+<fmt:message bundle="${config}" key="command.go_to_authorization_page" var="go_to_authorization_page"/>
+<fmt:message bundle="${config}" key="img.common.logo" var="main_logo"/>
 
 <header>
     <div class="back"></div>
     <div class="topbar_wrapper">
         <div class="fl_l ">
             <fmt:message bundle="${config}" key="path.page.main" var="main"/>
-            <a href="../Controller?command=go_to_main_page">
-                <img class="header_logo" src="/img/logo.png" alt="Q&amp;A logo"/>
+            <a href="${go_to_main}">
+                <img class="header_logo" src="${main_logo}" alt="Q&A logo"/>
             </a>
         </div>
-
-
         <c:import url="template/header_search_block.jsp"/>
-
-
         <c:import url="template/switch_language.jsp"/>
-
-
         <div class="fl_r h_links">
-            <a class="h_link" href="../Controller?command=go_to_authorization_page">
+            <a class="h_link" href="${go_to_authorization_page}">
                 <fmt:message bundle="${loc}" key="common.sign_in_text"/>
             </a>
         </div>
@@ -50,16 +46,13 @@
 </header>
 <div class="page_layout">
     <div class="content">
-
         <c:import url="template/left_bar.jsp"/>
-
         <section>
-
             <div class="wall_content wide_block">
                 <div class="validation_header page_block ">
                     <div class="logo_block">
-                        <a href="../Controller?command=go_to_main_page">
-                            <img class="link_logo" src="/img/logo.png" alt="QA logo"/>
+                        <a href="${go_to_main}">
+                            <img class="link_logo" src="${main_logo}" alt="QA logo"/>
                         </a>
                     </div>
                     <div class="welcome_block">
@@ -77,16 +70,15 @@
                               name="create_account" action="../Controller" method="post">
                             <input type="hidden" name="command" value="register_new_user"/>
                             <div class="form_element name">
-                                <c:if test="${not empty user_validation_error}">
-                                    <c:forEach var="error" items="${user_validation_error}">
+                                <c:if test="${not empty sessionScope.user_validation_error}">
+                                    <c:forEach var="error" items="${sessionScope.user_validation_error}">
                                         <span class="errormsg">
                                             <fmt:message bundle="${loc}" key="${error}"/>
                                         </span>
                                     </c:forEach>
-                                    <c:remove var="user_validation_error"/>
+                                    <c:remove var="user_validation_error" scope="session"/>
                                 </c:if>
                             </div>
-
                             <div class="form_element name">
                                 <fieldset>
                                     <legend>
@@ -103,7 +95,6 @@
                                     <span class="errormsg" id="error_0_LastName"></span>
                                 </fieldset>
                             </div>
-
                             <div class="form_element login">
                                 <label>
                                     <fmt:message bundle="${loc}" key="user_registration.form.login.placeholder" var="login_ph"/>
@@ -156,14 +147,14 @@
                                         </strong>
                                     </legend>
                                     <select class="birth_day" name="birth_day">
-                                        <option value="0" selected="selected" disabled><fmt:message bundle="${loc}"
-                                                                                                    key="user_registration.form.birthday.day.select_value"/></option>
+                                        <option value="0" selected="selected" disabled>
+                                            <fmt:message bundle="${loc}" key="user_registration.form.birthday.day.select_value"/>
+                                        </option>
                                         <c:forEach var="day" begin="1" end="31">
                                             <option value="${day}">${day}</option>
                                         </c:forEach>
                                     </select>
                                     <select class="birth_month" name="birth_month">
-                                        <fmt:message bundle="${loc}" key="${error}" var="msg"/>
                                         <option value="0" selected="selected" disabled>
                                             <fmt:message bundle="${loc}" key="user_registration.form.birthday.month.select_value"/>
                                         </option>
@@ -172,7 +163,6 @@
                                                 <fmt:message bundle="${loc}" key="user_registration.form.birthday.month.value${m_numb}"/>
                                             </option>
                                         </c:forEach>
-
                                     </select>
                                     <select class="birth_year" name="birth_year">
                                         <option value="0" selected="selected" disabled>
@@ -207,6 +197,46 @@
                                 </select>
                                 <span class="errormsg" id="error_0_gender"></span>
                             </div>
+
+                            <div class="form_element key_word">
+                                <label>
+                                    <strong>
+                                        <fmt:message bundle="${loc}" key="user_registration.form.kew_word.label"/>
+                                        <span class="notice_star">*</span>
+                                    </strong>
+                                </label>
+                                <select class="gender" name="key_word">
+                                    <option value="0" selected="selected" disabled>
+                                        <fmt:message bundle="${loc}" key="user_registration.form.key_word.option_ch"/>
+                                    </option>
+                                    <option value="1">
+                                        <fmt:message bundle="${loc}" key="user_registration.form.key_word.option_1"/>
+                                    </option>
+                                    <option value="2">
+                                        <fmt:message bundle="${loc}" key="user_registration.form.key_word.option_2"/>
+                                    </option>
+                                    <option value="3">
+                                        <fmt:message bundle="${loc}" key="user_registration.form.key_word.option_3"/>
+                                    </option>
+                                    <option value="4">
+                                        <fmt:message bundle="${loc}" key="user_registration.form.key_word.option_4"/>
+                                    </option>
+                                </select>
+                                <span class="errormsg" id="error_0_keyWord"></span>
+                            </div>
+
+                            <div class="form_element key_word_value">
+                                <label>
+                                    <fmt:message bundle="${loc}" key="user_registration.form.key_word_value.placeholder" var="key_word_value_ph"/>
+                                    <strong>
+                                        <fmt:message bundle="${loc}" key="user_registration.form.key_word_value.legend"/>
+                                        <span class="notice_star">*</span>
+                                    </strong>
+                                    <input type="text" value name="key_word_value" id="key_word_value" class="" placeholder="${key_word_value_ph}">
+                                </label>
+                                <span  class="errormsg" id="error_0_keyWordValue"></span>
+                            </div>
+
                             <div class="form_element country">
                                 <label>
                                     <fmt:message bundle="${loc}" key="user_registration.form.country.placeholder" var="country_ph"/>
@@ -249,9 +279,7 @@
                 </div>
             </div>
         </section>
-
         <c:import url="template/footer.jsp"/>
-
     </div>
 </div>
 <fmt:message bundle="${config}" key="path.js.user_register_validation_script" var="valid_script"/>

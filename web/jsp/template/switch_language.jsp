@@ -13,14 +13,11 @@
 <fmt:setBundle basename="resources.locale" var="loc"/>
 <fmt:setBundle basename="resources.config" var="config"/>
 
-
 <html>
 <head>
-    <link rel="stylesheet" href="/css/switch_language_style.css">
+    <link rel="stylesheet" href="../../css/switch_language_style.css">
 </head>
 <body>
-
-
 <div class="fl_r lang_links">
     <fmt:message bundle="${config}" key="command.change_language_to_en" var="change_lang_to_en"/>
     <a class="lang_link" href="${change_lang_to_en}">
@@ -37,6 +34,5 @@
         <span class="ru_icon"></span>
     </a>
 </div>
-
 </body>
 </html>

@@ -40,18 +40,18 @@ public class GotoEditProfileCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         String page = null;
-
+        ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession session = request.getSession(true);
         QueryUtil.savePreviousQueryToSession(request);
 
         User user = (User) session.getAttribute(USER);
         if (user == null) {
-            String notRegUserAttr = ConfigurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
+            String notRegUserAttr = configurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
             session.setAttribute(notRegUserAttr, WARN_LOGIN_BEFORE_WATCH_PROFILE);
-            String nextCommand = ConfigurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
+            String nextCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
         } else {
-            String editProfilePath = ConfigurationManager.getProperty(EDIT_PROFILE_PATH);
+            String editProfilePath = configurationManager.getProperty(EDIT_PROFILE_PATH);
             page = REQUEST_TYPE + TYPE_PAGE_DELIMITER + editProfilePath;
         }
         return page;

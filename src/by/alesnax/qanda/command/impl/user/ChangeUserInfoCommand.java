@@ -1,7 +1,6 @@
 package by.alesnax.qanda.command.impl.user;
 
 import by.alesnax.qanda.command.Command;
-import by.alesnax.qanda.command.impl.guest.RegisterNewUserCommand;
 import by.alesnax.qanda.command.util.QueryUtil;
 import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
@@ -36,10 +35,13 @@ public class ChangeUserInfoCommand implements Command {
     private static final String COUNTRY = "country";
     private static final String CITY = "city";
     private static final String BIRTH_DAY = "birth_day";
-    private static final String BIRH_MONTH = "birth_month";
+    private static final String BIRTH_MONTH = "birth_month";
     private static final String BIRTH_YEAR = "birth_year";
     private static final String GENDER = "gender";
     private static final String PAGE_STATUS = "page_status";
+    private static final String KEY_WORD_TYPE = "key_word";
+    private static final String KEY_WORD_VALUE = "key_word_value";
+
 
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String ERROR_USER_VALIDATION_ATTR = "attr.user_validation_error";
@@ -54,25 +56,28 @@ public class ChangeUserInfoCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         String page = null;
+        ConfigurationManager configurationManager = new ConfigurationManager();
 
         String login = request.getParameter(LOGIN);
         String name = request.getParameter(FIRST_NAME);
         String surname = request.getParameter(LAST_NAME);
         String email = request.getParameter(EMAIL);
         String bDay = request.getParameter(BIRTH_DAY);
-        String bMonth = request.getParameter(BIRH_MONTH);
+        String bMonth = request.getParameter(BIRTH_MONTH);
         String bYear = request.getParameter(BIRTH_YEAR);
         String sex = request.getParameter(GENDER);
         String country = request.getParameter(COUNTRY);
         String city = request.getParameter(CITY);
         String status = request.getParameter(PAGE_STATUS);
+        String keyWordType = request.getParameter(KEY_WORD_TYPE);
+        String keyWordValue = request.getParameter(KEY_WORD_VALUE);
 
         HttpSession session = request.getSession(true);
         QueryUtil.logQuery(request);
 
         UserValidation userValidation = new UserValidation();
         List<String> validationErrors = userValidation.validateUserMainData(login, name, surname, email,
-                bDay, bMonth, bYear, sex, country, city);
+                bDay, bMonth, bYear, sex, country, city, keyWordType, keyWordValue);
 
         User user = (User) session.getAttribute(USER);
 
@@ -80,35 +85,34 @@ public class ChangeUserInfoCommand implements Command {
             UserService userService = ServiceFactory.getInstance().getUserService();
             try {
                 User updatedUser = userService.changeUserInfo(user.getId(), login, name, surname, email,
-                        bDay, bMonth, bYear, sex, country, city, status);
+                        bDay, bMonth, bYear, sex, country, city, status, keyWordType, keyWordValue);
                 session.setAttribute(USER, updatedUser);
                 logger.log(Level.INFO, "User " + login + " has successfully change his profile information");
-                String successChangeMessageAttr = ConfigurationManager.getProperty(SUCCESS_CHANGE_MSG_ATTR);
-                request.getSession(true).setAttribute(successChangeMessageAttr, SUCCESS_CHANGE_MESSAGE);
+                String successChangeMessageAttr = configurationManager.getProperty(SUCCESS_CHANGE_MSG_ATTR);
+                session.setAttribute(successChangeMessageAttr, SUCCESS_CHANGE_MESSAGE);
 
-                String gotoEditProfileCommand = ConfigurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
+                String gotoEditProfileCommand = configurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
                 page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoEditProfileCommand;
             } catch (ServiceDuplicatedInfoException e) {
                 logger.log(Level.WARN, e);
                 validationErrors.add(ERROR_USER_ALREADY_EXIST);
-                String errorUserValidationAttr = ConfigurationManager.getProperty(ERROR_USER_VALIDATION_ATTR);// try-catch
-                request.getSession(true).setAttribute(errorUserValidationAttr, validationErrors);
-                String gotoEditProfileCommand = ConfigurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
+                String errorUserValidationAttr = configurationManager.getProperty(ERROR_USER_VALIDATION_ATTR);
+                session.setAttribute(errorUserValidationAttr, validationErrors);
+                String gotoEditProfileCommand = configurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
                 page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoEditProfileCommand;
             } catch (ServiceException e) {
                 logger.log(Level.ERROR, e);
-                String errorMessageAttr = ConfigurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
+                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
                 request.setAttribute(errorMessageAttr, e.getMessage());
                 page = ERROR_REQUEST_TYPE;
             }
         } else {
             logger.log(Level.WARN, "User id=" + user.getId() + " :Validation of user information failed.");
-            String errorUserValidationAttr = ConfigurationManager.getProperty(ERROR_USER_VALIDATION_ATTR);// try-catch
-            request.getSession(true).setAttribute(errorUserValidationAttr, validationErrors);
-            String gotoEditProfileCommand = ConfigurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
+            String errorUserValidationAttr = configurationManager.getProperty(ERROR_USER_VALIDATION_ATTR);// try-catch
+            session.setAttribute(errorUserValidationAttr, validationErrors);
+            String gotoEditProfileCommand = configurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoEditProfileCommand;
         }
-
         return page;
     }
 }

@@ -16,9 +16,9 @@ public class Post extends Entity {
     private Status status;
     private Date modifiedTime;
     private double averageMark;
-    private int markCount;
     private ShortUser user;
     private int currentUserMark;
+    private String parentTitle;
 
     public Post() {
     }
@@ -103,14 +103,6 @@ public class Post extends Entity {
         this.averageMark = averageMark;
     }
 
-    public int getMarkCount() {
-        return markCount;
-    }
-
-    public void setMarkCount(int markCount) {
-        this.markCount = markCount;
-    }
-
     public ShortUser getUser() {
         return user;
     }
@@ -125,6 +117,14 @@ public class Post extends Entity {
 
     public void setCurrentUserMark(int currentUserMark) {
         this.currentUserMark = currentUserMark;
+    }
+
+    public String getParentTitle() {
+        return parentTitle;
+    }
+
+    public void setParentTitle(String parentTitle) {
+        this.parentTitle = parentTitle;
     }
 
     public enum PostType {
@@ -190,7 +190,6 @@ public class Post extends Entity {
         if (id != post.id) return false;
         if (parentId != post.parentId) return false;
         if (Double.compare(post.averageMark, averageMark) != 0) return false;
-        if (markCount != post.markCount) return false;
         if (currentUserMark != post.currentUserMark) return false;
         if (categoryInfo != null ? !categoryInfo.equals(post.categoryInfo) : post.categoryInfo != null) return false;
         if (type != post.type) return false;
@@ -200,7 +199,8 @@ public class Post extends Entity {
             return false;
         if (status != post.status) return false;
         if (modifiedTime != null ? !modifiedTime.equals(post.modifiedTime) : post.modifiedTime != null) return false;
-        return user != null ? user.equals(post.user) : post.user == null;
+        if (user != null ? !user.equals(post.user) : post.user != null) return false;
+        return parentTitle != null ? parentTitle.equals(post.parentTitle) : post.parentTitle == null;
 
     }
 
@@ -219,9 +219,9 @@ public class Post extends Entity {
         result = 31 * result + (modifiedTime != null ? modifiedTime.hashCode() : 0);
         temp = Double.doubleToLongBits(averageMark);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + markCount;
         result = 31 * result + (user != null ? user.hashCode() : 0);
         result = 31 * result + currentUserMark;
+        result = 31 * result + (parentTitle != null ? parentTitle.hashCode() : 0);
         return result;
     }
 
@@ -238,9 +238,9 @@ public class Post extends Entity {
                 ", status=" + status +
                 ", modifiedTime=" + modifiedTime +
                 ", averageMark=" + averageMark +
-                ", markCount=" + markCount +
                 ", user=" + user +
                 ", currentUserMark=" + currentUserMark +
-                '}';
+                ", parentTitle='" + parentTitle + '\'' +
+                "} " + super.toString();
     }
 }

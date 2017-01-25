@@ -79,6 +79,27 @@ input[type=text], input[type=password], input[type=number] {
     border-radius: 3px;
 }
 
+.wrong_message_block {
+    width: 745px;
+    background-color: #ffc9c9;
+    position: relative;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+    margin: 15px 0 0;
+    padding: 20px 15px;
+    float: left;
+}
+
+.ban_q_message_block {
+    width: 745px;
+    background-color: #ffc9c9;
+    position: relative;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+    margin: 15px 0 0;
+    padding: 20px 15px;
+    float: left;
+}
 
 .errormsg {
     margin: 6px 0 0;

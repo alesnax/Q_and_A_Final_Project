@@ -1,7 +1,7 @@
 package by.alesnax.qanda.dao;
 
 import by.alesnax.qanda.dao.impl.DAOException;
-import by.alesnax.qanda.dao.pool.WrappedConnection;
+import by.alesnax.qanda.pool.WrappedConnection;
 import by.alesnax.qanda.entity.Entity;
 
 /**
@@ -15,5 +15,7 @@ public abstract class AbstractDAO<K, T extends Entity> {
     }
 
     public abstract T findEntityById(K id) throws DAOException;
+
+
 
 }

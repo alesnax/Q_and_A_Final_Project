@@ -7,6 +7,7 @@ public class CategoryInfo extends Entity {
     private int id;
     private String titleEn;
     private String titleRu;
+    private int userId;
 
     public CategoryInfo() {
     }
@@ -35,6 +36,13 @@ public class CategoryInfo extends Entity {
         this.titleRu = titleRu;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
     @Override
     public boolean equals(Object o) {

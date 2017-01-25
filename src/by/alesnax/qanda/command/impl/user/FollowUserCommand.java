@@ -39,15 +39,15 @@ public class FollowUserCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         String page = null;
-
+        ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession session = request.getSession(true);
         QueryUtil.logQuery(request);
 
         User user = (User) session.getAttribute(USER_ATTR);
         if (user == null) {
-            String notRegUserAttr = ConfigurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
+            String notRegUserAttr = configurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
             session.setAttribute(notRegUserAttr, WARN_LOGIN_BEFORE_WATCH_PROFILE);
-            String nextCommand = ConfigurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
+            String nextCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
         } else {
             UserService userService = ServiceFactory.getInstance().getUserService();
@@ -59,18 +59,18 @@ public class FollowUserCommand implements Command {
                 page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
             } catch (NumberFormatException e) {
                 logger.log(Level.ERROR, e);
-                String errorMessageAttr = ConfigurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
+                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
                 request.setAttribute(errorMessageAttr, e.getMessage());
                 page = ERROR_REQUEST_TYPE;
             } catch (ServiceDuplicatedInfoException e) {
                 logger.log(Level.WARN, e);
-                String wrongCommandMessageAttr = ConfigurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
                 session.setAttribute(wrongCommandMessageAttr, USER_ALREADY_FOLLOWER);
-                String gotoProfileCommand = ConfigurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
+                String gotoProfileCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
                 page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoProfileCommand;
             } catch (ServiceException e) {
                 logger.log(Level.ERROR, e);
-                String errorMessageAttr = ConfigurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
+                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
                 request.setAttribute(errorMessageAttr, e.getMessage());
                 page = ERROR_REQUEST_TYPE;
             }

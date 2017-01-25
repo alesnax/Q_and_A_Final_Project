@@ -32,9 +32,10 @@ public class QueryUtil {
     }
 
     public static String getPreviousQuery(HttpServletRequest request) {
+        ConfigurationManager configurationManager = new ConfigurationManager();
         String prevQuery = (String) request.getSession(false).getAttribute(PREV_QUERY);
         if (prevQuery == null) {
-            prevQuery = ConfigurationManager.getProperty(INDEX_PAGE);
+            prevQuery = configurationManager.getProperty(INDEX_PAGE);
         }
         return prevQuery;
     }
@@ -60,15 +61,15 @@ public class QueryUtil {
 
         Enumeration<String> params = request.getParameterNames();
 
-        String key = null;
-        String value = null;
+        String key;
+        String value;
         while (params.hasMoreElements()) {
             key = params.nextElement();
             value = request.getParameter(key);
             query = query.append(PARAMETER_SEPARATOR).append(key).append(VALUE_SEPARATOR).append(value);
         }
 
-        String result = null;
+        String result;
         if (query.length() == 0) {
             result = url.toString();
         } else {

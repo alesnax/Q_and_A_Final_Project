@@ -10,12 +10,11 @@
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="resources.locale" var="loc"/>
 <fmt:setBundle basename="resources.config" var="config"/>
-<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <title>
-        <fmt:message bundle="${loc}" key="profile.page_title"/>
+        <fmt:message bundle="${loc}" key="profile.page_title"/> ${user.login}
     </title>
     <fmt:message bundle="${config}" key="img.common.logo_icon" var="logo_icon"/>
     <link rel="shortcut icon" href="${logo_icon}" type="image/png">
@@ -24,17 +23,14 @@
 <body>
 
 <c:import url="template/header_common.jsp"/>
-
 <div class="page_layout">
     <div class="content">
-
         <c:import url="template/left_bar.jsp"/>
-
         <section>
-            <c:if test="${not empty wrong_command_message}">
+            <c:if test="${not empty sessionScope.wrong_command_message}">
                 <div class=" wrong_message_block">
                     <div class="error_msg">
-                        <fmt:message bundle="${loc}" key="${wrong_command_message}"/>
+                        <fmt:message bundle="${loc}" key="${sessionScope.wrong_command_message}"/>
                         <c:remove var="wrong_command_message" scope="session"/>
                     </div>
                 </div>
@@ -44,20 +40,18 @@
                 <div class="page_block photo_block">
                     <div class="page_avatar">
                         <div class="photo-wrap">
-                            <img class="avatar" src=${requestScope.user.avatar} alt="no_photo"/>
+                            <img class="avatar" src="${requestScope.user.avatar}" alt="no_photo"/>
                         </div>
-
                         <c:choose>
                             <c:when test="${requestScope.user.id eq sessionScope.user.id}">
                                 <div class="profile_edit">
-                                    <fmt:message bundle="${config}" key="command.go_to_edit_profile"
-                                                 var="edit_profile"/>
+                                    <fmt:message bundle="${config}" key="command.go_to_edit_profile" var="edit_profile"/>
                                     <a class="profile_edit_act" href="${edit_profile}">
                                         <fmt:message bundle="${loc}" key="profile.edit_profile_text"/>
                                     </a>
                                 </div>
                             </c:when>
-                            <c:when test="${not empty requestScope.user.friendState and requestScope.user.friendState eq 'FOLLOWER'}">
+                            <c:when test="${requestScope.user.friend eq true}">
                                 <div class="following_block">
                                     <div class="follow">
                                         <span class="following_text">
@@ -70,8 +64,7 @@
                                         <input type="hidden" name="command" value="remove_following_user">
                                         <input type="hidden" name="user_id" value="${requestScope.user.id}">
                                         <button type="submit" name="remove" class="remove_submit_button">
-                                            <fmt:message bundle="${loc}" key="profile.remove_following_user_title"
-                                                         var="unfollow_title"/>
+                                            <fmt:message bundle="${loc}" key="profile.remove_following_user_title" var="unfollow_title"/>
                                             <span class="icon icon_cross_remove" title="${unfollow_title}"></span>
                                         </button>
                                     </form>
@@ -132,17 +125,25 @@
                     </div>
                     <div class="counts_module">
                         <fmt:message bundle="${config}" key="command.go_to_friends" var="go_to_friends"/>
-                        <a class="page_counter" href="${go_to_friends}">
+                        <div class="page_counter" >
                             <div class="count">
-                                25
+                                ${user.statistics.followingUsersCount}
                             </div>
                             <div class="label">
                                 <fmt:message bundle="${loc}" key="profile.friends_text"/>
                             </div>
-                        </a>
+                        </div>
                         <div class="page_counter">
                             <div class="count">
-                                8.5
+                                ${user.statistics.followersCount}
+                            </div>
+                            <div class="label">
+                                <fmt:message bundle="${loc}" key="profile.followers_text"/>
+                            </div>
+                        </div>
+                        <div class="page_counter">
+                            <div class="count">
+                                    <fmt:formatNumber type="number" minFractionDigits="1" maxFractionDigits="1" value="${user.statistics.rate}"/>
                             </div>
                             <div class="label">
                                 <fmt:message bundle="${loc}" key="profile.rate_text"/>
@@ -150,22 +151,20 @@
                         </div>
                         <div class="page_counter">
                             <div class="count">
-                                12
+                                ${user.statistics.questionsCount}
                             </div>
                             <div class="label">
                                 <fmt:message bundle="${loc}" key="profile.questions_text"/>
                             </div>
                         </div>
                         <div class="page_counter">
-
                             <div class="count">
-                                8
+                                ${user.statistics.answersCount}
                             </div>
                             <div class="label">
                                 <fmt:message bundle="${loc}" key="profile.answers_text"/>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -174,6 +173,34 @@
             </c:if>
             <div class="wall_content wide_block">
                 <c:import url="template/question_list.jsp"/>
+                <c:if test="${requestScope.posts.getTotalPagesCount() > 1}">
+                    <fmt:message bundle="${config}" key="command.go_to_profile" var="go_to_profile"/>
+                    <fmt:message bundle="${config}" key="command.page_query_part" var="page_no"/>
+                    <ul class="pagination">
+                        <c:if test="${requestScope.posts.getCurrentPage() > 1}">
+                            <li>
+                                <a href="${go_to_profile}${user.id}${page_no}${requestScope.posts.getCurrentPage()-1}">«</a>
+                            </li>
+                        </c:if>
+                        <c:forEach var="number" begin="1" end="${requestScope.posts.getTotalPagesCount()}">
+                            <c:choose>
+                                <c:when test="${number eq requestScope.posts.getCurrentPage()}">
+                                    <li><a class="active">${number}</a></li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li>
+                                        <a href="${go_to_profile}${user.id}${page_no}${number}">${number}</a>
+                                    </li>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                        <c:if test="${requestScope.posts.getCurrentPage() < requestScope.posts.getTotalPagesCount()}">
+                            <li>
+                                <a href="${go_to_profile}${user.id}${page_no}${requestScope.posts.getCurrentPage()+1}">»</a>
+                            </li>
+                        </c:if>
+                    </ul>
+                </c:if>
             </div>
         </section>
     </div>

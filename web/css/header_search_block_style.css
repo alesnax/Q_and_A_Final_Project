@@ -1,8 +1,6 @@
 .s_back_img {
     float: left;
-    background-repeat: no-repeat;
-    background-image: url(../img/search.png);
-    background-position: 5px 5px;
+    background: url(../img/search.png) no-repeat 5px 5px;
 }
 
 .search_input {
@@ -19,8 +17,7 @@
 
 .search_submit {
     box-sizing: border-box;
-    padding: 6px 6px;
-    padding-right: 8px;
+    padding: 6px 8px 6px 6px;
     margin: 10px 0;
     height: 28px;
     line-height: 16px;

@@ -16,7 +16,7 @@
 
 <html>
 <head>
-    <link rel="stylesheet" href="/css/header_search_block_style.css">
+    <link rel="stylesheet" href="../../css/header_search_block_style.css">
 </head>
 <body>
 
@@ -24,10 +24,10 @@
 <fmt:message bundle="${loc}" key="common.header.search_form.submit_value" var="s_submit_v"/>
 
 <div class="fl_l search_block">
-    <form class="search_form" action="/Controller" method="get" >
-        <input type="hidden" name="command" value="search_answer_question"/>
-        <input class="s_back_img search_input" name="question" value="" type="text" placeholder="${s_form_ph}" />
-        <input class="search_submit" type="submit" name="search" value="${s_submit_v}" />
+    <form class="search_form" action="/Controller" method="get">
+        <input type="hidden" name="command" value="search_posts"/>
+        <input class="s_back_img search_input" name="content" value="" type="text" placeholder="${s_form_ph}"/>
+        <input class="search_submit" type="submit" value="${s_submit_v}"/>
     </form>
 </div>
 

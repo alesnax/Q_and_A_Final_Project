@@ -60,7 +60,7 @@ section {
 }
 
 .content {
-    width: 960px;
+    width: 980px;
     margin: 0 auto;
 }
 
@@ -92,7 +92,6 @@ a {
 
 .avatar {
     width: 200px;
-    height: 200px;
     border-radius: 4px;
 }
 
@@ -370,7 +369,8 @@ input, select {
 
 }
 
-#FirstName, #LastName, #login, #Passwd, #OldPasswd, #PasswdAgain, #email, #page_status, #country, #city {
+#FirstName, #LastName, #login, #Passwd, #OldPasswd, #PasswdAgain, #email,
+#page_status, #country, #city, #key_word_value {
     width: 300px;
 }
 
@@ -578,3 +578,28 @@ input[type="file"] {
     width: 270px;
     margin-left: 100px;
 }
+
+.cancel_submit_block {
+    box-sizing: border-box;
+    margin: 15px 0 0 10px;
+    height: 35px;
+    border-radius: 6px;
+    border: 1px solid lightgray;
+    background-color: #fde5e5;
+    font-size: 16px;
+    font-weight: 400;
+    color: #0b4884;
+    display: inline-block;
+}
+
+.cancel_link{
+    margin-top: 1px;
+    display: block;
+    padding: 6px 12px 6px 12px;
+}
+
+.cancel_link:hover {
+    text-decoration: none;
+}
+
+

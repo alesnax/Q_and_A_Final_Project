@@ -19,7 +19,11 @@ public class User extends ShortUser  {
     private String city;
     private String status;
     private Language language;
-    private FriendState friendState;
+    private KeyWord keyWord;
+    private String keyWordValue;
+    private boolean friend;
+    private UserStatistics statistics;
+    private boolean banned;
 
     public User() {
         super();
@@ -81,14 +85,6 @@ public class User extends ShortUser  {
         this.registrationDate = registrationDate;
     }
 
-    public FriendState getFriendState() {
-        return friendState;
-    }
-
-    public void setFriendState(FriendState friendState) {
-        this.friendState = friendState;
-    }
-
     public UserState getState() {
         return state;
     }
@@ -130,10 +126,48 @@ public class User extends ShortUser  {
         this.status = status;
     }
 
+    public KeyWord getKeyWord() {
+        return keyWord;
+    }
+
+    public void setKeyWord(KeyWord keyWord) {
+        this.keyWord = keyWord;
+    }
+
+    public String getKeyWordValue() {
+        return keyWordValue;
+    }
+
+    public void setKeyWordValue(String keyWordValue) {
+        this.keyWordValue = keyWordValue;
+    }
+
+    public boolean isFriend() {
+        return friend;
+    }
+
+    public void setFriend(boolean friend) {
+        this.friend = friend;
+    }
+
+    public UserStatistics getStatistics() {
+        return statistics;
+    }
+
+    public void setStatistics(UserStatistics statistics) {
+        this.statistics = statistics;
+    }
+
+    public boolean isBanned() {
+        return banned;
+    }
+
+    public void setBanned(boolean banned) {
+        this.banned = banned;
+    }
 
     public enum UserState {
         ACTIVE("active"),
-        BANNED("banned"),
         DELETED("deleted");
 
         private String state;
@@ -147,8 +181,32 @@ public class User extends ShortUser  {
         RU,
         EN,
         NONE
+    }
 
+    public enum KeyWord{
+        MOTHERS_MAIDEN_NAME(1),
+        FIRST_PET_NICKNAME(2),
+        PASSPORT_NUMBER(3),
+        CODEWORD(4);
 
+        private int keyWord;
+
+        private KeyWord(int keyWord){
+            this.keyWord = keyWord;
+        }
+
+        public int getValue() {
+            return this.keyWord;
+        }
+
+        public static KeyWord fromValue(int v) {
+            for (KeyWord c : KeyWord.values()) {
+                if (c.keyWord == v) {
+                    return c;
+                }
+            }
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
@@ -160,6 +218,7 @@ public class User extends ShortUser  {
         User user = (User) o;
 
         if (sex != user.sex) return false;
+        if (banned != user.banned) return false;
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
         if (surname != null ? !surname.equals(user.surname) : user.surname != null) return false;
         if (password != null ? !password.equals(user.password) : user.password != null) return false;
@@ -172,7 +231,7 @@ public class User extends ShortUser  {
         if (city != null ? !city.equals(user.city) : user.city != null) return false;
         if (status != null ? !status.equals(user.status) : user.status != null) return false;
         if (language != user.language) return false;
-        return friendState == user.friendState;
+        return statistics != null ? statistics.equals(user.statistics) : user.statistics == null;
 
     }
 
@@ -191,7 +250,8 @@ public class User extends ShortUser  {
         result = 31 * result + (city != null ? city.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (language != null ? language.hashCode() : 0);
-        result = 31 * result + (friendState != null ? friendState.hashCode() : 0);
+        result = 31 * result + (statistics != null ? statistics.hashCode() : 0);
+        result = 31 * result + (banned ? 1 : 0);
         return result;
     }
 
@@ -210,7 +270,8 @@ public class User extends ShortUser  {
                 ", city='" + city + '\'' +
                 ", status='" + status + '\'' +
                 ", language=" + language +
-                ", friendState=" + friendState +
-                '}';
+                ", statistics=" + statistics +
+                ", banned=" + banned +
+                "} " + super.toString();
     }
 }

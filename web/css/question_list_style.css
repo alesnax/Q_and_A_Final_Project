@@ -24,7 +24,6 @@ div {
     width: 100%;
 }
 
-
 a {
     color: #42648b;
     text-decoration: none;
@@ -42,7 +41,6 @@ li {
 
 .post_header {
     position: relative;
-    min-height: 50px;
     float: left;
     width: 100%;
 
@@ -50,12 +48,13 @@ li {
 
 .post_header_left {
     float: left;
-    width: 60%
+    width: 65%
 
 }
 
 .post_header_right {
     float: right;
+    margin-right: 13px;
 }
 
 .post_header_info {
@@ -94,6 +93,7 @@ h5.post_author {
 .post_category {
     float: right;
     text-align: right;
+    margin-top: 3px;
 }
 
 .post_q_title {
@@ -120,9 +120,9 @@ h5.post_author {
 }
 
 .post_footer {
-    padding: 10px 0 0px;
+    padding: 10px 0 0;
     margin: 0 20px;
-    width: 250px;
+    width: 450px;
 }
 
 .rate_number {
@@ -134,9 +134,11 @@ h5.post_author {
 }
 
 .star-full {
+    float: left;
+    margin-top: 3px;
     width: 20px;
     height: 20px;
-    background: url(../img/star-full.png) no-repeat 0 0px;
+    background: url(../img/star-full.png) no-repeat 0 0;
 }
 
 span[data-descr]:hover::after {
@@ -175,28 +177,30 @@ span[data-descr]:hover::after {
     font-size: 16px;
 }
 
-.answers_title:hover{
+.answers_title:hover {
     text-decoration: none;
 }
 
-.answers_header:hover{
+.answers_header:hover {
     background-color: #e2f0f9;
 }
 
 .delete, .complain, .correct_post {
     display: block;
     float: right;
-    padding-bottom: 6px;
+    padding: 0 0 3px 2px;
+    width: 28px;
+    height: 28px;
 }
 
 .post_inner_content {
-    display: inline-block;
+    float: left;
+    width: 100%;
 }
 
 a:hover {
     text-decoration: underline;
 }
-
 
 .rate_submit {
     box-sizing: border-box;
@@ -211,11 +215,11 @@ a:hover {
     color: #0b4884;
 }
 
-.rate_form{
+.rate_form {
     width: 170px;
 }
 
-.rate_select{
+.rate_select {
     height: 25px;
     border-radius: 3px;
 }
@@ -234,3 +238,241 @@ span[data-descr]:hover::after {
     font-size: 14px;
     z-index: 1;
 }
+
+.answer_block {
+    float: left;
+    padding: 5px 10px;
+    border: 1px solid #e7e8ec;
+    margin-left: 50px;
+    margin-bottom: 10px;
+    width: 670px;
+}
+
+.post_author_left {
+    float: left;
+    width: 44%;
+
+}
+
+.post_buttons_right {
+    float: right;
+}
+
+.rate_block {
+    float: left;
+}
+
+.inline {
+    display: inline-block;
+    float: right;
+}
+
+.correct_answer_block {
+    float: left;
+    padding: 5px 0;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.correct_answer_form {
+    padding-left: 50px;
+}
+
+.correct_q_place {
+    min-height: 40px;
+    border-radius: 3px;
+    box-sizing: border-box;
+    background-color: #f8fcff;
+    padding: 7px 10px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    border: 1px solid lightgray;
+    width: 620px;
+    max-width: 620px;
+    max-height: 150px;
+}
+
+.correct_q_submit {
+    box-sizing: border-box;
+    padding: 6px 12px 6px 12px;
+    margin: 5px 0 -15px;
+    height: 35px;
+    line-height: 16px;
+    border-radius: 6px;
+    border: 1px solid lightgray;
+    background-color: #f8fcff;
+    font-size: 16px;
+    font-weight: 400;
+    color: #0b4884;
+}
+
+.correct_ask_form_block {
+    width: 710px;
+    background-color: rgba(59, 182, 226, 0.55);
+    position: relative;
+    float: left;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+    margin: 15px 0 0;
+    padding: 20px 15px;
+}
+
+.correct_qq_ask_form {
+    padding: 5px 15px 10px;
+}
+
+.correct_qq_title_place {
+    box-sizing: border-box;
+    padding: 6px 10px;
+    height: 28px;
+    line-height: 16px;
+    width: 74%;
+    border-radius: 3px;
+    float: left;
+    margin: 5px 0;
+    border: 1px solid lightgray;
+    background-color: #f8fcff;
+}
+
+.correct_qq_select_place {
+    box-sizing: border-box;
+    padding: 2px 5px;
+    margin: 5px 0;
+    height: 28px;
+    line-height: 16px;
+    width: 23%;
+    border-radius: 3px;
+    float: right;
+    border: 1px solid lightgray;
+    background-color: #f8fcff;
+}
+
+.correct_qq_form_place {
+    min-height: 78px;
+    border-radius: 3px;
+    box-sizing: border-box;
+    background-color: #f8fcff;
+    padding: 7px 10px;
+    width: 100%;
+    max-width: 100%;
+    max-height: 300px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    border: 1px solid lightgray;
+}
+
+.correct_qq_form_submit {
+    box-sizing: border-box;
+    padding: 6px 12px 6px 12px;
+    margin: 5px 0 -15px;
+    height: 35px;
+    line-height: 16px;
+    border-radius: 6px;
+    border: 1px solid lightgray;
+    background-color: #f8fcff;
+    font-size: 16px;
+    font-weight: 400;
+    color: #0b4884;
+}
+
+input[type=text], input[type=password], input[type=number] {
+    border-radius: 3px;
+}
+
+input, select {
+    height: 35px;
+    padding: 0 8px;
+    border-radius: 2px;
+    border: 1px solid #c1bfbf;
+
+}
+
+.cancel_submit_block {
+    box-sizing: border-box;
+    margin: 0 0 0 10px;
+    height: 35px;
+    border-radius: 6px;
+    border: 1px solid lightgray;
+    background-color: #fde5e5;
+    font-size: 16px;
+    font-weight: 400;
+    color: #0b4884;
+    display: inline-block;
+}
+
+.cancel_link {
+    margin-top: 1px;
+    display: block;
+    padding: 6px 12px 6px 12px;
+}
+
+.cancel_link:hover {
+    text-decoration: none;
+}
+
+.post_category_edit {
+    text-align: right;
+    margin-top: 3px;
+    margin-right: 65px;
+}
+
+.errormsg {
+    margin: 6px 0 0;
+    display: block;
+    color: #dd4b39;
+    line-height: 17px;
+}
+
+.return_to_bans_header {
+    margin: 12px 0;
+    width: 775px;
+    height: 40px;
+    background-color: #e2f0f9;
+    float: left;
+    border-radius: 4px;
+}
+
+.show_mark {
+    display: block;
+    float: left;
+    margin: 0 10px 0;
+}
+
+.rate_numb {
+    display: block;
+    color: #0c7296;
+    font-size: 20px;
+    padding: 3px 0 0 0;
+    width: 40px;
+}
+
+ul.pagination {
+    display: inline-block;
+    padding: 0;
+    margin: 10px 0 0;
+    float: left;
+    width: 745px;
+}
+
+ul.pagination li {
+    display: inline;
+}
+
+ul.pagination li a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+ul.pagination li a.active {
+    background-color: #3bb6e2;
+    color: white;
+    border-radius: 5px;
+}
+
+ul.pagination li a:hover:not(.active) {
+    background-color: #ddd;
+}
+

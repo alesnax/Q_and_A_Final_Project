@@ -40,7 +40,7 @@ public class ChangeUserLanguageCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         String page = null;
-
+        ConfigurationManager configurationManager = new ConfigurationManager();
         String language = request.getParameter(LANGUAGE);
         HttpSession session = request.getSession(true);
         QueryUtil.logQuery(request);
@@ -53,13 +53,13 @@ public class ChangeUserLanguageCommand implements Command {
             user.setLanguage(User.Language.valueOf(language.toUpperCase()));
             session.setAttribute(LOCALE, language);
             logger.log(Level.INFO, "User " + user.getId() + " (" + user.getLogin() + ") has successfully change his used language.");
-            String successChangeMessageAttr = ConfigurationManager.getProperty(SUCCESS_CHANGE_MSG_ATTR);
+            String successChangeMessageAttr = configurationManager.getProperty(SUCCESS_CHANGE_MSG_ATTR);
             session.setAttribute(successChangeMessageAttr, SUCCESS_CHANGE_LANG_MESSAGE);
-            String gotoEditProfileCommand = ConfigurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
+            String gotoEditProfileCommand = configurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoEditProfileCommand;
         } catch (ServiceException e) {
             logger.log(Level.ERROR, e);
-            String errorMessageAttr = ConfigurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
+            String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
             request.setAttribute(errorMessageAttr, e.getMessage());
             page = ERROR_REQUEST_TYPE;
         }

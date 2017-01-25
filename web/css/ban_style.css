@@ -1,0 +1,381 @@
+body {
+    font-size: 14px;
+    font-weight: 400;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #333;
+    background-color: #F5F8FA;
+    margin: 0;
+    padding: 0;
+}
+
+.page_layout {
+    padding: 50px 15px 0;
+    margin: 0 auto;
+    position: relative;
+    width: 100%;
+}
+
+div {
+    position: relative;
+}
+
+section {
+    width: 780px;
+    float: right;
+    text-align: left;
+    margin-bottom: 50px;
+}
+
+.fl_l {
+    float: left;
+}
+
+.fl_r {
+    float: right;
+}
+
+.page_block {
+    position: relative;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+    margin: 15px 0 0;
+    padding: 20px 15px;
+}
+
+.wide_block {
+    position: relative;
+    float: left;
+}
+
+.content {
+    width: 980px;
+    margin: 0 auto;
+}
+
+a {
+    color: #42648b;
+    text-decoration: none;
+}
+
+.count {
+    font-size: 17px;
+    color: #42648b;
+    padding-bottom: 3px;
+    line-height: 21px;
+}
+
+.post_content {
+    width: 745px;
+    padding-bottom: 10px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.page_main_header_block {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    text-align: center;
+    color: #405a73;
+}
+
+.wrong_message_block {
+    background-color: #ffc9c9;
+}
+
+.error_msg {
+    text-align: center;
+    color: #405a73;
+    font-size: 16px;
+    padding: 0 15px 0;
+    font-weight: 600;
+}
+
+h1 {
+    margin: 5px 0 10px;
+    text-transform: uppercase;
+}
+
+.cat_img {
+    float: left;
+    width: 70px;
+}
+
+.cat_description {
+    float: left;
+    width: 490px;
+    min-height: 50px;
+
+}
+
+.cat_title {
+    color: #42648b;
+    font-size: 16px;
+    margin-bottom: 3px;
+}
+
+.cat_content {
+    margin: 2px 0;
+}
+
+.cat_autor {
+
+}
+
+.cat_mini_img {
+    width: 50px;
+    height: 50px;
+    border-radius: 10%;
+
+}
+
+.cat_status {
+    margin: 0 0 5px;
+    border-bottom: 1px solid lightgray;
+    display: block;
+    box-sizing: border-box;
+    vertical-align: top;
+    text-align: center;
+    text-transform: lowercase;
+    font-size: 16px;
+
+}
+
+.right_info {
+    float: left;
+    width: 180px;
+
+}
+
+.q_counter {
+    text-align: center;
+    color: #42648b;
+
+}
+
+.cat_moderator {
+    float: right;
+    margin-right: 10px;
+    margin-left: 7px;
+    font-size: 15px;
+
+}
+
+h3 {
+    font-size: 18px;
+    margin: 0;
+    color: #0b4884;
+    text-align: center;
+}
+
+.rel_date {
+    color: #939393;
+    font-size: 13px;
+}
+
+.unban_form {
+    margin-bottom: 0;
+}
+
+.unban_submit {
+    padding: 2px 14px;
+    font-size: 15px;
+    border-radius: 2px;
+    border: 1px solid lightgray;
+    background-color: #c4efff;
+    height: 27px;
+}
+
+.complaint_status_cancel {
+    margin: 0 0 5px;
+    border-bottom: none;
+    display: block;
+    box-sizing: border-box;
+    vertical-align: top;
+    text-align: center;
+    text-transform: lowercase;
+    font-size: 17px;
+    background-color: #aaeaff;
+}
+
+.complaint_status_approved {
+    margin: 0 0 5px;
+    border-bottom: none;
+    display: block;
+    box-sizing: border-box;
+    vertical-align: top;
+    text-align: center;
+    text-transform: lowercase;
+    font-size: 17px;
+    background-color: #ffaaaa;
+}
+
+.complaint_status_new {
+    margin: 0 0 5px;
+    border-bottom: none;
+    display: block;
+    box-sizing: border-box;
+    vertical-align: top;
+    text-align: center;
+    text-transform: lowercase;
+    font-size: 17px;
+    background-color: #aaffcb;
+}
+
+.process_complaint_form_block {
+    width: 740px;
+    background-color: rgba(59, 182, 226, 0.55);
+    position: relative;
+    float: left;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+    margin: 10px 0 0;
+    padding: 3px 0 0;
+}
+
+.process_compl_form {
+    padding: 5px 15px 0;
+    margin-bottom: 10px;
+}
+
+.compl_description_place {
+    box-sizing: border-box;
+    padding: 6px 10px;
+    height: 28px;
+    line-height: 16px;
+    width: 71%;
+    border-radius: 3px;
+    float: left;
+    margin: 5px 0;
+    border: 1px solid lightgray;
+    background-color: #f8fcff;
+}
+
+.compl_proc_select_place{
+    box-sizing: border-box;
+    padding: 2px 5px;
+    margin: 5px 0;
+    height: 28px;
+    line-height: 16px;
+    width: 27%;
+    border-radius: 3px;
+    float: right;
+    border: 1px solid lightgray;
+    background-color: #f8fcff;
+}
+
+h3 {
+    font-size: 18px;
+    margin: 0;
+    color: #0b4884;
+    text-align: center;
+}
+
+.go_to_process{
+    margin: 5px;
+    width: 100%;
+    height: 40px;
+    background-color: #e2f0f9;
+    float: left;
+    border-radius: 4px;
+}
+
+.go_to_process_title{
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 14px 3px 8px;
+    vertical-align: top;
+    line-height: 15px;
+    text-align: center;
+    color: #405a73;
+    font-size: 16px;
+}
+
+.go_to_process_title:hover {
+    text-decoration: none;
+}
+
+.complaint_description{
+    float: left;
+    width: 490px;
+}
+
+.cancel_submit_block{
+    box-sizing: border-box;
+    margin: 0 0 0 10px;
+    height: 35px;
+    border-radius: 6px;
+    border: 1px solid lightgray;
+    background-color: #fde5e5;
+    font-size: 16px;
+    font-weight: 400;
+    color: #0b4884;
+    display: inline-block;
+}
+
+.cancel_link{
+    margin-top: 1px;
+    display: block;
+    padding: 6px 12px 6px 12px;
+}
+
+.cancel_link:hover {
+    text-decoration: none;
+}
+
+.correct_q_submit {
+    box-sizing: border-box;
+    padding: 6px 12px 6px 12px;
+    margin: 5px 0 -15px;
+    height: 35px;
+    line-height: 16px;
+    border-radius: 6px;
+    border: 1px solid lightgray;
+    background-color: #f8fcff;
+    font-size: 16px;
+    font-weight: 400;
+    color: #0b4884;
+}
+
+ul.pagination {
+    display: inline-block;
+    padding: 0;
+    margin: 10px 0 0;
+    float: left;
+    width: 745px;
+}
+
+ul.pagination li {
+    display: inline;
+}
+
+ul.pagination li a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+ul.pagination li a.active {
+    background-color: #3bb6e2;
+    color: white;
+    border-radius: 5px;
+}
+
+ul.pagination li a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+
+
+
+
+
+
+
+
