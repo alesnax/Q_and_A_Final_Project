@@ -127,7 +127,9 @@
                                 <div class="answer_header wide_block">
                                     <div class="post_author_left">
                                         <a href="${go_to_profile}${requestScope.post.user.id}" class="post_image">
-                                            <img class="mini_img" src="${requestScope.post.user.avatar}" alt="avatar">
+                                            <p>
+                                                <img class="mini_img" src="${requestScope.post.user.avatar}" alt="avatar">
+                                            </p>
                                         </a>
                                         <div class="post_header_info">
                                             <h5 class="post_author">
@@ -186,7 +188,9 @@
                             <div class="post_header">
                                 <div class="post_header_left">
                                     <a href="${go_to_profile}${requestScope.post.user.id}" class="post_image">
-                                        <img class="mini_img" src="${requestScope.post.user.avatar}" alt="avatar">
+                                        <p>
+                                            <img class="mini_img" src="${requestScope.post.user.avatar}" alt="avatar">
+                                        </p>
                                     </a>
                                     <div class="post_header_info">
                                         <h5 class="post_author">

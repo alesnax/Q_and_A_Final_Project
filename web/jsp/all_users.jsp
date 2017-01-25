@@ -62,7 +62,9 @@
                                 <div class="user_img">
                                     <fmt:message bundle="${config}" key="command.go_to_profile" var="go_to_profile"/>
                                     <a href="${go_to_profile}${user.id}" class="user_image">
-                                        <img class="mini_img" src="${user.avatar}" alt="avatar">
+                                        <p>
+                                            <img class="mini_img" src="${user.avatar}" alt="avatar">
+                                        </p>
                                     </a>
                                 </div>
                                 <div class="friend_description">

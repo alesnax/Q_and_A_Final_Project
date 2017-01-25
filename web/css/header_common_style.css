@@ -13,7 +13,7 @@
 
 .lang_label {
     display: block;
-    padding: 17px 5px 18px 5px;
+    padding: 17px 5px 16px 5px;
     float: left;
 }
 
@@ -97,6 +97,7 @@ header {
 .h_links:hover {
     background-color: #209ecc;
     text-decoration: none;
+    height:50px;
 }
 
 .h_link {
@@ -115,4 +116,22 @@ header {
     position: relative;
     margin: 0 auto;
     height: 50px;
+}
+
+
+.mini_header_avatar_img{
+    height: 40px;
+    border-radius: 8px;
+    margin: 5px 0;
+}
+
+.header_login{
+    color: #f8fcff;
+    float: left;
+    margin: 25px 8px 0 10px;
+    font-size: 15px;
+}
+
+.header_avatar_image{
+    padding-right: 5px;
 }

@@ -127,10 +127,10 @@ h1 {
 }
 
 .mini_img {
-    width: 80px;
+    max-width: 90px;
     height: 80px;
-    border-radius: 50%;
-
+    border-radius: 20px;
+    margin-left: -15px;
 }
 
 .friend_status {

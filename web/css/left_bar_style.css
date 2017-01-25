@@ -44,3 +44,8 @@ li a:hover {
     background-color: #e2f0f9;
     text-decoration: none;
 }
+
+p{
+    text-align: center;
+    margin: 0;
+}

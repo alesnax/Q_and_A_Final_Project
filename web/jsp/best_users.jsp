@@ -49,7 +49,9 @@
                     <div class="page_block wide_block post_content">
                         <div class="user_img">
                             <a href="${go_to_profile}${best_user.id}" class="user_image">
-                                <img class="mini_img" src="${best_user.avatar}" alt="avatar">
+                                <p>
+                                    <img class="mini_img" src="${best_user.avatar}" alt="avatar">
+                                </p>
                             </a>
                         </div>
                         <div class="friend_description">

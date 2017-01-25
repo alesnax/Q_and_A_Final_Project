@@ -70,7 +70,9 @@
                             <div class="page_block wide_block post_content">
                                 <div class="cat_img">
                                     <a href="${go_to_profile}${ban.user.id}" class="cat_image">
-                                        <img class="cat_mini_img" src="${ban.user.avatar}" alt="some">
+                                        <p>
+                                            <img class="cat_mini_img" src="${ban.user.avatar}" alt="some">
+                                        </p>
                                     </a>
                                 </div>
                                 <div class="cat_description">

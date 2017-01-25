@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="ales" uri="customtags" %>
 
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="resources.locale" var="loc"/>
@@ -79,5 +80,17 @@
                 </a>
             </div>
         </c:if>
+        <div class="fl_r h_links">
+            <ales:top_user_info/>
+
+
+            <%-- <c:if test="${not empty sessionScope.user}">
+                    <fmt:message bundle="${config}" key="command.go_to_profile" var="go_to_profile"/>
+                    <a href="${go_to_profile}${sessionScope.user.id}" class="header_avatar_image">
+                        <span class="header_login">${sessionScope.user.login}</span>
+                        <img class="mini_header_avatar_img" src="${sessionScope.user.avatar}" alt="avatar">
+                    </a>
+                </c:if>--%>
+        </div>
     </div>
 </header>
