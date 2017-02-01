@@ -370,7 +370,7 @@ input, select {
 }
 
 #FirstName, #LastName, #login, #Passwd, #OldPasswd, #PasswdAgain, #email,
-#page_status, #country, #city, #key_word_value {
+#page_status, #country, #city, #key_word_value, #delPasswd {
     width: 300px;
 }
 
@@ -602,4 +602,6 @@ input[type="file"] {
     text-decoration: none;
 }
 
-
+.red{
+    background-color: #f3a8a8;
+}

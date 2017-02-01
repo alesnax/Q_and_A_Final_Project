@@ -14,38 +14,66 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+//static import
 import static by.alesnax.qanda.constant.CommandConstants.ERROR_REQUEST_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 /**
- * Created by alesnax on 05.01.2017.
+ * Class has method that deletes post. Access for authorised users.
+ * Returns to previous page or to error page if exception will be caught.
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
-@SuppressWarnings("Duplicates")
 public class DeletePostCommand implements Command {
     private static Logger logger = LogManager.getLogger(DeletePostCommand.class);
 
+    /**
+     * Names of attributes and parameters taking from request or session
+     */
     private static final String USER_ATTR = "user";
     private static final String POST_USER_ID = "post_user_id";
     private static final String POST_ID = "post_id";
     private static final String POST_MODERATOR_ID = "post_moderator_id";
-    private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
-
     private static final String USER_ROLE = "user";
     private static final String MODERATOR_ROLE = "moderator";
     private static final String ADMIN_ROLE = "admin";
 
+    /**
+     * Keys of error messages attributes that are located in config.properties file
+     */
+    private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
-    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet"; //роверить
+    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
+
+    /**
+     * Keys of error messages located in loc.properties file
+     */
     private static final String WARN_LOGIN_BEFORE_MAKE_OPERATION = "warn.login_before_make_operation";
-    private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
-    private static final String GO_TO_PROFILE_COMMAND = "command.go_to_profile";
     private static final String ILLEGAL_OPERATION = "warn.illegal_operation_on_other_profile";
     private static final String UNDEFINED_COMMAND_MESSAGE = "error.error_msg.undefined_command";
 
+    /**
+     * Keys of commands that is located in config.properties file
+     */
+    private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
+    private static final String GO_TO_PROFILE_COMMAND = "command.go_to_profile";
+
+    /**
+     * deletes post, calls processing method from service layer,
+     * if success scenario - returns to previous page with success message,
+     * otherwise returns with error messages to previous page or error page.
+     * Method checks user role and lets to admin delete all posts, to moderator delete post from
+     * moderated categories or to user his own posts.
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of page where processed request will be send back
+     * (redirection to previous page if success scenario or error page otherwise)
+     */
     @Override
     public String execute(HttpServletRequest request) {
-        String page = null;
+        String page;
         ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession session = request.getSession(true);
         QueryUtil.logQuery(request);
@@ -63,7 +91,7 @@ public class DeletePostCommand implements Command {
                 PostService postService = ServiceFactory.getInstance().getPostService();
                 int postId = Integer.parseInt(request.getParameter(POST_ID));
                 int postUserId = Integer.parseInt(request.getParameter(POST_USER_ID));
-                String nextCommand = null;
+                String nextCommand;
                 switch (role) {
                     case MODERATOR_ROLE:
                         int postModeratorId = Integer.parseInt(request.getParameter(POST_MODERATOR_ID));
@@ -74,8 +102,8 @@ public class DeletePostCommand implements Command {
                         } else {
                             logger.log(Level.WARN, "illegal try to delete post of other people, owner id=" + postUserId + ", post id=" + postId + ", from user id=" + user.getId());
                             String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
-                            session.setAttribute(wrongCommandMessageAttr, ILLEGAL_OPERATION);
                             nextCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
+                            session.setAttribute(wrongCommandMessageAttr, ILLEGAL_OPERATION);
                             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
                         }
                         break;
@@ -107,7 +135,7 @@ public class DeletePostCommand implements Command {
             } catch (NumberFormatException | ServiceException e) {
                 logger.log(Level.ERROR, e);
                 String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                request.setAttribute(errorMessageAttr, e.getMessage());
+                request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
                 page = ERROR_REQUEST_TYPE;
             }
         }

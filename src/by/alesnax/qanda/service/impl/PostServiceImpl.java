@@ -19,12 +19,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by alesnax on 05.12.2016.
+ * Class contains implemented list of methods to provide linking between command
+ * and DAO layers. Methods processes data before calling DAO layer and process result of returned parameters
+ * from DAO layer before sending back to command layer.
+ * Methods processes data related with Post or Category entities.
  *
+ * @author Aliaksandr Nakhankou
  */
 public class PostServiceImpl implements PostService {
     private static Logger logger = LogManager.getLogger(PostServiceImpl.class);
 
+    /**
+     * method takes best answers list from DAO layer method and checks if first item number less than
+     * last one from query, if true repeat query with corrected number of first item
+     *
+     * @param userId id of session user
+     * @param startPost number of first item to be taken from database
+     * @param postsPerPage number of items to be taken from database
+     * @return container with list of best answers and pagination parameters
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public PaginatedList<Post> findBestAnswers(int userId, int startPost, int postsPerPage) throws ServiceException {
         WrappedConnection connection = null;
@@ -52,6 +66,16 @@ public class PostServiceImpl implements PostService {
         return answers;
     }
 
+    /**
+     * method takes best questions list from DAO layer method and checks if first item number less than
+     * last one from query, if true repeat query with corrected number of first item
+     *
+     * @param userId id of session user
+     * @param startPost number of first item to be taken from database
+     * @param postsPerPage number of items to be taken from database
+     * @return container with list of best questions and pagination parameters
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public PaginatedList<Post> findBestQuestions(int userId, int startPost, int postsPerPage) throws ServiceException {
         WrappedConnection connection = null;
@@ -79,6 +103,17 @@ public class PostServiceImpl implements PostService {
         return questions;
     }
 
+    /**
+     * method takes list of posts of user from DAO layer method and checks if first item number less than
+     * last one from query, if true repeat query with corrected number of first item
+     *
+     * @param profileUserId id of user which posts should be taken
+     * @param userId  id of session user
+     * @param startPost number of first item to be taken from database
+     * @param postsPerPage number of items to be taken from database
+     * @return container with list user posts and pagination parameters
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public PaginatedList<Post> findPostsByUserId(int profileUserId, int userId, int startPost, int postsPerPage) throws ServiceException {
         WrappedConnection connection = null;
@@ -106,6 +141,16 @@ public class PostServiceImpl implements PostService {
         return posts;
     }
 
+    /**
+     * method takes posts where session user left rate from DAO layer method and checks if first item number less than
+     * last one from query, if true repeat query with corrected number of first item
+     *
+     * @param userId id of session user
+     * @param startPost number of first item to be taken from database
+     * @param postsPerPage number of items to be taken from database
+     * @return container with list of rated posts and pagination parameters
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public PaginatedList<Post> findLikedPosts(int userId, int startPost, int postsPerPage) throws ServiceException {
         WrappedConnection connection = null;
@@ -132,6 +177,12 @@ public class PostServiceImpl implements PostService {
         return posts;
     }
 
+    /**
+     * calls method from DAO to update post stattus to 'deleted'
+     *
+     * @param postId id of post
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public void deletePost(int postId) throws ServiceException {
         WrappedConnection connection = null;
@@ -152,6 +203,16 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    /**
+     * method takes posts where of followers of session user from DAO layer method and checks if first item number less than
+     * last one from query, if true repeat query with corrected number of first item
+     *
+     * @param userId id of session user
+     * @param startPost number of first item to be taken from database
+     * @param postsPerPage number of items to be taken from database
+     * @return container with list of followers' posts and pagination parameters
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public PaginatedList<Post> findFriendsPosts(int userId, int startPost, int postsPerPage) throws ServiceException {
         WrappedConnection connection = null;
@@ -179,6 +240,14 @@ public class PostServiceImpl implements PostService {
         return posts;
     }
 
+    /**
+     * takes question and its answers from DAO method by question id
+     *
+     * @param questionId id of question
+     * @param userId id of session user for showing rates if exist
+     * @return container with list of question and answers and pagination parameters
+     * @throws ServiceException  if exception while processing SQL query and connection will be caught
+     */
     @Override
     public List<Post> findQuestionWithAnswersById(int questionId, int userId) throws ServiceException {
         WrappedConnection connection = null;
@@ -202,6 +271,11 @@ public class PostServiceImpl implements PostService {
         return question;
     }
 
+    /**
+     * send answer parameters for adding new answers into database
+     *
+     * @throws ServiceException  if exception while processing SQL query and connection will be caught
+     */
     @Override
     public void addNewAnswer(int userId, String questionId, String categoryId, String description) throws ServiceException {
         WrappedConnection connection = null;
@@ -222,6 +296,14 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    /**
+     * send to DAO value of rate for post
+     *
+     * @param postId id of post
+     * @param mark value of rate
+     * @param userId user who rated post
+     * @throws ServiceException  if exception while processing SQL query and connection will be caught
+     */
     @Override
     public void ratePost(int postId, int mark, int userId) throws ServiceException {
         WrappedConnection connection = null;
@@ -242,6 +324,13 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    /**
+     * send to DAO corrected content of answer for updating
+     *
+     * @param answerId id of answer
+     * @param description content of answer
+     * @throws ServiceException  if exception while processing SQL query and connection will be caught
+     */
     @Override
     public void addCorrectedAnswer(int answerId, String description) throws ServiceException {
         WrappedConnection connection = null;
@@ -262,6 +351,12 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    /**
+     * send to DAO method parameters of corrected question for updating
+     *
+     * @throws ServiceException      * @return container with list of users and pagination parameters
+
+     */
     @Override
     public void addCorrectedQuestion(int questionId, int catId, String correctedTitle, String description) throws ServiceException {
         WrappedConnection connection = null;
@@ -283,6 +378,13 @@ public class PostServiceImpl implements PostService {
 
     }
 
+    /**
+     * takes post from DAO by id, called by moderators or admins, post can have deleted status
+     *
+     * @param postId id of post
+     * @return post
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public Post findPostById(int postId) throws ServiceException {
         WrappedConnection connection = null;
@@ -306,6 +408,14 @@ public class PostServiceImpl implements PostService {
         return post;
     }
 
+    /**
+     * method send data of new complaint to DAO method
+     *
+     * @param userId id of user
+     * @param complaintPostId id of post to which user have complaint
+     * @param description content of complaint
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public void addNewComplaint(int userId, int complaintPostId, String description) throws ServiceException {
         WrappedConnection connection = null;
@@ -329,6 +439,16 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    /**
+     * method send parameters to DAO for searching posts matching with query
+     *
+     * @param userId session user id for marks
+     * @param content user search query
+     * @param startPost number of first item to be taken from database
+     * @param postsPerPage number of items to be taken from database
+     * @return container with list of finding matching with query posts and pagination parameters
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public PaginatedList<Post> searchPosts(int userId, String content, int startPost, int postsPerPage) throws ServiceException {
         WrappedConnection connection = null;
@@ -355,11 +475,21 @@ public class PostServiceImpl implements PostService {
         return posts;
     }
 
+    /**
+     * takes posts by category id from dao layer
+     *
+     * @param categoryId id of category
+     * @param userId id of user for marks
+     * @param startPost number of first item to be taken from database
+     * @param postsPerPage number of items to be taken from database
+     * @return  container with list of posts of definite category and pagination parameters
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public PaginatedList<Post> findQuestionsByCategoryList(String categoryId, int userId, int startPost, int postsPerPage) throws ServiceException {
         WrappedConnection connection = null;
         PaginatedList<Post> questions = null;
-        List<Post> items = null;
+        List<Post> items;
 
         try {
             connection = ConnectionPool.getInstance().takeConnection();
@@ -394,6 +524,14 @@ public class PostServiceImpl implements PostService {
         return questions;
     }
 
+    /**
+     * takes list of categories from DAO layer
+     *
+     * @param startCategory number of first item to be taken from database
+     * @param categoriesPerPage number of items to be taken from database
+     * @return container with list of categories and pagination parameters
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public PaginatedList<Category> takeCategoriesList(int startCategory, int categoriesPerPage) throws ServiceException {
         WrappedConnection connection = null;
@@ -421,6 +559,15 @@ public class PostServiceImpl implements PostService {
         return categories;
     }
 
+    /**
+     * takes list of moderated categories by definite user from DAO layer
+     *
+     * @param userId moderator id
+     * @param startCategory number of first item to be taken from database
+     * @param categoriesPerPage number of items to be taken from database
+     * @return container with list of moderated categories and pagination parameters
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public PaginatedList<Category> takeModeratedCategoriesList(int userId, int startCategory, int categoriesPerPage) throws ServiceException {
         WrappedConnection connection = null;
@@ -447,6 +594,12 @@ public class PostServiceImpl implements PostService {
         return moderatedCategories;
     }
 
+    /**
+     * takes info about categories from DAO layer to be showed in add question form
+     *
+     * @return list of cut info about categories
+     * @throws ServiceException  if exception while processing SQL query and connection will be caught
+     */
     @Override
     public List<CategoryInfo> takeShortCategoriesList() throws ServiceException {
         WrappedConnection connection = null;
@@ -470,6 +623,11 @@ public class PostServiceImpl implements PostService {
         return categories;
     }
 
+    /**
+     * sends parameters of question to DAO method to insert it into database
+     *
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public void addNewQuestion(int id, String category, String title, String description) throws ServiceException {
         WrappedConnection connection = null;

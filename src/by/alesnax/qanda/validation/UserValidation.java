@@ -8,14 +8,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by alesnax on 05.12.2016.
+ * The class {@code UserValidation} contains methods for checking if values of class User parameters correct
+ *
+ * @author Aliaksandr Nakhankou
  */
-
-
 @SuppressWarnings("Duplicates")
 public class UserValidation {
 
+    /**
+     * Keys of validation error messages that are located in loc.properties file
+     */
     private static final String ERROR_HEADER = "user_registration.error_msg.error_header";
+    private static final String ERROR_VALID_HEADER = "user_authorization.error_msg.error_header";
     private static final String LOGIN_EMPTY = "user_registration.error_msg.login_empty";
     private static final String LOGIN_FALSE = "user_registration.error_msg.login_false";
     private static final String PASSWORD_EMPTY = "user_registration.error_msg.password_empty";
@@ -42,11 +46,32 @@ public class UserValidation {
     private static final String KEY_WORD_TYPE_WRONG = "user_registration.error_msg.key_word_type_wrong";
     private static final String KEY_WORD_EMPTY = "user_registration.error_msg.key_word_empty";
     private static final String KEY_WORD_WRONG = "user_registration.error_msg.key_word_wrong";
+    private static final String EMAIL_IS_EMPTY = "user_authorization.error_msg.email_empty";
+    private static final String EMAIL_IS_FALSE = "user_authorization.error_msg.email_false";
+    private static final String PASSWORD_IS_EMPTY = "user_authorization.error_msg.password_empty";
+    private static final String PASSWORD_IS_FALSE = "user_authorization.error_msg.password_false";
 
-
+    /**
+     * Keys of validation parameters that are located in config.properties file
+     */
     private static final String MALE = "user_registration_page.form_value.sex.male";
     private static final String FEMALE = "user_registration_page.form_value.sex.female";
     private static final String SEX_UNCHOSEN = "user_registration_page.form_value.sex.unchosen";
+    private static final String KEY_WORD_TYPE_UNCHOSEN = "user_registration_page.form_value.key_word.unchosen";
+    private static final String KEY_WORD_TYPE_MAIDEN_NAME = "user_registration_page.form_value.key_word.mothers_maiden_name";
+    private static final String KEY_WORD_TYPE_PET_NICK = "user_registration_page.form_value.key_word.first_pet_nickname";
+    private static final String KEY_WORD_TYPE_PASS_NO = "user_registration_page.form_value.key_word.passport_number";
+    private static final String KEY_WORD_TYPE_CODEWORD = "user_registration_page.form_value.key_word.codeword";
+    private static final String YEAR_LOW_LIMIT = "user_registration_page.year_low_limit";
+    private static final String YEAR_TOP_LIMIT = "user_registration_page.year_top_limit";
+    private static final int MIN_MONTH = 1;
+    private static final int MAX_MONTH = 12;
+    private static final int MIN_DAY = 1;
+    private static final int MAX_DAY = 31;
+
+    /**
+     * Keys of regex used while validation located in config.properties file
+     */
     private static final String GEO_REGEX = "user_validation.geo_regex";
     private static final String LOGIN_REGEX = "user_validation.login_regex";
     private static final String PASSWORD_REGEX = "user_validation.password_regex";
@@ -54,27 +79,12 @@ public class UserValidation {
     private static final String EMAIL_REGEX = "user_validation.email_regex";
     private static final String KEY_WORD_REGEX = "user_validation.key_word_regex";
 
-    private static final String KEY_WORD_TYPE_UNCHOSEN = "user_registration_page.form_value.key_word.unchosen";
-    private static final String KEY_WORD_TYPE_MAIDEN_NAME = "user_registration_page.form_value.key_word.mothers_maiden_name";
-    private static final String KEY_WORD_TYPE_PET_NICK = "user_registration_page.form_value.key_word.first_pet_nickname";
-    private static final String KEY_WORD_TYPE_PASS_NO = "user_registration_page.form_value.key_word.passport_number";
-    private static final String KEY_WORD_TYPE_CODEWORD = "user_registration_page.form_value.key_word.codeword";
-
-    private static final String YEAR_LOW_LIMIT = "user_registration_page.year_low_limit";
-    private static final String YEAR_TOP_LIMIT = "user_registration_page.year_top_limit";
-
-    private static final String ERROR_VALID_HEADER = "user_authorization.error_msg.error_header";
-    private static final String EMAIL_IS_EMPTY = "user_authorization.error_msg.email_empty";
-    private static final String EMAIL_IS_FALSE = "user_authorization.error_msg.email_false";
-    private static final String PASSWORD_IS_EMPTY = "user_authorization.error_msg.password_empty";
-    private static final String PASSWORD_IS_FALSE = "user_authorization.error_msg.password_false";
-
-    private static final int MIN_MONTH = 1;
-    private static final int MAX_MONTH = 12;
-    private static final int MIN_DAY = 1;
-    private static final int MAX_DAY = 31;
-
-
+    /**
+     * method validates values of user info parameters while user registration and adds validation error messages into returned
+     * list if parameters are incorrect or don't match expected limits or regex
+     *
+     * @return list of validation errors or empty list
+     */
     public ArrayList<String> validateNewUser(String login, String password, String passwordCopy, String name, String surname,
                                              String email, String bDay, String bMonth, String bYear, String sex, String country,
                                              String city, String keyWordType, String keyWord) {
@@ -86,7 +96,7 @@ public class UserValidation {
             successful = false;
         }
 
-        // 2. passwords
+        // passwords validation
         String passwordRegex = configurationManager.getProperty(PASSWORD_REGEX);
         Pattern pPassword = Pattern.compile(passwordRegex);
         Matcher mPassword = pPassword.matcher(password);
@@ -105,6 +115,7 @@ public class UserValidation {
             errorMessages.add(PASSWORD_FALSE);
         }
 
+        // adding error title if list has already contained errors
         if (successful) {
             return errorMessages;
         } else {
@@ -113,22 +124,31 @@ public class UserValidation {
         }
     }
 
+    /**
+     * method validates values of user info parameters while user authorisation and adds validation error messages into returned
+     * list if parameters are incorrect or don't match expected limits or regex
+     *
+     * @return list of validation errors or empty list
+     */
     public List<String> validateUserInfo(String email, String password) {
         ArrayList<String> errorMessages = new ArrayList<>();
         ConfigurationManager configurationManager = new ConfigurationManager();
         boolean successful = true;
 
+        // validation of email
         String emailRegex = configurationManager.getProperty(EMAIL_REGEX);
         Pattern pEmail = Pattern.compile(emailRegex);
         Matcher mEmail = pEmail.matcher(email);
 
         if (email == null || email.isEmpty()) {
+            successful = false;
             errorMessages.add(EMAIL_IS_EMPTY);
         } else if (!mEmail.matches()) {
             successful = false;
             errorMessages.add(EMAIL_IS_FALSE);
         }
 
+        // password validation
         String passwordRegex = configurationManager.getProperty(PASSWORD_REGEX);
         Pattern pPassword = Pattern.compile(passwordRegex);
         Matcher mPassword = pPassword.matcher(password);
@@ -141,6 +161,7 @@ public class UserValidation {
             errorMessages.add(PASSWORD_IS_FALSE);
         }
 
+        // adding error title if list has already contained errors
         if (successful) {
             return errorMessages;
         } else {
@@ -149,8 +170,17 @@ public class UserValidation {
         }
     }
 
+    /**
+     * method validates values of user info parameters while correcting user info action
+     * and adds validation error messages into returned
+     * list if parameters are incorrect or don't match expected limits or regex
+     *
+     * @return list of validation errors or empty list
+     */
     public ArrayList<String> validateUserMainData(String login, String name, String surname, String email, String bDay, String bMonth, String bYear, String sex, String country, String city, String keyWordType, String keyWord) {
         ArrayList<String> errorMessages = checkCommonUserParameters(login, name, surname, email, bDay, bMonth, bYear, sex, country, city, keyWordType, keyWord);
+
+        // adding error title if list has already contained errors
         if (!errorMessages.isEmpty()) {
             errorMessages.add(0, ERROR_HEADER);
             return errorMessages;
@@ -159,10 +189,128 @@ public class UserValidation {
         }
     }
 
+    /**
+     * method validates values of password while changing user password action
+     * and adds validation error messages into returned
+     * list if parameters are incorrect or don't match expected limits or regex
+     *
+     * @return list of validation errors or empty list
+     */
+    public List<String> validateNewPassword(String password1, String password2, String password3) {
+        ArrayList<String> errorMessages = new ArrayList<>();
+        ConfigurationManager configurationManager = new ConfigurationManager();
+        boolean successful = true;
+
+        // passwords validation
+        String passwordRegex = configurationManager.getProperty(PASSWORD_REGEX);
+        Pattern pPassword = Pattern.compile(passwordRegex);
+        Matcher mPassword1 = pPassword.matcher(password1);
+        Matcher mPassword2 = pPassword.matcher(password2);
+
+        if (password1 == null || password1.isEmpty()) {
+            successful = false;
+            errorMessages.add(PASSWORD_IS_EMPTY);
+        } else if (!mPassword1.matches()) {
+            successful = false;
+            errorMessages.add(PASSWORD_IS_FALSE);
+        }
+
+        if (password2 == null || password2.isEmpty()) {
+            successful = false;
+            errorMessages.add(PASSWORD_EMPTY);
+        } else if (password3 == null || password3.isEmpty()) {
+            successful = false;
+            errorMessages.add(PASSWORD_EMPTY);
+        } else if (!password2.equals(password3)) {
+            successful = false;
+            errorMessages.add(PASSWORDS_NOT_EQUAL);
+        } else if (!mPassword2.matches()) {
+            successful = false;
+            errorMessages.add(PASSWORD_FALSE);
+        }
+
+        // adding error title if list has already contained errors
+        if (successful) {
+            return errorMessages;
+        } else {
+            errorMessages.add(0, ERROR_VALID_HEADER);
+            return errorMessages;
+        }
+    }
+
+    /**
+     * method validates values of password, type of key word and its value while password recovering action
+     * and adds validation error messages into returned
+     * list if parameters are incorrect or don't match expected limits or regex
+     *
+     * @return list of validation errors or empty list
+     */
+    public List<String> validatePasswordRecovData(String email, String keyWordType, String keyWordValue) {
+        ArrayList<String> errorMessages = new ArrayList<>();
+        ConfigurationManager configurationManager = new ConfigurationManager();
+        boolean successful = true;
+
+        //email validation
+        String emailRegex = configurationManager.getProperty(EMAIL_REGEX);
+        Pattern pEmail = Pattern.compile(emailRegex);
+        Matcher mEmail = pEmail.matcher(email);
+
+        if (email == null || email.isEmpty()) {
+            successful = false;
+            errorMessages.add(EMAIL_EMPTY);
+        } else if (!mEmail.matches()) {
+            successful = false;
+            errorMessages.add(EMAIL_FALSE);
+        }
+
+        // validation of type of key word
+        String keyWordNotChosen = configurationManager.getProperty(KEY_WORD_TYPE_UNCHOSEN);
+        String keyWord1 = configurationManager.getProperty(KEY_WORD_TYPE_MAIDEN_NAME);
+        String keyWord2 = configurationManager.getProperty(KEY_WORD_TYPE_PASS_NO);
+        String keyWord3 = configurationManager.getProperty(KEY_WORD_TYPE_PET_NICK);
+        String keyWord4 = configurationManager.getProperty(KEY_WORD_TYPE_CODEWORD);
+
+        if (keyWordType == null || keyWordType.isEmpty() || keyWordType.equals(keyWordNotChosen)) {
+            successful = false;
+            errorMessages.add(KEY_WORD_TYPE_EMPTY);
+        } else if (!(keyWord1.equals(keyWordType) || keyWord2.equals(keyWordType) || keyWord3.equals(keyWordType) || keyWord4.equals(keyWordType))) {
+            successful = false;
+            errorMessages.add(KEY_WORD_TYPE_WRONG);
+        }
+
+        //validation of key word value
+        String keyWordRegex = configurationManager.getProperty(KEY_WORD_REGEX);
+        Pattern pKeyWord = Pattern.compile(keyWordRegex);
+        Matcher mKeyWord = pKeyWord.matcher(keyWordValue);
+        if (keyWordValue == null || keyWordValue.isEmpty()) {
+            successful = false;
+            errorMessages.add(KEY_WORD_EMPTY);
+        } else if (!mKeyWord.matches()) {
+            successful = false;
+            errorMessages.add(KEY_WORD_WRONG);
+        }
+
+        // adding error title if list has already contained errors
+        if (successful) {
+            return errorMessages;
+        } else {
+            errorMessages.add(0, ERROR_VALID_HEADER);
+            return errorMessages;
+        }
+    }
+
+    /**
+     * method validates values of parameters, common for several other methods
+     * and adds validation error messages into returned
+     * list if parameters are incorrect or don't match expected limits or regex
+     *
+     * @return list of validation errors or empty list
+     */
     private ArrayList<String> checkCommonUserParameters(String login, String name, String surname, String email, String bDay, String bMonth, String bYear, String sex, String country, String city, String keyWordType, String keyWord) {
         ArrayList<String> errorMessages = new ArrayList<>();
         ConfigurationManager configurationManager = new ConfigurationManager();
-        // 1. login
+
+        // 1. login validation
         String loginRegex = configurationManager.getProperty(LOGIN_REGEX);
         Pattern pLogin = Pattern.compile(loginRegex);
         Matcher mLogin = pLogin.matcher(login);
@@ -172,7 +320,7 @@ public class UserValidation {
             errorMessages.add(LOGIN_FALSE);
         }
 
-        // 3. name
+        // 2. name validation
         String nameRegex = configurationManager.getProperty(NAME_REGEX);
         Pattern pName = Pattern.compile(nameRegex);
         Matcher mName = pName.matcher(name);
@@ -183,7 +331,7 @@ public class UserValidation {
             errorMessages.add(NAME_FALSE);
         }
 
-        // 4. surname
+        // 3. surname validation
         Pattern pSurname = Pattern.compile(nameRegex);
         Matcher mSurname = pSurname.matcher(name);
 
@@ -193,7 +341,7 @@ public class UserValidation {
             errorMessages.add(SURNAME_FALSE);
         }
 
-        // 5. email
+        // 4. email validation
         String emailRegex = configurationManager.getProperty(EMAIL_REGEX);
         Pattern pEmail = Pattern.compile(emailRegex);
         Matcher mEmail = pEmail.matcher(email);
@@ -204,8 +352,7 @@ public class UserValidation {
             errorMessages.add(EMAIL_FALSE);
         }
 
-        //6. date
-        // реализовать для високосных годов февраля и тд
+        //5. date validation
         if (bDay == null || bDay.isEmpty()) {
             errorMessages.add(DAY_EMPTY);
         } else {
@@ -247,6 +394,7 @@ public class UserValidation {
             }
         }
 
+        //6. sex validation
         String sexUnchosen = configurationManager.getProperty(SEX_UNCHOSEN);
         String male = configurationManager.getProperty(MALE);
         String female = configurationManager.getProperty(FEMALE);
@@ -257,6 +405,7 @@ public class UserValidation {
             errorMessages.add(SEX_WRONG_TYPE);
         }
 
+        //7. type of key word validation
         String keyWordNotChosen = configurationManager.getProperty(KEY_WORD_TYPE_UNCHOSEN);
         String keyWord1 = configurationManager.getProperty(KEY_WORD_TYPE_MAIDEN_NAME);
         String keyWord2 = configurationManager.getProperty(KEY_WORD_TYPE_PASS_NO);
@@ -269,6 +418,7 @@ public class UserValidation {
             errorMessages.add(KEY_WORD_TYPE_WRONG);
         }
 
+        //8. key word validation
         String keyWordRegex = configurationManager.getProperty(KEY_WORD_REGEX);
         Pattern pKeyWord = Pattern.compile(keyWordRegex);
         Matcher mKeyWord = pKeyWord.matcher(keyWord);
@@ -278,7 +428,7 @@ public class UserValidation {
             errorMessages.add(KEY_WORD_WRONG);
         }
 
-
+        //9. country validation
         String geoRegex = configurationManager.getProperty(GEO_REGEX);
         if (!(country == null || country.isEmpty())) {
             Pattern pCountry = Pattern.compile(geoRegex);
@@ -287,6 +437,8 @@ public class UserValidation {
                 errorMessages.add(COUNTRY_FALSE);
             }
         }
+
+        //10. city validation
         if (!(city == null || city.isEmpty())) {
             Pattern pCity = Pattern.compile(geoRegex);
             Matcher mCity = pCity.matcher(city);
@@ -296,95 +448,5 @@ public class UserValidation {
         }
 
         return errorMessages;
-    }
-
-    public List<String> validateNewPassword(String password1, String password2, String password3) {
-        ArrayList<String> errorMessages = new ArrayList<>();
-        ConfigurationManager configurationManager = new ConfigurationManager();
-        boolean successful = true;
-
-        String passwordRegex = configurationManager.getProperty(PASSWORD_REGEX);
-        Pattern pPassword = Pattern.compile(passwordRegex);
-        Matcher mPassword1 = pPassword.matcher(password1);
-        Matcher mPassword2 = pPassword.matcher(password2);
-
-        if (password1 == null || password1.isEmpty()) {
-            successful = false;
-            errorMessages.add(PASSWORD_IS_EMPTY);
-        } else if (!mPassword1.matches()) {
-            successful = false;
-            errorMessages.add(PASSWORD_IS_FALSE);
-        }
-
-        if (password2 == null || password2.isEmpty()) {
-            successful = false;
-            errorMessages.add(PASSWORD_EMPTY);
-        } else if (password3 == null || password3.isEmpty()) {
-            successful = false;
-            errorMessages.add(PASSWORD_EMPTY);
-        } else if (!password2.equals(password3)) {
-            successful = false;
-            errorMessages.add(PASSWORDS_NOT_EQUAL);
-        } else if (!mPassword2.matches()) {
-            successful = false;
-            errorMessages.add(PASSWORD_FALSE);
-        }
-
-        if (successful) {
-            return errorMessages;
-        } else {
-            errorMessages.add(0, ERROR_VALID_HEADER);
-            return errorMessages;
-        }
-    }
-
-    public List<String> validatePasswordRecovData(String email, String keyWordType, String keyWordValue) {
-        ArrayList<String> errorMessages = new ArrayList<>();
-        ConfigurationManager configurationManager = new ConfigurationManager();
-        boolean successful = true;
-
-        String emailRegex = configurationManager.getProperty(EMAIL_REGEX);
-        Pattern pEmail = Pattern.compile(emailRegex);
-        Matcher mEmail = pEmail.matcher(email);
-
-        if (email == null || email.isEmpty()) {
-            successful = false;
-            errorMessages.add(EMAIL_EMPTY);
-        } else if (!mEmail.matches()) {
-            successful = false;
-            errorMessages.add(EMAIL_FALSE);
-        }
-
-        String keyWordNotChosen = configurationManager.getProperty(KEY_WORD_TYPE_UNCHOSEN);
-        String keyWord1 = configurationManager.getProperty(KEY_WORD_TYPE_MAIDEN_NAME);
-        String keyWord2 = configurationManager.getProperty(KEY_WORD_TYPE_PASS_NO);
-        String keyWord3 = configurationManager.getProperty(KEY_WORD_TYPE_PET_NICK);
-        String keyWord4 = configurationManager.getProperty(KEY_WORD_TYPE_CODEWORD);
-
-        if (keyWordType == null || keyWordType.isEmpty() || keyWordType.equals(keyWordNotChosen)) {
-            successful = false;
-            errorMessages.add(KEY_WORD_TYPE_EMPTY);
-        } else if (!(keyWord1.equals(keyWordType) || keyWord2.equals(keyWordType) || keyWord3.equals(keyWordType) || keyWord4.equals(keyWordType))) {
-            successful = false;
-            errorMessages.add(KEY_WORD_TYPE_WRONG);
-        }
-
-        String keyWordRegex = configurationManager.getProperty(KEY_WORD_REGEX);
-        Pattern pKeyWord = Pattern.compile(keyWordRegex);
-        Matcher mKeyWord = pKeyWord.matcher(keyWordValue);
-        if (keyWordValue == null || keyWordValue.isEmpty()) {
-            successful = false;
-            errorMessages.add(KEY_WORD_EMPTY);
-        } else if (!mKeyWord.matches()) {
-            successful = false;
-            errorMessages.add(KEY_WORD_WRONG);
-        }
-
-        if (successful) {
-            return errorMessages;
-        } else {
-            errorMessages.add(0, ERROR_VALID_HEADER);
-            return errorMessages;
-        }
     }
 }

@@ -32,7 +32,7 @@ public class AdminDAOImpl extends AbstractDAO<Integer, User> implements AdminDAO
 
     private static final String SQL_SELECT_ALL_COMPLAINTS = "SELECT sql_calc_found_rows posts_id, users_id, authors.login, authors.avatar, authors.role,  description, published_time, \n" +
             "complaints.status, processed_time, decision, moderator_id, coalesce(moder.login, 0) AS moderator_login, moder.role AS moderator_role, moder.avatar AS moderator_avatar \n" +
-            "FROM likeit_db.complaints LEFT JOIN users AS authors ON users_id=authors.id LEFT JOIN users AS moder ON moderator_id=moder.id\n" +
+            "FROM complaints LEFT JOIN users AS authors ON users_id=authors.id LEFT JOIN users AS moder ON moderator_id=moder.id\n" +
             "ORDER BY published_time DESC LIMIT ?,?;";
 
     private static final String SQL_UPDATE_USER_ROLE = "UPDATE users SET role=? WHERE login=?  AND role!='admin';";

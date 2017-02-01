@@ -40,7 +40,7 @@
                 <div class="page_block photo_block">
                     <div class="page_avatar">
                         <div class="photo-wrap">
-                            <img class="avatar" src="${requestScope.user.avatar}" alt="no_photo"/>
+                            <img class="avatar" src="${requestScope.user.avatar}" alt="no_photo" onerror="src='/img/no_avatar.jpg'">
                         </div>
                         <c:choose>
                             <c:when test="${requestScope.user.id eq sessionScope.user.id}">

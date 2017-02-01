@@ -6,7 +6,11 @@ import by.alesnax.qanda.pagination.PaginatedList;
 import by.alesnax.qanda.service.impl.ServiceException;
 
 /**
- * Created by alesnax on 05.12.2016.
+ * UserService contains list of methods that should be implemented to provide linking between command
+ * and DAO layers. Methods processes data before calling DAO layer and process result of returned parameters
+ * from DAO layer before sending back to command layer.
+ *
+ * @author Aliaksandr Nakhankou
  */
 public interface UserService {
     void registerNewUser(String login, String password, String name, String surname, String email, String bDay, String bMonth, String bYear, String sex, String country, String city, String status, String keyWordType, String keyWordValue) throws ServiceException;
@@ -34,4 +38,6 @@ public interface UserService {
     PaginatedList<Friend> findBestUsers(int startUser, int usersPerPage) throws ServiceException;
 
     String recoverPassword(String email, String keyWordType, String keyWordValue) throws ServiceException;
+
+    boolean deleteAccount(int userId, String password) throws ServiceException;
 }

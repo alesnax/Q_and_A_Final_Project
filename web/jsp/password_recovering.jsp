@@ -134,6 +134,7 @@
 
                         <div class="form_element submit_button">
                             <fmt:message bundle="${loc}" key="pass_recov.form.submit_button" var="submit_v"/>
+                            <span class="errormsg"><fmt:message bundle="${loc}" key="account_recovering.form.msg_oblig"/></span>
                             <input type="submit" value="${submit_v}" class="recover_button">
                             <div class="cancel_submit_block" >
                                 <fmt:message bundle="${config}" key="command.go_to_current_page" var="go_to_current_page"/>

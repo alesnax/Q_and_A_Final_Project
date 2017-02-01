@@ -8,24 +8,40 @@ import by.alesnax.qanda.resource.ConfigurationManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+//static import
 import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 /**
- * Created by alesnax on 08.12.2016.
+ * Command has method that redirects user to profile page if attribute 'user' exists  in session, otherwise
+ * it redirects returns value of go_to_categories command
  *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
-
 public class GotoMainPageCommand implements Command {
 
+    /**
+     * Names of attributes and parameters taking from request or session
+     */
     private static final String USER_ROLE = "user";
     private static final String MODERATOR_ROLE = "moderator";
     private static final String ADMIN_ROLE = "admin";
     private static final String USER_ATTR = "user";
 
+    /**
+     * Keys of commands that is located in config.properties file
+     */
     private static final String GO_TO_CATEGORIES_COMMAND = "command.go_to_quest_categories";
     private static final String GO_TO_PROFILE_COMMAND = "command.go_to_profile";
 
+    /**
+     * Command has method that redirects user to profile page if attribute 'user' exists  in session, otherwise
+     * it redirects returns value of go_to_categories command
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of go_to_categories command if user doesn't exist in session, go_to_profile command otherwise
+     */
     @Override
     public String execute(HttpServletRequest request) {
         String page;

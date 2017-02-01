@@ -17,35 +17,60 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+//static import
 import static by.alesnax.qanda.constant.CommandConstants.ERROR_REQUEST_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 /**
- * Created by alesnax on 06.01.2017.
+ * Class process changing password. Access for authorised users.
+ * If validation failed, user will be redirected to previous page with error message as an attribute.
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
 public class ChangePasswordCommand implements Command {
     private static Logger logger = LogManager.getLogger(UserAuthorizationCommand.class);
 
+    /**
+     * Names of attributes and parameters taking from request or session
+     */
     private static final String OLD_PASSWORD = "OldPasswd";
     private static final String NEW_PASSWORD = "Passwd";
     private static final String REPEATED_NEW_PASSWORD = "PasswdAgain";
     private static final String USER = "user";
 
+    /**
+     * Keys of error or success messages attributes that are located in config.properties file
+     */
     private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String ERROR_PASSWORD_VALIDATION_ATTR = "attr.password_validation_error";
     private static final String SUCCESS_CHANGE_MSG_ATTR = "attr.success_profile_change_msg";
 
+    /**
+     * Keys of error messages located in loc.properties file
+     */
     private static final String SUCCESS_CHANGE_PASSWORD_MESSAGE = "edit_profile.message.change_password_saved";
     private static final String WRONG_PASSWORD_FOUND = "edit_profile.message.wrong_password_found";
 
+    /**
+     * Keys of commands that is located in config.properties file
+     */
     private static final String GO_TO_EDIT_PROFILE_COMMAND = "command.go_to_edit_profile";
 
-
+    /**
+     * process changing password and validates passwords,
+     * calls process method from service layer, if success scenario - returns to previous page with
+     * success message , otherwise returns with error messages to previous page or error page
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of page where processed request will be send back
+     * (redirection to previous page if success scenario or authorization page or error page otherwise)
+     */
     @Override
     public String execute(HttpServletRequest request) {
-        String page = null;
+        String page;
         ConfigurationManager configurationManager = new ConfigurationManager();
         String password1 = request.getParameter(OLD_PASSWORD);
         String password2 = request.getParameter(NEW_PASSWORD);
@@ -80,7 +105,7 @@ public class ChangePasswordCommand implements Command {
             } catch (ServiceException e) {
                 logger.log(Level.ERROR, e);
                 String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                request.setAttribute(errorMessageAttr, e.getMessage());
+                request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
                 page = ERROR_REQUEST_TYPE;
             }
         } else {

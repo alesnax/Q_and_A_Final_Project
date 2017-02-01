@@ -8,16 +8,21 @@ import by.alesnax.qanda.resource.ConfigurationManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import static by.alesnax.qanda.constant.CommandConstants.POSTS_PER_PAGE;
-import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
+//static import
+import static by.alesnax.qanda.constant.CommandConstants.*;
 
 /**
- * Created by alesnax on 15.01.2017.
+ * Command has method that redirects user to go_to_complaints command and put attribute into session which
+ * opens complaint processing block, access for command is only for users with ADMIN or MODERATOR role,
+ * otherwise user will be redirected to start page
  *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
 public class GotoComplaintProcessCommand implements Command {
-
+    /**
+     * Names of attributes and parameters taking from request or session
+     */
     private static final String USER = "user";
     private static final String USER_ROLE = "user";
     private static final String MODERATOR_ROLE = "moderator";
@@ -26,20 +31,36 @@ public class GotoComplaintProcessCommand implements Command {
     private static final String USER_ID_ATTR = "user_id";
     private static final String PROCESSED_POST_ID_ATTR = "process_post_id";
     private static final String PROCESSED_USER_ID_ATTR = "process_author_id";
+
+    /**
+     * Keys of error or success messages attributes and page_no attributes that are located in config.properties file
+     */
     private static final String PAGE_NO = "attr.page_no";
     private static final String PAGE_NO_QUERY_PART = "command.page_query_part";
-
-
+    private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
     private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
+
+    /**
+     * Keys of error or success messages in loc.properties file
+     */
     private static final String WARN_LOGIN_BEFORE_WATCH_PROFILE = "warn.login_before_watch_profile";
+    private static final String UNDEFINED_COMMAND_MESSAGE = "error.error_msg.undefined_command";
+
+    /**
+     * Keys of commands that are located in config.properties file
+     */
     private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
     private static final String GO_TO_PROFILE_COMMAND = "command.go_to_profile";
     private static final String GO_TO_COMPLAINTS = "command.go_to_complaints";
 
-    private static final String UNDEFINED_COMMAND_MESSAGE = "error.error_msg.undefined_command";
-    private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
-
-
+    /**
+     * Process redirecting to complaints.jsp and putting attribute into session which shows complaints processing block,
+     * method checks if attribute user exists in session, and it's role is ADMIN or MODERATOR,
+     * otherwise redirects to authorization or profile page with error message.
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of redirection to go_to_complaints command if success scenario or authorization page or profile page otherwise)
+     */
     @Override
     public String execute(HttpServletRequest request) {
         String page;
@@ -61,12 +82,12 @@ public class GotoComplaintProcessCommand implements Command {
                 case MODERATOR_ROLE:
                     String postId = request.getParameter(POST_ID_ATTR);
                     String authorId = request.getParameter(USER_ID_ATTR);
-                    int pageNo = 1;
+                    int pageNo = FIRST_PAGE_NO;
                     String pageNoAttr = configurationManager.getProperty(PAGE_NO);
                     if (request.getParameter(pageNoAttr) != null) {
                         pageNo = Integer.parseInt(request.getParameter(pageNoAttr));
-                        if (pageNo < 1) {
-                            pageNo = 1;
+                        if (pageNo < FIRST_PAGE_NO) {
+                            pageNo = FIRST_PAGE_NO;
                         }
                     }
                     session.setAttribute(PROCESSED_POST_ID_ATTR, postId);

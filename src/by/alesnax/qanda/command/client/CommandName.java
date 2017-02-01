@@ -1,5 +1,11 @@
 package by.alesnax.qanda.command.client;
 
+/**
+ * Specifies names of commands which should be processed in {@code Controller}
+ *
+ * @author alesnax
+ */
+
 public enum CommandName {
 	ADD_ANSWER,
 	ADD_COMPLAINT,
@@ -20,6 +26,7 @@ public enum CommandName {
 	FIND_BEST_QUESTIONS,
 	FIND_BEST_USERS,
 	FOLLOW_USER,
+	DELETE_ACCOUNT,
 	DELETE_POST,
 	GO_TO_ADMINS_AND_MODERATORS,
 	GO_TO_ALL_USERS,
@@ -56,8 +63,4 @@ public enum CommandName {
 	STOP_USER_BAN,
 	USER_AUTHORIZATION,
 	UPLOAD_FILE
-
-
-
-
 }

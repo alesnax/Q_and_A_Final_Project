@@ -11,7 +11,11 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 /**
- * Created by alesnax on 08.12.2016.
+ * Class-Listener that initialise connection pool while application start and destroy pool when
+ * application stops.
+ *
+ * @author Aliaksandr Nakhankou
+ * @see javax.servlet.ServletContextListener
  *
  */
 @WebListener

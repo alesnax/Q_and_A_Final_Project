@@ -10,23 +10,56 @@ import by.alesnax.qanda.command.impl.user.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class contains HashMaps of command names as a key and related implementation of Command.
+ * There are 4 HashMaps for 4 user roles.
+ * Class is singleton, and there is putting command entries while first initialization of class.
+ * There is method getCommand() which returns Command if its exists for accessed role.
+ *
+ * @author alesnax
+ * @see CommandName
+ * @see Command
+ */
+
+
 public final class CommandHelper {
+    /**
+     * Roles that defines map of commands provided for each role
+     */
     private static final String GUEST_ROLE = "guest";
     private static final String USER_ROLE = "user";
     private static final String MODERATOR_ROLE = "moderator";
     private static final String ADMIN_ROLE = "admin";
 
+    /**
+     * Returns the CommandHelper object associated with the current Java application.
+     * Method of class <code>CommandHelper</code> is instance
+     * method and must be invoked with respect to the current CommandHelper object.
+     *
+     * @return  the <code>CommandHelper</code> object associated with the current
+     *          Java application.
+     */
+    public static CommandHelper getInstance() {
+        return INSTANCE;
+    }
 
-
+    /**
+     * 4 maps that will contain entries of {@code CommandName} object as a key and {@code Command} object as a value
+     */
     private Map<CommandName, Command> guestCommands = new HashMap<>();
     private Map<CommandName, Command> userCommands = new HashMap<>();
     private Map<CommandName, Command> moderatorCommands = new HashMap<>();
     private Map<CommandName, Command> adminCommands = new HashMap<>();
 
-
+    /**
+     * Instance of CommandHelper class
+     */
     private static final CommandHelper INSTANCE = new CommandHelper();
 
-
+    /**
+     * Don't let anyone instantiate this class.
+     * While first initialization puts entries of CommandName and Command into 4 {@code HashMap} maps for each user role
+     */
     private CommandHelper() {
         guestCommands.put(CommandName.ADD_ANSWER, new AddAnswerCommand());
         guestCommands.put(CommandName.ADD_QUESTION, new AddQuestionCommand());
@@ -70,7 +103,7 @@ public final class CommandHelper {
         userCommands.put(CommandName.RATE_POST, new RatePostCommand());
         userCommands.put(CommandName.REMOVE_FOLLOWING_USER, new RemoveFollowingUserCommand());
         userCommands.put(CommandName.UPLOAD_FILE, new UploadFileCommand());
-
+        userCommands.put(CommandName.DELETE_ACCOUNT, new DeleteAccountCommand());
 
         moderatorCommands.putAll(userCommands);
         moderatorCommands.put(CommandName.ADD_COMPLAINT_DECISION, new AddComplaintDecisionCommand());
@@ -84,22 +117,25 @@ public final class CommandHelper {
         moderatorCommands.put(CommandName.GO_TO_PROCESS_COMPLAINT, new GotoComplaintProcessCommand());
         moderatorCommands.put(CommandName.STOP_USER_BAN, new StopUserBanCommand());
 
-
         adminCommands.putAll(moderatorCommands);
         adminCommands.put(CommandName.GO_TO_ADMINS_AND_MODERATORS, new GotoAdminsAndModeratorsCommand());
         adminCommands.put(CommandName.CHANGE_USER_ROLE, new ChangeUserRoleCommand());
         adminCommands.put(CommandName.CREATE_NEW_CATEGORY, new CreateNewCategoryCommand());
         adminCommands.put(CommandName.GO_TO_CATEGORY_CREATION, new GotoCategoryCreationCommand());
         adminCommands.put(CommandName.CLOSE_CATEGORY, new CloseCategoryCommand());
-
-
-
     }
 
+    /**
+     * Defines {@code Command} command found in map chosen by user role and finds a value to command name as a key
+     *
+     * @param role the value of user role which defines map with commands for this role
+     * @param name the value of command name that will be used as a key to find related command
+     * @return command that relates to command name or null if command is not found
+     */
     public Command getCommand(String role, String name) {
         name = name.replace('-', '_').toUpperCase();
         CommandName commandName;
-        Command command = null;
+        Command command;
 
             commandName = CommandName.valueOf(name);
             switch (role) {
@@ -120,9 +156,5 @@ public final class CommandHelper {
                     break;
             }
         return command;
-    }
-
-    public static CommandHelper getInstance() {
-        return INSTANCE;
     }
 }

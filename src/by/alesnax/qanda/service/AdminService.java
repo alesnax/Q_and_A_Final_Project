@@ -7,7 +7,12 @@ import by.alesnax.qanda.pagination.PaginatedList;
 import by.alesnax.qanda.service.impl.ServiceException;
 
 /**
- * Created by alesnax on 05.12.2016.
+ * AdminService contains list of methods that should be implemented to provide linking between command
+ * and DAO layers. Methods processes data before calling DAO layer and process result of returned parameters
+ * from DAO layer before sending back to command layer.
+ * Methods processes operations related with user with ADMIN role.
+ *
+ * @author Aliaksandr Nakhankou
  */
 public interface AdminService {
     PaginatedList<Friend> findManagingUsers(int startUser, int usersPerPage) throws ServiceException;

@@ -11,24 +11,53 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+//static import
 import static by.alesnax.qanda.constant.CommandConstants.*;
 
 /**
- * Created by alesnax on 03.01.2017.
+ * Command has method that redirects user to previous page and put attribute into session which
+ * opens post correction block, access for command is only for authorised users,
+ * otherwise user will be redirected to start page
  *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
-@SuppressWarnings("Duplicates")
+
 public class GotoPostCorrectionCommand implements Command {
     private static Logger logger = LogManager.getLogger(GotoPostCorrectionCommand.class);
 
+    /**
+     * Names of attributes and parameters taking from request or session
+     */
     private static final String USER = "user";
     private static final String POST_ID_ATTR = "post_id";
+
+    /**
+     * Keys of attributes in config.properties file, used for opening post correction block or error messages
+     */
     private static final String EDIT_POST_ID_ATTR = "attr.edit_post_id";
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
-    private static final String GO_TO_MAIN_PAGE_COMMAND = "command.go_to_main_page";
+
+    /**
+     * Key of error message in loc.properties file
+     */
     private static final String ILLEGAL_OPERATION = "warn.illegal_operation_on_other_profile";
 
+    /**
+     * Key of go_to_main_page command that is located in config.properties file
+     */
+    private static final String GO_TO_MAIN_PAGE_COMMAND = "command.go_to_main_page";
+
+    /**
+     * method redirects to previous page and putting attribute into session which opens post correction block,
+     * method checks if attribute user exists in session,
+     * otherwise redirects to authorization page with error message.
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of page where processed request will be send back
+     * (redirection to moderated_categories page if success scenario or error or authorization page or profile page otherwise)
+     */
     @Override
     public String execute(HttpServletRequest request) {
         String page;
@@ -53,7 +82,7 @@ public class GotoPostCorrectionCommand implements Command {
             } catch (NumberFormatException e) {
                 logger.log(Level.ERROR, e);
                 String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                request.setAttribute(errorMessageAttr, e.getMessage());
+                request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
                 page = ERROR_REQUEST_TYPE;
             }
         }

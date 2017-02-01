@@ -13,26 +13,41 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
-import java.util.List;
-
+//static import
 import static by.alesnax.qanda.constant.CommandConstants.*;
 
 /**
- * Created by alesnax on 13.12.2016.
+ * Class contains method that process finding best users and returns it as attribute set into request.
+ * Returns previous query.
  *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
 public class FindBestUsersCommand implements Command {
     private static Logger logger = LogManager.getLogger(FindBestUsersCommand.class);
 
-    private static final String BEST_USERS_ATTR = "attr.best_users";
-    private static final String BEST_USERS_PATH = "path.page.best_users";
+    /**
+     * Keys of error messages, page number and best_users attributes that are located in config.properties file
+     */
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String PAGE_NO = "attr.page_no";
+    private static final String BEST_USERS_ATTR = "attr.best_users";
 
+    /**
+     * Key of page that is located in config.properties file
+     */
+    private static final String BEST_USERS_PATH = "path.page.best_users";
 
-    @SuppressWarnings("Duplicates")
+    /**
+     * method processes finding best users and returns it as attribute set into request.
+     * Method calls method from service layer, which returns list of posts which is set as attribute into request
+     * and can throw ServiceException after which method returns value of error500 page.
+     * Returns value of best_users page or error500 page if exception will be caught.
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of best_users page
+     */
     @Override
     public String execute(HttpServletRequest request) {
         String page;
@@ -41,15 +56,15 @@ public class FindBestUsersCommand implements Command {
 
         UserService userService = ServiceFactory.getInstance().getUserService();
         try {
-            int pageNo = 1;
-            int startUser = 0;
+            int pageNo = FIRST_PAGE_NO;
+            int startUser = START_ITEM_NO;
             String pageNoAttr = configurationManager.getProperty(PAGE_NO);
             if (request.getParameter(pageNoAttr) != null) {
                 pageNo = Integer.parseInt(request.getParameter(pageNoAttr));
-                if (pageNo < 1) {
-                    pageNo = 1;
+                if (pageNo < FIRST_PAGE_NO) {
+                    pageNo = FIRST_PAGE_NO;
                 }
-                startUser = (pageNo - 1) * USERS_PER_PAGE;
+                startUser = (pageNo - FIRST_PAGE_NO) * USERS_PER_PAGE;
             }
             PaginatedList<Friend> bestUsers = userService.findBestUsers(startUser, USERS_PER_PAGE);
             String bestUsersAttr = configurationManager.getProperty(BEST_USERS_ATTR);

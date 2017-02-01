@@ -15,7 +15,6 @@
 <html>
 <head>
     <meta charset="utf-8">
-
     <title>
         <fmt:message bundle="${loc}" key="categories.title"/>
     </title>
@@ -41,6 +40,11 @@
                         </div>
                     </div>
                 </c:if>
+                <c:if test="${empty sessionScope.user}">
+                    <div class="welcome_block">
+                        <fmt:message bundle="${loc}" key="categories.explain_block"/>
+                    </div>
+                </c:if>
                 <div class="page_block wide_block post_content">
                     <div class="page_main_header_block">
                         <h1>
@@ -52,7 +56,7 @@
                     <div class="page_block wide_block post_content">
                         <div class="cat_img">
                             <a href="${go_to_category}${cat.id}" class="cat_image">
-                                <img class="cat_mini_img" src="${cat.imageLink}" alt="some">
+                                <img class="cat_mini_img" src="${cat.imageLink}" alt="some" onerror="src='/img/no_avatar.jpg'">
                             </a>
                         </div>
                         <div class="cat_description">

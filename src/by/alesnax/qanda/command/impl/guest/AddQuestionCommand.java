@@ -21,33 +21,59 @@ import static by.alesnax.qanda.constant.CommandConstants.*;
 
 
 /**
- * Created by alesnax on 13.12.2016.
+ * Class process adding new question. Access for authorised users, otherwise user will redirected to
+ * authorisation page. If validation failed, user will be redirected to previous page with error message as an attribute.
+ * If user unregistered or validation failed, content of question will be saved in session as attributes.
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
 public class AddQuestionCommand implements Command {
     private static Logger logger = LogManager.getLogger(AddQuestionCommand.class);
 
+    /**
+     * Names of attributes and parameters taking from request or session
+     */
     private static final String TITLE = "question_title";
     private static final String CATEGORY = "category";
     private static final String DESCRIPTION = "description";
-
     private static final String USER_ATTR = "user";
 
-    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet"; //роверить
+    /**
+     * Keys of error or success messages attributes that are located in config.properties file
+     */
+    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
     private static final String QUESTION_VALIDATION_FAILED_ATTR = "attr.question_validation_failed";
-    private static final String WARN_LOGIN_BEFORE_ADD = "common.add_new_question.error_msg.login_before_add";
     private static final String QUEST_ADDED_STATUS_ATTR = "attr.question_added_status";
-    private static final String QUEST_ADDED_STATUS = "common.add_new_question.status_added";
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
 
+    /**
+     * Keys of error or success messages in loc.properties file
+     */
+    private static final String WARN_LOGIN_BEFORE_ADD = "common.add_new_question.error_msg.login_before_add";
+    private static final String QUEST_ADDED_STATUS = "common.add_new_question.status_added";
+
+    /**
+     * Keys of commands that are located in config.properties file
+     */
     private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
 
+    /**
+     * process adding new question. Checks if attribute user exists in session and validates question content,
+     * calls process method from service layer, if success scenario - returns to previous page, otherwise
+     * returns to error , authorisation or previous page with error message
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of page where processed request will be send back
+     * (redirection to previous page if success scenario or authorization page or error page otherwise)
+     */
     @Override
     public String execute(HttpServletRequest request) {
         String title = request.getParameter(TITLE);
         String category = request.getParameter(CATEGORY);
         String description = request.getParameter(DESCRIPTION);
 
-        String page = null;
+        String page;
         ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession session = request.getSession(true);
 
@@ -71,8 +97,8 @@ public class AddQuestionCommand implements Command {
                     page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
                 } catch (ServiceException e) {
                     logger.log(Level.ERROR, e);
-                    String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
-                    request.setAttribute(errorMessageAttr, e.getMessage());
+                    String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
+                    request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
                     page = ERROR_REQUEST_TYPE;
                 }
             } else {

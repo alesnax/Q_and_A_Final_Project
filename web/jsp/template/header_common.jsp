@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib prefix="ales" uri="customtags" %>
+<%@ taglib uri="customtags" prefix="ales" %>
 
 <fmt:setLocale value="${sessionScope.locale}"/>
 <fmt:setBundle basename="resources.locale" var="loc"/>
@@ -27,7 +27,7 @@
     <div class="topbar_wrapper">
         <div class="fl_l ">
             <fmt:message bundle="${config}" key="command.go_to_main_page" var="go_to_main"/>
-            <a href="..${go_to_main}">
+            <a href="${go_to_main}">
                 <img class="header_logo" src="${main_logo}" alt="Q&A logo"/>
             </a>
         </div>

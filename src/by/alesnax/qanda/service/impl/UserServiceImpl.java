@@ -15,18 +15,24 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.List;
+
 import java.util.Random;
 
 /**
- * Created by alesnax on 05.12.2016.
+ * UserService contains list of implemented methods to provide linking between command
+ * and DAO layers. Methods processes data before calling DAO layer and process result of returned parameters
+ * from DAO layer before sending back to command layer.
  *
+ * @author Aliaksandr Nakhankou
  */
 public class UserServiceImpl implements UserService {
     private static Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
     private static Random rand = new Random();
 
+    /**
+     * parameters for new password generation
+     */
     private static final int RANDOM_LENGTH_MIN = 15;
     private static final int RANDOM_RANGE = 15;
     private static final int CHAR_MIN_LOWERCASE = 97;
@@ -35,6 +41,14 @@ public class UserServiceImpl implements UserService {
     private static final int CHAR_RANGE_LETTER = 26;
     private static final int CHAR_RANGE_DIGIT = 10;
 
+    /**
+     * takes user info from DAO
+     *
+     * @param userId id of finding user
+     * @param sessionUserId id of session user
+     * @return user
+     * @throws ServiceException  if exception while processing SQL query and connection will be caught
+     */
     @Override
     public User findUserById(int userId, int sessionUserId) throws ServiceException {
         WrappedConnection connection = null;
@@ -61,6 +75,15 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    /**
+     * takes list of users who marked as following by user from DAO layer
+     *
+     * @param userId id of session user
+     * @param startUser number of first item to be taken from database
+     * @param usersPerPage number of items to be taken from database
+     * @return container with list of users who marked as following and pagination parameters
+     * @throws ServiceException  if exception while processing SQL query and connection will be caught
+     */
     @Override
     public PaginatedList<Friend> findFriends(int userId, int startUser, int usersPerPage) throws ServiceException {
         WrappedConnection connection = null;
@@ -87,6 +110,15 @@ public class UserServiceImpl implements UserService {
         return friends;
     }
 
+    /**
+     * takes list of follower users from DAO layer
+     *
+     * @param userId id of session user
+     * @param startUser number of first item to be taken from database
+     * @param usersPerPage number of items to be taken from database
+     * @return container with list of follower users and pagination parameters
+     * @throws ServiceException ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public PaginatedList<Friend> findFollowers(int userId, int startUser, int usersPerPage) throws ServiceException {
         WrappedConnection connection = null;
@@ -113,6 +145,13 @@ public class UserServiceImpl implements UserService {
         return followers;
     }
 
+    /**
+     * send parameters of user id to DAO to be deleted from followers table
+     *
+     * @param removedUserId id of user to be removed from follower status
+     * @param userId id who wants to remove note about following user
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public void removeUserFromFollowing(int removedUserId, int userId) throws ServiceException {
         WrappedConnection connection = null;
@@ -133,6 +172,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * method sends id of users to DAO to insert new note about following user
+     *
+     * @param followingUserId id of following user
+     * @param userId id of user who follows other
+     * @throws ServiceException if exception while processing SQL query and connection will be caught or if note has already exists in the database
+     */
     @Override
     public void addFollower(int followingUserId, int userId) throws ServiceException {
         WrappedConnection connection = null;
@@ -155,6 +201,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * method send user info to DAO to be updated
+     *
+     * @return updated user info
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public User changeUserInfo(int userId, String login, String name, String surname, String email, String bDay, String bMonth, String bYear, String sex, String country, String city, String status, String keyWordType, String keyWordValue) throws ServiceException {
         WrappedConnection connection = null;
@@ -179,6 +231,15 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    /**
+     * sends old and new password to DAO layer for updating
+     *
+     * @param userId id of user
+     * @param password1 old password
+     * @param password2 new password
+     * @return true if updated, false if old password doesn't match with database password
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public boolean changePassword(int userId, String password1, String password2) throws ServiceException {
         WrappedConnection connection = null;
@@ -201,6 +262,13 @@ public class UserServiceImpl implements UserService {
         return updated;
     }
 
+    /**
+     * sends new path of user's avatar to DAO layer
+     *
+     * @param userId user id
+     * @param avatarPath path to avatar
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public void uploadUserAvatar(int userId, String avatarPath) throws ServiceException {
         WrappedConnection connection = null;
@@ -222,6 +290,13 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    /**
+     * sends value of updated language to DAO
+     *
+     * @param userId id of user
+     * @param language new value of user language
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public void changeUserLanguage(int userId, String language) throws ServiceException {
         WrappedConnection connection = null;
@@ -242,6 +317,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * takes list of best users from DAO layer
+     *
+     * @param startUser number of first item to be taken from database
+     * @param usersPerPage number of items to be taken from database
+     * @return container with list of best users and pagination parameters
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public PaginatedList<Friend> findBestUsers(int startUser, int usersPerPage) throws ServiceException {
         WrappedConnection connection = null;
@@ -268,6 +351,16 @@ public class UserServiceImpl implements UserService {
         return bestUsers;
     }
 
+    /**
+     * method generates new password and calls DAO method for updating if key word type and its value match
+     * eith value in database
+     *
+     * @param email user email
+     * @param keyWordType type of word for password recovering
+     * @param keyWordValue value of key word
+     * @return new password if keyword password was changed, null otherwise
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public String recoverPassword(String email, String keyWordType, String keyWordValue) throws ServiceException {
         WrappedConnection connection = null;
@@ -293,7 +386,39 @@ public class UserServiceImpl implements UserService {
         return changedPassword;
     }
 
+    /**
+     *
+     * @param userId if of deleted user
+     * @param password of deleted user
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
+    @Override
+    public boolean deleteAccount(int userId, String password) throws ServiceException {
+        WrappedConnection connection = null;
+        boolean deleted = false;
+        try {
+            connection = ConnectionPool.getInstance().takeConnection();
+            UserDAOImpl userDAO = new UserDAOImpl(connection);
+            deleted = userDAO.updateUserStateToDeleted(userId, password);
+        } catch (ConnectionPoolException e) {
+            throw new ServiceException("Error while taking connection from ConnectionPool", e);
+        }  catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        } finally {
+            try {
+                ConnectionPool.getInstance().returnConnection(connection);
+            } catch (ConnectionPoolException e) {
+                logger.log(Level.ERROR, "Error while returning connection to ConnectionPool", e);
+            }
+        }
+        return deleted;
+    }
 
+    /**
+     * sends new user info to DAO layer for creating note about user
+     *
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public void registerNewUser(String login, String password, String name, String surname, String email, String bDay,
                                 String bMonth, String bYear, String sex, String country, String city, String status, String keyWordType, String keyWordValue) throws ServiceException {
@@ -317,6 +442,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * sends user's email and password to DAO for authorisation checking
+     *
+     * @param email of user
+     * @param password of user
+     * @return user info if password and email matchs, null otherwise
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public User userAuthorization(String email, String password) throws ServiceException {
         WrappedConnection connection = null;
@@ -343,13 +476,17 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    /**
+     * generates new password when user forget it
+     *
+     * @return value of new password
+     */
     private String generateNewPassword() {
         StringBuilder sb = new StringBuilder();
         int passLen = RANDOM_LENGTH_MIN + rand.nextInt(RANDOM_RANGE);
 
-        int choice = 0;
         for (int i = 0; i < passLen; i++) {
-            choice = rand.nextInt(3) + 1;
+            int choice = rand.nextInt(3) + 1;
             if(choice == 1){
                 sb.append((char)(CHAR_MIN_UPPERCASE + rand.nextInt(CHAR_RANGE_LETTER)));
             } else if(choice == 2){

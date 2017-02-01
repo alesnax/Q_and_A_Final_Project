@@ -12,6 +12,12 @@ import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ *  Class-Filter that prevent forward access to jsp pages and redirect user to start page
+ *
+ *  @author Aliaksandr Nakhankou
+ *  @see Filter
+ */
 @WebFilter(urlPatterns = {"/jsp/*"},
         initParams = {@WebInitParam(name = "INDEX_PATH", value = "/index.jsp")})
 public class PageRedirectSecurityFilter implements Filter {

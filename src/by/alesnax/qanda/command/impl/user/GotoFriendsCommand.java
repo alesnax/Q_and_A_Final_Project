@@ -15,31 +15,55 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
+//static import
 import static by.alesnax.qanda.constant.CommandConstants.*;
 
 /**
- * Created by alesnax on 13.12.2016.
+ * Command has method that redirects to following users page if user authorised,
+ * and to authorisation page otherwise
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
 public class GotoFriendsCommand implements Command {
     private static Logger logger = LogManager.getLogger(GotoFriendsCommand.class);
 
+    /**
+     * Names of attributes and parameters taking from request or session
+     */
     private static final String USER = "user";
     private static final String FRIENDS = "friends";
+
+    /**
+     * Keys of attributes in config.properties file, used for pagination, error messages
+     */
     private static final String PAGE_NO = "attr.page_no";
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
-    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet"; //роверить
+    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
+
+    /**
+     * Key of error message in loc.properties file
+     */
     private static final String WARN_LOGIN_BEFORE_WATCH_PROFILE = "warn.login_before_watch_profile";
+
+    /**
+     * Keys of command and page that are located in config.properties file
+     */
     private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
     private static final String USER_FRIENDS_PATH= "path.page.friends";
 
-
-
-    @SuppressWarnings("Duplicates")
+    /**
+     *  Process redirecting to friends.jsp for authorised users,
+     *  and redirects to authorisation page otherwise.
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of page where processed request will be send back
+     * (redirection to following users page if success scenario or error or authorization page otherwise)
+     */
     @Override
     public String execute(HttpServletRequest request) {
-        String page = null;
+        String page;
         ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession session = request.getSession(true);
         QueryUtil.savePreviousQueryToSession(request);
@@ -53,15 +77,15 @@ public class GotoFriendsCommand implements Command {
         } else {
             try {
                 UserService userService = ServiceFactory.getInstance().getUserService();
-                int pageNo = 1;
-                int startUser = 0;
+                int pageNo = FIRST_PAGE_NO;
+                int startUser = START_ITEM_NO;
                 String pageNoAttr = configurationManager.getProperty(PAGE_NO);
                 if (request.getParameter(pageNoAttr) != null) {
                     pageNo = Integer.parseInt(request.getParameter(pageNoAttr));
-                    if (pageNo < 1) {
-                        pageNo = 1;
+                    if (pageNo < FIRST_PAGE_NO) {
+                        pageNo = FIRST_PAGE_NO;
                     }
-                    startUser = (pageNo - 1) * USERS_PER_PAGE;
+                    startUser = (pageNo - FIRST_PAGE_NO) * USERS_PER_PAGE;
                 }
                 PaginatedList<Friend> friends = userService.findFriends(user.getId(), startUser, USERS_PER_PAGE);
                 request.setAttribute(FRIENDS, friends);
@@ -70,7 +94,7 @@ public class GotoFriendsCommand implements Command {
             } catch (ServiceException e) {
                 logger.log(Level.ERROR, e);
                 String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                request.setAttribute(errorMessageAttr, e.getMessage());
+                request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
                 page = ERROR_REQUEST_TYPE;
             }
         }

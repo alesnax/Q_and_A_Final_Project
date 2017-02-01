@@ -8,23 +8,41 @@ import by.alesnax.qanda.resource.ConfigurationManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+//static import
 import static by.alesnax.qanda.constant.CommandConstants.REQUEST_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 /**
- * Created by alesnax on 10.12.2016.
+ * Command implements method that redirects user to user_authorisation.jsp if user attribute
+ * doesn't exist in session otherwise it redirects to go_to_profile command
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
-
 public class GotoAuthorizationPageCommand implements Command {
+    /**
+     * User attribute taking from session
+     */
     private static final String USER_ATTR = "user";
 
+    /**
+     * Keys of returned command or page which value are located in config.properties file
+     */
     private static final String AUTHORIZATION_PAGE = "path.page.user_authorization";
     private static final String GO_TO_PROFILE_COMMAND = "command.go_to_profile";
 
+    /**
+     * checks if attribute 'user' exists in session and returns value of authorization page.
+     * Otherwise return redirecting to go_to_profile command
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of authorization page (if user exists in session), value of go_to_profile command string otherwise
+     */
+    @SuppressWarnings("Duplicates")
     @Override
     public String execute(HttpServletRequest request) {
-        String page = null;
+        String page;
         ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession session = request.getSession(true);
         QueryUtil.savePreviousQueryToSession(request);

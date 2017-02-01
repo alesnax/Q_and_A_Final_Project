@@ -11,6 +11,13 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+/**
+ * Class QueryUtil process query from request and put it into session or return previous query from session,
+ * that can point address for redirecting for some commands.
+ *
+ * @author alesnax
+ * @see HttpServletRequest
+ */
 public class QueryUtil {
     private static Logger logger = LogManager.getLogger(QueryUtil.class);
 
@@ -22,15 +29,31 @@ public class QueryUtil {
     private static final char VALUE_SEPARATOR = '=';
     private static final String INDEX_PAGE = "path.page.index";
 
+    /**
+     * Don't let anyone instantiate this class.
+     */
     private QueryUtil() {
     }
 
+    /**
+     * Save query to session as REV_QUERY attribute, so it could help to find previous query for
+     * commands which should be redirected to the same page after processing some actions
+     *
+     * @param request
+     */
     public static void savePreviousQueryToSession(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         String query = logQuery(request);
         session.setAttribute(PREV_QUERY, query);
     }
 
+    /**
+     * Return attribute PREV_QUERY from session which contains query of previous request.
+     * Check if previous query exists and returns query with index page in such case.
+     *
+     * @param request
+     * @return query value of previous request or query with index page if query doesn't exist
+     */
     public static String getPreviousQuery(HttpServletRequest request) {
         ConfigurationManager configurationManager = new ConfigurationManager();
         String prevQuery = (String) request.getSession(false).getAttribute(PREV_QUERY);
@@ -40,6 +63,12 @@ public class QueryUtil {
         return prevQuery;
     }
 
+    /**
+     * Makes logging of query of request and returns it for following using
+     *
+     * @param request
+     * @return value request query
+     */
     public static String logQuery(HttpServletRequest request) {
         String query = createHttpQueryString(request);
         HttpSession session = request.getSession(false);
@@ -55,6 +84,11 @@ public class QueryUtil {
         return query;
     }
 
+    /**
+     * creates query from request
+     * @param request
+     * @return request query
+     */
     private static String createHttpQueryString(HttpServletRequest request) {
         StringBuffer url = request.getRequestURL();
         StringBuffer query = new StringBuffer();

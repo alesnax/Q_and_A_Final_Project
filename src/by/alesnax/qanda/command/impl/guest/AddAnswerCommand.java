@@ -16,37 +16,61 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+//static import
 import static by.alesnax.qanda.constant.CommandConstants.ERROR_REQUEST_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 /**
- * Created by alesnax on 10.01.2017.
+ * Class process adding new answer. Access for authorised users, otherwise user will redirected to
+ * authorisation page. If validation failed, user will be redirected to previous page with error message as an attribute.
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
-@SuppressWarnings("Duplicates")
 public class AddAnswerCommand implements Command {
     private static Logger logger = LogManager.getLogger(AddAnswerCommand.class);
-
+    /**
+     * Names of attributes and parameters taking from request or session
+     */
     private static final String QUESTION_ID = "question_id";
     private static final String CATEGORY_ID = "category_id";
     private static final String ANSWER_DESCRIPTION = "answer_description";
-
     private static final String USER_ATTR = "user";
 
-    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet"; //роверить
-    private static final String ANSWER_VALIDATION_FAILED_ATTR = "attr.answer_validation_failed";
-    private static final String WARN_LOGIN_BEFORE_ADD = "common.add_new_answer.error_msg.login_before_add";
+    /**
+     * Keys of error messages attributes that are located in config.properties file
+     */
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
+    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
+    private static final String ANSWER_VALIDATION_FAILED_ATTR = "attr.answer_validation_failed";
 
+    /**
+     * Key of error message located in loc.properties file
+     */
+    private static final String WARN_LOGIN_BEFORE_ADD = "common.add_new_answer.error_msg.login_before_add";
+
+    /**
+     * Keys of commands that is located in config.properties file
+     */
     private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
 
+    /**
+     * process adding new answer. Checks if attribute user exists in session and validates answer content,
+     * calls process method from service layer, if success scenario - returns to previous page, otherwise
+     * returns to error , authorisation or previous page with error message
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of page where processed request will be send back
+     * (redirection to previous page if success scenario or authorization page or error page otherwise)
+     */
     @Override
     public String execute(HttpServletRequest request) {
         String questionId = request.getParameter(QUESTION_ID);
         String categoryId = request.getParameter(CATEGORY_ID);
         String description = request.getParameter(ANSWER_DESCRIPTION);
 
-        String page = null;
+        String page;
         ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession session = request.getSession(true);
 
@@ -66,7 +90,7 @@ public class AddAnswerCommand implements Command {
                 } catch (ServiceException e) {
                     logger.log(Level.ERROR, e);
                     String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
-                    request.setAttribute(errorMessageAttr, e.getMessage());
+                    request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
                     page = ERROR_REQUEST_TYPE;
                 }
             } else {

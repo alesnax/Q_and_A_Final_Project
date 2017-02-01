@@ -87,12 +87,14 @@
 
                 </select>
                 <fmt:message bundle="${loc}" key="common.ask_form_block.textarea_placeholder" var="textarea_placeholder"/>
+                <fmt:message bundle="${loc}" key="common.ask_form_block.add_submit" var="add_submit"/>
                 <textarea class="q_form_place" name="description" rows="3" placeholder="${textarea_placeholder}"><c:out value="${sessionScope.get('description')}"/></textarea>
-                <input class="q_form_submit" type="submit" name="publish" value="publish"/>
+                <input class="q_form_submit" type="submit" value="${add_submit}"/>
             </form>
             <form action="/Controller" method="post">
+                <fmt:message bundle="${loc}" key="add_new_question.clean.submit" var="clean_submit" />
                 <input type="hidden" name="command" value="clean_question_form"/>
-                <input class="q_form_clean" type="submit" name="clean" value="clean"/>
+                <input class="q_form_clean" type="submit" value="${clean_submit}"/>
             </form>
         </div>
     </c:otherwise>

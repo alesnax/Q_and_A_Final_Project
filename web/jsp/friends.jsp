@@ -62,7 +62,7 @@
                                     <fmt:message bundle="${config}" key="command.go_to_profile" var="go_to_profile"/>
                                     <a href="${go_to_profile}${friend.id}" class="user_image">
                                         <p>
-                                            <img class="mini_img" src="${friend.avatar}" alt="avatar">
+                                            <img class="mini_img" src="${friend.avatar}" alt="avatar" onerror="src='/img/no_avatar.jpg'">
                                         </p>
                                     </a>
                                 </div>

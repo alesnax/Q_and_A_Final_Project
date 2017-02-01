@@ -10,6 +10,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebInitParam;
 
+/**
+ * Class-Filter that checks request character encoding for UTF-8 charset
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Filter
+ */
 @WebFilter(urlPatterns = {"/*"},
         initParams = {
                 @WebInitParam(name = "encoding", value = "UTF-8", description = "Encoding Param")})

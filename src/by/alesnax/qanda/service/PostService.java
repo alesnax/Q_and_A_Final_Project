@@ -9,7 +9,12 @@ import by.alesnax.qanda.service.impl.ServiceException;
 import java.util.List;
 
 /**
- * Created by alesnax on 05.12.2016.
+ * PostService contains list of methods that should be implemented to provide linking between command
+ * and DAO layers. Methods processes data before calling DAO layer and process result of returned parameters
+ * from DAO layer before sending back to command layer.
+ * Methods processes data related with Post or Category entities.
+ *
+ * @author Aliaksandr Nakhankou
  */
 public interface PostService {
     PaginatedList<Post> findBestAnswers(int userId, int startPost, int postsPerPage) throws ServiceException;

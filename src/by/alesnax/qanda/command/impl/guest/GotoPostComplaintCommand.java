@@ -4,44 +4,69 @@ import by.alesnax.qanda.command.Command;
 import by.alesnax.qanda.command.util.QueryUtil;
 import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
-import by.alesnax.qanda.service.PostService;
-import by.alesnax.qanda.service.ServiceFactory;
-import by.alesnax.qanda.service.impl.ServiceException;
-import by.alesnax.qanda.validation.PostValidation;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
+//static import
 import static by.alesnax.qanda.constant.CommandConstants.ERROR_REQUEST_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 /**
- * Created by alesnax on 03.01.2017.
+ * Command has method that redirects user to previous page and put attribute into session which
+ * opens post complaint block, access for command is only for authorised users,
+ * otherwise user will be redirected to authorisation page
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
-@SuppressWarnings("Duplicates")
 public class GotoPostComplaintCommand implements Command {
     private static Logger logger = LogManager.getLogger(GotoPostComplaintCommand.class);
 
+    /**
+     * Names of attributes and parameters taking from request or session
+     */
     private static final String POST_ID = "post_id";
     private static final String USER_ATTR = "user";
+
+    /**
+     * added attribute that let block for complaint to question with definite id be opened
+     */
     private static final String COMPLAINT_POST_ID_ATTR = "attr.complaint_id";
 
-
+    /**
+     * Keys of error attributes that are located in config.properties file
+     */
     private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
+
+    /**
+     * Keys of error messages in loc.properties file
+     */
     private static final String WARN_LOGIN_BEFORE_MAKE_OPERATION = "warn.login_before_make_operation";
 
+    /**
+     * Key of returned page that are located in config.properties file
+     */
     private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
 
+    /**
+     * method redirects user to previous page and put attribute into session which
+     * opens post complaint block, access for command is only for authorised users,
+     * otherwise user will be redirected to authorisation page.
+     * If post id incorrect user wil be redirected to error500 page
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of previous query or value of authorization page(when user not authorised)
+     * or error page, if post id is incorrect
+     */
     @Override
     public String execute(HttpServletRequest request) {
-
-        String page = null;
+        String page;
         ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession session = request.getSession(true);
 
@@ -62,7 +87,7 @@ public class GotoPostComplaintCommand implements Command {
             } catch (NumberFormatException e) {
                 logger.log(Level.ERROR, e);
                 String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                request.setAttribute(errorMessageAttr, e.getMessage());
+                request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
                 page = ERROR_REQUEST_TYPE;
             }
         }

@@ -8,8 +8,8 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="${pattern}"/>
         </Console>
-        <RollingFile name="RollingFile" fileName="C:\ALESNAX\Programming\HTP-6\QandA_Final_Project\web\logs\${name}.log"
-                     filePattern="logs/$${date:yyyy-MM}/${name}-%d{yyyy-MM-dd}-%i.log.gz">
+        <RollingFile name="RollingFile" fileName="C:\ALESNAX\Programming\HTP-6\QandA_Final_Project\out\artifacts\QandA_Final_Project_war_exploded\logs\${name}.log"
+                     filePattern="\logs\$${date:yyyy-MM}\${name}-%d{yyyy-MM-dd}-%i.log.gz">
             <PatternLayout>
                 <pattern>${pattern}</pattern>
             </PatternLayout>

@@ -21,18 +21,18 @@
     display: block;
     float: right;
     margin-top: 14px;
-    width: 32px;
+    width: 36px;
     height: 24px;
-    background: url(../img/usa_icon.png) no-repeat 0 -4px;
+    background: url(../img/britain_flag.png) no-repeat 0 0;
 }
 
 .ru_icon {
     display: block;
     float: right;
     margin-top: 14px;
-    width: 32px;
+    width: 36px;
     height: 24px;
-    background: url(../img/ru_icon.png) no-repeat 0 -4px;
+    background: url(../img/ru_icon.png) no-repeat 0 0;
 }
 
 .lang_links:hover,.h_link:hover {

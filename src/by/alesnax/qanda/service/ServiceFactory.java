@@ -5,13 +5,18 @@ import by.alesnax.qanda.service.impl.ModeratorServiceImpl;
 import by.alesnax.qanda.service.impl.PostServiceImpl;
 import by.alesnax.qanda.service.impl.UserServiceImpl;
 
+/**
+ * Singleton that returns instance for getting implementations of service classes
+ *
+ * @author Aliaksandr Nakhankou
+ */
 public class ServiceFactory {
     private static final ServiceFactory INSTANCE = new ServiceFactory();
 
     private UserService userService = new UserServiceImpl();
     private AdminService adminService = new AdminServiceImpl();
     private PostService postService = new PostServiceImpl();
-    private ModeratorService moderatorService= new ModeratorServiceImpl();
+    private ModeratorService moderatorService = new ModeratorServiceImpl();
 
     public static ServiceFactory getInstance() {
         return INSTANCE;
@@ -29,6 +34,7 @@ public class ServiceFactory {
         return postService;
     }
 
-    public ModeratorService getModeratorService() { return moderatorService; }
-
+    public ModeratorService getModeratorService() {
+        return moderatorService;
+    }
 }

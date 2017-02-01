@@ -72,12 +72,13 @@
                                 <div class="cat_img">
                                     <a href="${go_to_profile}${complaint.user.id}" class="cat_image">
                                         <p>
-                                            <img class="cat_mini_img" src="${complaint.user.avatar}" alt="some">
+                                            <img class="cat_mini_img" src="${complaint.user.avatar}" alt="some" onerror="src='/img/no_avatar.jpg'">
                                         </p>
                                     </a>
                                 </div>
                                 <div class="cat_description">
                                     <a href="${go_to_profile}${complaint.user.id}" class="cat_title">
+                                        <fmt:message bundle="${loc}" key="ban.text.c_athor"/>
                                         <c:out value="${complaint.user.login}"/>
                                     </a>
                                     <div class="cat_content">

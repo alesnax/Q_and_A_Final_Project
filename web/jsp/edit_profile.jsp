@@ -58,7 +58,7 @@
                     <div class="page_block photo_block">
                         <div class="page_avatar">
                             <div class="photo-wrap">
-                                <img class="avatar" src="${sessionScope.user.avatar}" alt="no_photo"/>
+                                <img class="avatar" src="${sessionScope.user.avatar}" alt="no_photo" onerror="src='/img/no_avatar.jpg'">
                             </div>
                         </div>
                     </div>
@@ -408,9 +408,9 @@
                             <fmt:message bundle="${loc}" key="edit_profile.user_data_form.submit_button" var="submit_v"/>
                             <input type="submit" value="${submit_v}" class="reg_button">
                             <div class="cancel_submit_block" >
-                                <fmt:message bundle="${config}" key="command.go_to_current_page" var="go_to_current_page"/>
+                                <fmt:message bundle="${config}" key="command.go_to_edit_profile" var="go_to_edit_profile"/>
                                 <fmt:message bundle="${loc}" key="common.post.cancel_text" var="cancel_text"/>
-                                <a class="cancel_link" href="${go_to_current_page}">${cancel_text}</a>
+                                <a class="cancel_link" href="${go_to_edit_profile}">${cancel_text}</a>
                             </div>
                         </div>
                     </form>
@@ -479,9 +479,57 @@
                             <fmt:message bundle="${loc}" key="edit_profile.change_password_form.submit_button" var="submit_val"/>
                             <input type="submit" value="${submit_val}" name="submit" class="reg_button">
                             <div class="cancel_submit_block" >
-                                <fmt:message bundle="${config}" key="command.go_to_current_page" var="go_to_current_page"/>
+                                <fmt:message bundle="${config}" key="command.go_to_edit_profile" var="go_to_edit_profile"/>
                                 <fmt:message bundle="${loc}" key="common.post.cancel_text" var="cancel_text"/>
-                                <a class="cancel_link" href="${go_to_current_page}">${cancel_text}</a>
+                                <a class="cancel_link" href="${go_to_edit_profile}">${cancel_text}</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+
+                <div class="create_account_form_block page_block red">
+                    <div class="upload_avatar_header">
+                        <h2>
+                            <fmt:message bundle="${loc}" key="delete_profile.change_lang_form.header"/>
+                        </h2>
+                    </div>
+                    <form onsubmit="return validateDeletedPassword('${sessionScope.locale}')" class="create_account_form"
+                           name="delete_account" action="/Controller" method="post">
+                        <input type="hidden" name="command" value="delete_account"/>
+                        <div class="form_element name">
+                            <c:if test="${not empty sessionScope.delete_account_error}">
+                                <c:forEach var="error" items="${sessionScope.delete_account_error}">
+                                        <span class="errormsg">
+                                            <fmt:message bundle="${loc}" key="${error}"/>
+                                        </span>
+                                </c:forEach>
+                                <c:remove var="delete_account_error" scope="session"/>
+                            </c:if>
+                        </div>
+                        <div class="form_element password_form_element">
+                            <label>
+                                <div class="left_form_text">
+                                    <fmt:message bundle="${loc}" key="edit_profile.delete_password_form.pass1.placeholder" var="pass_ph"/>
+                                    <strong>
+                                        <fmt:message bundle="${loc}" key="delete_profile.change_password_form.pass1.lab"/>
+                                        <span class="notice_star">*</span>
+                                    </strong>
+                                </div>
+                                <div class="right_form_field">
+                                    <input type="password" value name="password" id="delPasswd" class="" placeholder="${pass_ph}">
+                                    <span class="errormsg" id="error_0_delPasswd"></span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="form_element submit_button">
+                            <fmt:message bundle="${loc}" key="delete_profile.change_password_form.submit_button" var="del_submit_val"/>
+                            <input type="submit" value="${del_submit_val}" class="reg_button">
+                            <div class="cancel_submit_block" >
+                                <fmt:message bundle="${config}" key="command.go_to_edit_profile" var="go_to_edit_profile"/>
+                                <fmt:message bundle="${loc}" key="common.post.cancel_text" var="cancel_text"/>
+                                <a class="cancel_link" href="${go_to_edit_profile}">${cancel_text}</a>
                             </div>
                         </div>
                     </form>

@@ -1,9 +1,18 @@
 function validateLoginForm() {
     var result = true;
+    var locale = arguments[0];
     var FILL_FIELD = "You can't leave this empty.",
         SHORT_PWD = "Short passwords are easy to guess. Try one with at least 8 characters.",
         PWD_RULE = "Use at least one lowercase letter, one uppercase letter, one numeral, and 8 characters.",
         EMAIL_ERROR = "Please, check email, address should contain '@' and '.' symbols";
+
+    if (locale == 'ru') {
+        FILL_FIELD = "Поле не должно быть пустым.",
+            SHORT_PWD = "Короткие пароли легко отгадать, используйте пароль длиной не менее 8 символов.",
+            PWD_RULE = "Используйте минимум одну строчную, одну заглавную букву, одну цифру и длину пароля не менее 8 символов.",
+            EMAIL_ERROR = "Пожалуйста, проверьте email. Поле 'email' должно содержать символы '@' и '.' и быть корректным.";
+    }
+
 
 
     var errPwd1 = document.getElementById("error_0_Passwd"),

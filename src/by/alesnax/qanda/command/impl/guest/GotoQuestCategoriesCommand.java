@@ -13,28 +13,43 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 // static import
 import static by.alesnax.qanda.constant.CommandConstants.*;
 
-
 /**
- * Created by alesnax on 13.12.2016.
+ * Command has method that takes categories list from service layer , put it as an attribute to request and returns
+ * value of categories page or error_page if exception will be caught.
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
-
-
 public class GotoQuestCategoriesCommand implements Command {
     private static Logger logger = LogManager.getLogger(GotoQuestCategoriesCommand.class);
 
-    private static final String QUEST_CATEGORIES_PAGE = "path.page.categories";
+    /**
+     * Keys of attributes in config.properties file, used for pagination and finding list of categories at jsp page
+     */
     private static final String FULL_CATEGORIES_ATTR = "attr.request.full_categories";
     private static final String PAGE_NO = "attr.page_no";
+
+    /**
+     * Key of error attribute that is located in config.properties file
+     */
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
 
+    /**
+     * Key of returned page that is located in config.properties file
+     */
+    private static final String QUEST_CATEGORIES_PAGE = "path.page.categories";
 
-    @SuppressWarnings("Duplicates")
+    /**
+     * method takes categories list from service layer , put it as an attribute to request and returns
+     * value of categories page or error_page if exception will be caught.
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of categories page, or error page if exception will be caught
+     */
     @Override
     public String execute(HttpServletRequest request) {
         String page;
@@ -43,15 +58,15 @@ public class GotoQuestCategoriesCommand implements Command {
 
         PostService postService = ServiceFactory.getInstance().getPostService();
         try {
-            int pageNo = 1;
-            int startCategory = 0;
+            int pageNo = FIRST_PAGE_NO;
+            int startCategory = START_ITEM_NO;
             String pageNoAttr = configurationManager.getProperty(PAGE_NO);
             if (request.getParameter(pageNoAttr) != null) {
                 pageNo = Integer.parseInt(request.getParameter(pageNoAttr));
-                if (pageNo < 1) {
-                    pageNo = 1;
+                if (pageNo < FIRST_PAGE_NO) {
+                    pageNo = FIRST_PAGE_NO;
                 }
-                startCategory = (pageNo - 1) * CATEGORIES_PER_PAGE;
+                startCategory = (pageNo - FIRST_PAGE_NO) * CATEGORIES_PER_PAGE;
             }
 
             PaginatedList<Category> categories = postService.takeCategoriesList(startCategory, CATEGORIES_PER_PAGE);

@@ -11,19 +11,41 @@ import java.util.ArrayList;
 import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
+/**
+ * Class process changing locale for current session and returning to previous page.
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
+ */
 public class ChangeLanguageCommand implements Command {
+
+    /**
+     * Names of attributes and parameters taking from request or session
+     */
     private static final String LANGUAGE = "language";
     private static final String LOCALE = "locale";
     private static final String ENGLISH = "en";
     private static final String RUSSIAN = "ru";
 
+    /**
+     * Container for available locales
+     */
     private ArrayList<String> supportedLanguages = new ArrayList<>();
 
+    /**
+     * Constructor, there is putting in supportedLanguages list available locale values
+     */
     public ChangeLanguageCommand() {
         supportedLanguages.add(ENGLISH);
         supportedLanguages.add(RUSSIAN);
     }
 
+    /**
+     * changes current locale into session and returns value of previous query
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of previous page where processed request will be send back
+     */
     @Override
     public String execute(HttpServletRequest request) {
         String language = request.getParameter(LANGUAGE);

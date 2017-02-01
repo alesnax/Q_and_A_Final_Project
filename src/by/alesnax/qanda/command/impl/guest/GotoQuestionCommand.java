@@ -16,35 +16,61 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+//static import
 import static by.alesnax.qanda.constant.CommandConstants.*;
 
 /**
- * Created by alesnax on 04.01.2017.
+ * Command has method that takes list of question and answers to it from service layer , put it as an attribute to request and returns
+ * value of question page or error_page if exception will be caught.
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
 public class GotoQuestionCommand implements Command {
     private static Logger logger = LogManager.getLogger(GotoQuestionCommand.class);
-
+    /**
+     * Names of attributes taking from session or request
+     */
     private static final String USER = "user";
-    private static final String QUESTION_PAGE = "path.page.question";
-    private static final String QUESTION_ATTR = "attr.request.question";
     private static final String QUESTION_ID_ATTR = "question_id";
-    private static final String NO_SUCH_QUESTION_MESSAGE = "question.message.no_such_question_msg";
 
+    /**
+     * Keys of error attributes and request attribute that are located in config.properties file
+     */
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
+    private static final String QUESTION_ATTR = "attr.request.question";
+
+    /**
+     * Keys of error messages in loc.properties file
+     */
+    private static final String NO_SUCH_QUESTION_MESSAGE = "question.message.no_such_question_msg";
     private static final String PARAMETER_NOT_FOUND_MESSAGE = "error.error_msg.parameter_not_found";
+
+    /**
+     * Keys of returned command and page that are located in config.properties file
+     */
     private static final String GO_TO_MAIN_PAGE_COMMAND = "command.go_to_main_page";
+    private static final String QUESTION_PAGE = "path.page.question";
 
-
+    /**
+     * method takes list of question and answers to it from service layer , put it as an attribute to request and returns
+     * value of question page or error_page if exception will be caught.
+     * If question id is incorrect, user will be redirected to main page with error message.
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of question page or main page if question id is incorrect or error page
+     * if exception will be caught.
+     */
     @Override
     public String execute(HttpServletRequest request) {
-        String page = null;
+        String page;
         ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession session = request.getSession(true);
         QueryUtil.savePreviousQueryToSession(request);
 
         User user = (User) session.getAttribute(USER);
-        int userId = (user != null) ? user.getId() : 0;
+        int userId = (user != null) ? user.getId() : DEFAULT_USER_ID;
 
         String questionId = request.getParameter(QUESTION_ID_ATTR);
         if (questionId == null || questionId.isEmpty()) {

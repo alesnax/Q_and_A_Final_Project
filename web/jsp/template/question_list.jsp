@@ -152,7 +152,7 @@
                         <div class="post_author_left">
                             <a href="${go_to_profile}${post.user.id}" class="post_image">
                                 <p>
-                                    <img class="mini_img" src="${post.user.avatar}" alt="avatar">
+                                    <img class="mini_img" src="${post.user.avatar}" alt="avatar" onerror="src='/img/no_avatar.jpg'">
                                 </p>
                             </a>
                             <div class="post_header_info">
@@ -258,7 +258,7 @@
                     <div class="post_header_left">
                         <a href="${go_to_profile}${post.user.id}" class="post_image">
                             <p>
-                                <img class="mini_img" src="${post.user.avatar}" alt="avatar">
+                                <img class="mini_img" src="${post.user.avatar}" alt="avatar" onerror="src='/img/no_avatar.jpg'">
                             </p>
                         </a>
                         <div class="post_header_info">

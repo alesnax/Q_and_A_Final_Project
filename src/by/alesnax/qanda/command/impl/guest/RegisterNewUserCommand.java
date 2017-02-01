@@ -16,16 +16,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+//static import
 import static by.alesnax.qanda.constant.CommandConstants.ERROR_REQUEST_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 /**
- * Created by alesnax on 05.12.2016.
+ * Class has method that processes registration of  new user. Access for unauthorised users, otherwise user will redirected to
+ * profile page. If validation failed, user will be redirected to previous page with error message as an attribute.
+ * If validation failed, content of user info will be saved in session as attributes.
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
 public class RegisterNewUserCommand implements Command {
     private static Logger logger = LogManager.getLogger(RegisterNewUserCommand.class);
 
+    /**
+     * Names of attributes and parameters taking from request or session
+     */
     private static final String LOGIN = "login";
     private static final String PASSWORD = "Passwd";
     private static final String PASSWORD_COPY = "PasswdAgain";
@@ -42,20 +51,36 @@ public class RegisterNewUserCommand implements Command {
     private static final String KEY_WORD_TYPE = "key_word";
     private static final String KEY_WORD_VALUE = "key_word_value";
 
+    /**
+     * Keys of error or welcome messages attributes that are located in config.properties file
+     */
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String ERROR_USER_VALIDATION_ATTR = "attr.user_validation_error";
     private static final String WELCOME_MSG_ATTR = "attr.welcome_msg";
 
+    /**
+     * Keys of error or success messages in loc.properties file
+     */
     private static final String ERROR_USER_ALREADY_EXIST = "user_registration.error_msg.user_already_exists";
     private static final String WELCOME_NEW_USER_MSG = "guest.user_authorization_page.welcome_new_user_msg";
 
+    /**
+     * Keys of commands that are located in config.properties file
+     */
     private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
     private static final String GO_TO_REGISTRATION_COMMAND = "path.command.go_to_registration_page";
 
-
+    /**
+     * method processes registration of  new user. Access for unauthorised users, otherwise user will redirected to
+     * profile page. If validation failed, user will be redirected to previous page with error message as an attribute.
+     * If validation failed, content of user info will be saved in session as attributes.
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of go_to_authorization command(success scenario), go_to_registration, error page or profile page otherwise.
+     */
     @Override
     public String execute(HttpServletRequest request) {
-        String page = null;
+        String page;
         ConfigurationManager configurationManager = new ConfigurationManager();
 
         String login = request.getParameter(LOGIN);
@@ -102,7 +127,7 @@ public class RegisterNewUserCommand implements Command {
             } catch (ServiceException e) {
                 logger.log(Level.ERROR, e);
                 String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
-                request.setAttribute(errorMessageAttr, e.getMessage());
+                request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
                 page = ERROR_REQUEST_TYPE;
             }
         } else {

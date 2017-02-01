@@ -6,6 +6,7 @@ import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
 import by.alesnax.qanda.service.ModeratorService;
 import by.alesnax.qanda.service.ServiceFactory;
+import by.alesnax.qanda.service.impl.ModeratorServiceImpl;
 import by.alesnax.qanda.service.impl.ServiceException;
 import by.alesnax.qanda.validation.ComplaintValidation;
 
@@ -18,16 +19,22 @@ import javax.servlet.http.HttpSession;
 
 import java.util.List;
 
+//static import
 import static by.alesnax.qanda.constant.CommandConstants.ERROR_REQUEST_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 /**
- * Created by alesnax on 15.01.2017.
+ * Class has method processing adding new complaint decision.
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
 public class AddComplaintDecisionCommand implements Command {
     private static Logger logger = LogManager.getLogger(AddComplaintDecisionCommand.class);
-
+    /**
+     * Names of attributes and parameters taking from request or session
+     */
     private static final String POST_ID = "post_id";
     private static final String AUTHOR_ID = "author_id";
     private static final String COMPLAINT_DECISION = "complaint_decision";
@@ -37,16 +44,35 @@ public class AddComplaintDecisionCommand implements Command {
     private static final String INVALIDATED_DECISION = "invalidated_decision";
     private static final String USER_ATTR = "user";
 
+    /**
+     * Keys of error messages attributes that are located in config.properties file
+     */
     private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
     private static final String COMPLAINT_VALIDATION_FAILED_ATTR = "attr.complaint_validation_failed";
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
+
+    /**
+     * Keys of error messages in loc.properties file
+     */
     private static final String WARN_LOGIN_BEFORE_MAKE_OPERATION = "warn.login_before_make_operation";
 
+    /**
+     * Keys of commands that are located in config.properties file
+     */
     private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
 
+    /**
+     * process adding new complaint decision. Checks if attribute user exists in session and validates decision content,
+     * calls processing method from service layer, if success scenario - returns to previous page, otherwise
+     * returns to error , authorisation or previous page with error message
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of page where processed request will be send back
+     * (redirection to previous page if success scenario or authorization page or error page otherwise)
+     */
     @Override
     public String execute(HttpServletRequest request) {
-        String page = null;
+        String page;
         ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession session = request.getSession(true);
         QueryUtil.logQuery(request);
@@ -70,7 +96,7 @@ public class AddComplaintDecisionCommand implements Command {
                 } catch (ServiceException | NumberFormatException e) {
                     logger.log(Level.ERROR, e);
                     String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                    request.setAttribute(errorMessageAttr, e.getMessage());
+                    request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
                     page = ERROR_REQUEST_TYPE;
                 }
             } else {

@@ -41,4 +41,6 @@ public interface UserDAO {
     void updateUserLanguage(int userId, String language) throws DAOException;
 
     boolean updateUserPassWordByKeyword(String changedPassword, String email, String keyWordType, String keyWordValue) throws DAOException;
+
+    boolean updateUserStateToDeleted(int userId, String password) throws DAOException;
 }

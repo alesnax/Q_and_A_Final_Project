@@ -84,7 +84,7 @@
                 <div class="validation_block ">
                     <div class="fl_l left_block">
                         <div class="create_account_form_block page_block">
-                            <form onsubmit="return validateLoginForm()" class="create_account_form" id="create_account" name="create_account" action="/Controller" method="post">
+                            <form onsubmit="return validateLoginForm('${sessionScope.locale}')" class="create_account_form" id="create_account" name="create_account" action="/Controller" method="post">
                                 <input type="hidden" name="command" value="user_authorization">
                                 <div class="enter_form_element name">
                                     <c:if test="${not empty sessionScope.not_registered_user_yet}">

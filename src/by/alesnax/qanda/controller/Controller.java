@@ -7,18 +7,35 @@ import by.alesnax.qanda.resource.ConfigurationManager;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+// static import
 import static by.alesnax.qanda.constant.CommandConstants.REQUEST_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
+/**
+ * Class-Servlet. This class process request methods (GET, POST) and sends response back.
+ * This class extends HttpServlet and overrides doGet() and doPost() methods.
+ * Both of them are processed in processRequest() method,
+ * which checked and chooses implementation of Command, and forms response with new attributes,
+ * definite address and type of sending methods(forward() or sendRedirect()).
+ *
+ * @author alesnax
+ * @see javax.servlet.http.HttpServlet
+ */
+
+
 @WebServlet(name = "Controller",
-        urlPatterns = {"/Controller"})
+        urlPatterns = {"/Controller"},
+        initParams = {
+                @WebInitParam(name = "uploadFilesPath", value = "/img/")
+        })
 
 public class Controller extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -37,11 +54,25 @@ public class Controller extends HttpServlet {
         processRequest(request, response);
     }
 
+    /**
+     * Process request methods (GET, POST) and sends response back.
+     * Method checks and chooses implementation of Command which process request and forms response with new attributes,
+     * definite address and type of sending methods(forward() or sendRedirect()).
+     *
+     * @param request
+     *        Processed HttpServletRequest
+     *
+     * @param response
+     *        Processed HttpServletResponse
+     * @throws ServletException
+     * @throws IOException
+     */
+
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String page;
         ConfigurationManager configurationManager = new ConfigurationManager();
         CommandFactory client = new CommandFactory();
-        Command command = client.defineCommand(request, response);
+        Command command = client.defineCommand(request);
         page = command.execute(request);
         if (page != null) {
             String[] typePage = page.split(TYPE_PAGE_DELIMITER);

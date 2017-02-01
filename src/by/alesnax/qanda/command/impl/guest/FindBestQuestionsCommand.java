@@ -15,28 +15,49 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
+//static import
 import static by.alesnax.qanda.constant.CommandConstants.*;
 
 /**
- * Created by alesnax on 13.12.2016.
+ * Class contains method that process finding best questions and returns it as attribute set into request.
+ * Returns previous query.
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
 public class FindBestQuestionsCommand implements Command {
     private static Logger logger = LogManager.getLogger(FindBestQuestionsCommand.class);
-
+    /**
+     * User attribute taking from session
+     */
     private static final String USER = "user";
-    private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
 
+    /**
+     * Keys of error message, page number and best_answers attributes that are located in config.properties file
+     */
+    private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String BEST_QUESTIONS_ATTR = "attr.best_questions";
-    private static final String BEST_QUESTIONS_PATH = "path.page.best_questions";
     private static final String PAGE_NO = "attr.page_no";
 
+    /**
+     * Key of page that is located in config.properties file
+     */
+    private static final String BEST_QUESTIONS_PATH = "path.page.best_questions";
 
-    @SuppressWarnings("Duplicates")
+
+    /**
+     * method processes finding best questions and returns it as attribute set into request.
+     * Method calls method from service layer, which returns list of posts which is set as attribute into request
+     * and can throw ServiceException after which method returns value of error500 page.
+     * Returns value of best_question page or error500 page if exception will be caught.
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of best_question page
+     */
     @Override
     public String execute(HttpServletRequest request) {
-        String page = null;
+        String page;
         ConfigurationManager configurationManager = new ConfigurationManager();
         HttpSession session = request.getSession(true);
         QueryUtil.savePreviousQueryToSession(request);
@@ -46,15 +67,15 @@ public class FindBestQuestionsCommand implements Command {
 
         PostService postService = ServiceFactory.getInstance().getPostService();
         try {
-            int pageNo = 1;
-            int startPost = 0;
+            int pageNo = FIRST_PAGE_NO;
+            int startPost = START_ITEM_NO;
             String pageNoAttr = configurationManager.getProperty(PAGE_NO);
             if (request.getParameter(pageNoAttr) != null) {
                 pageNo = Integer.parseInt(request.getParameter(pageNoAttr));
-                if (pageNo < 1) {
-                    pageNo = 1;
+                if (pageNo < FIRST_PAGE_NO) {
+                    pageNo = FIRST_PAGE_NO;
                 }
-                startPost = (pageNo - 1) * POSTS_PER_PAGE;
+                startPost = (pageNo - FIRST_PAGE_NO) * POSTS_PER_PAGE;
             }
             PaginatedList<Post> questions = postService.findBestQuestions(userId, startPost, POSTS_PER_PAGE);
             String bestQuestionsAttr = configurationManager.getProperty(BEST_QUESTIONS_ATTR);
@@ -64,7 +85,7 @@ public class FindBestQuestionsCommand implements Command {
         } catch (ServiceException | NumberFormatException e) {
             logger.log(Level.ERROR, e);
             String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-            request.setAttribute(errorMessageAttr, e.getMessage());
+            request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
             page = ERROR_REQUEST_TYPE;
         }
         return page;

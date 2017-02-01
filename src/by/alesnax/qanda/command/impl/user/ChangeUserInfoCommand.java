@@ -17,16 +17,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+//static import
 import static by.alesnax.qanda.constant.CommandConstants.ERROR_REQUEST_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 /**
- * Created by alesnax on 06.01.2017.
+ * Class process changing info. Access for authorised users.
+ * If validation failed, user will be redirected to previous page with error message as an attribute.
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
 public class ChangeUserInfoCommand implements Command {
     private static Logger logger = LogManager.getLogger(ChangeUserInfoCommand.class);
 
+    /**
+     * Names of attributes and parameters taking from request or session
+     */
     private static final String USER = "user";
     private static final String LOGIN = "login";
     private static final String FIRST_NAME = "FirstName";
@@ -42,17 +50,34 @@ public class ChangeUserInfoCommand implements Command {
     private static final String KEY_WORD_TYPE = "key_word";
     private static final String KEY_WORD_VALUE = "key_word_value";
 
-
+    /**
+     * Keys of error messages attributes that are located in config.properties file
+     */
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String ERROR_USER_VALIDATION_ATTR = "attr.user_validation_error";
     private static final String SUCCESS_CHANGE_MSG_ATTR = "attr.success_profile_change_msg";
 
+    /**
+     * Keys of error messages located in loc.properties file
+     */
     private static final String ERROR_USER_ALREADY_EXIST = "user_registration.error_msg.user_already_exists";
     private static final String SUCCESS_CHANGE_MESSAGE = "edit_profile.message.change_saved";
 
+    /**
+     * Keys of commands that is located in config.properties file
+     */
     private static final String GO_TO_EDIT_PROFILE_COMMAND = "command.go_to_edit_profile";
 
-
+    /**
+     * process changing user info and validates it,
+     * calls process method from service layer, if success scenario - returns to previous page with
+     * success message , otherwise returns with error messages to previous page or error page
+     * If login or email duplicates, user will be redirected to previous page with error message
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of page where processed request will be send back
+     * (redirection to previous page if success scenario or authorization page or error page otherwise)
+     */
     @Override
     public String execute(HttpServletRequest request) {
         String page = null;
@@ -103,7 +128,7 @@ public class ChangeUserInfoCommand implements Command {
             } catch (ServiceException e) {
                 logger.log(Level.ERROR, e);
                 String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                request.setAttribute(errorMessageAttr, e.getMessage());
+                request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
                 page = ERROR_REQUEST_TYPE;
             }
         } else {

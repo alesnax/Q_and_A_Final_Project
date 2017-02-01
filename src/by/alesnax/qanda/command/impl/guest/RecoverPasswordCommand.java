@@ -7,7 +7,6 @@ import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
 import by.alesnax.qanda.service.ServiceFactory;
 import by.alesnax.qanda.service.UserService;
-import by.alesnax.qanda.service.impl.ServiceDuplicatedInfoException;
 import by.alesnax.qanda.service.impl.ServiceException;
 import by.alesnax.qanda.validation.UserValidation;
 import org.apache.logging.log4j.Level;
@@ -19,35 +18,62 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
+//static import
 import static by.alesnax.qanda.constant.CommandConstants.*;
 
 /**
- * Created by alesnax on 17.01.2017.
+ * Command has method for processing password recovering
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
 public class RecoverPasswordCommand implements Command {
     private static Logger logger = LogManager.getLogger(ChangeUserInfoCommand.class);
 
+    /**
+     * Names of attributes and parameters taking from request or session
+     */
     private static final String USER = "user";
     private static final String EMAIL = "email";
     private static final String KEY_WORD_TYPE = "key_word";
     private static final String KEY_WORD_VALUE = "key_word_value";
 
+    /**
+     * Keys of error or success messages attributes that are located in config.properties file
+     */
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String SUCCESS_CHANGE_PASSWORD_ATTR = "attr.success_password_change_msg";
+
+    /**
+     * Keys of error or success messages in loc.properties file
+     */
     private static final String SUCCESS_CHANGE_PASS_MESSAGE = "pass_recov.message.change_success";
     private static final String PASS_RECOV_VALIDATION_ATTR = "attr.pass_recov_validation_error";
-    private static final String TEMP_PASS_ATTR = "temp_password";
     private static final String FAILED_PASS_RECOVERING = "pass_recover.message.failed_recover";
 
+    /**
+     * Key of temporary password attribute that is located in config.properties file
+     */
+    private static final String TEMP_PASS_ATTR = "temp_password";
 
+    /**
+     * Keys of commands that are located in config.properties file
+     */
     private static final String GO_TO_PROFILE_COMMAND = "command.go_to_profile";
     private static final String GO_TO_PASS_RECOVERING_COMMAND = "command.go_to_password_recovery";
     private static final String GO_TO_AUTHORIZATION_COMMAND = "command.go_to_authorization_page";
 
-
+    /**
+     * method process password recovering, it validates values of recovering data attributes and
+     * calls method from service layer which returns new password that is put into session attribute
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of authorization page(success scenario), or password_recovering page if validation failed,
+     * profile page, if attribute 'user' exists in session or error500 page if exception was caught
+     */
     @Override
     public String execute(HttpServletRequest request) {
-        String page = null;
+        String page;
         ConfigurationManager configurationManager = new ConfigurationManager();
         String email = request.getParameter(EMAIL);
         String keyWordType = request.getParameter(KEY_WORD_TYPE);
@@ -84,7 +110,7 @@ public class RecoverPasswordCommand implements Command {
                 } catch (ServiceException e) {
                     logger.log(Level.ERROR, e);
                     String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                    request.setAttribute(errorMessageAttr, e.getMessage());
+                    request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
                     page = ERROR_REQUEST_TYPE;
                 }
             } else {

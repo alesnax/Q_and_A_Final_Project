@@ -15,7 +15,7 @@ import java.util.*;
  */
 
 public class UserDAOImpl extends AbstractDAO<Integer, User> implements UserDAO {
-    private static final String SQL_ADD_NEW_USER = "INSERT INTO `likeit_db`.`users` " +
+    private static final String SQL_ADD_NEW_USER = "INSERT INTO users " +
             "(`login`, `password`, `surname`, `name`, `email`, `birthday`, `sex`, `role`, `state`, `country`, `city`, `status`, `key_word`, `key_value`) " +
             "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 
@@ -23,13 +23,13 @@ public class UserDAOImpl extends AbstractDAO<Integer, User> implements UserDAO {
             "role, users.state, avatar, country, city, status, language, friends.state AS f_state, coalesce(bans.id, 0) AS ban_id, key_word, key_value\n" +
             "FROM users LEFT JOIN friends ON (users.id=friends.users_friend_id AND friends.users_id=users.id)" +
             "LEFT JOIN bans ON (users.id = bans.users_id AND current_timestamp() < bans.end)\n" +
-            "WHERE email=? AND password=? ";
+            "WHERE email=? AND password=? AND users.state='active';";
 
     private static final String SQL_USER_SELECT_ALL = "SELECT users.id, login, password, surname, name, email, birthday, sex, registration_date, key_word, key_value, " +
             "role, users.state, avatar, country, city, status, language, friends.state AS f_state, coalesce(bans.id, 0) AS ban_id\n" +
             "FROM users LEFT JOIN friends ON (users.id=friends.users_friend_id AND friends.users_id=?)" +
             "LEFT JOIN bans ON (users.id = bans.users_id AND current_timestamp() < bans.end)\n" +
-            "WHERE users.id=? ";
+            "WHERE users.id=? AND users.state='active';";
 
     private static final String SQL_SELECT_FOLLOWING_USERS = "SELECT sql_calc_found_rows users.id, login, name, surname, role, avatar, " +
             "users.status AS u_status, friends.state AS f_state, AVG(rates.value) AS rate\n" +
@@ -46,7 +46,7 @@ public class UserDAOImpl extends AbstractDAO<Integer, User> implements UserDAO {
 
     private static final String SQL_DELETE_USER_FROM_FRIENDS = "DELETE FROM friends WHERE users_id=? and users_friend_id=?;";
 
-    private static final String SQL_ADD_FOLLOWER = "INSERT INTO `likeit_db`.`friends` (`users_id`, `users_friend_id`) VALUES (?, ?);";
+    private static final String SQL_ADD_FOLLOWER = "INSERT INTO friends (`users_id`, `users_friend_id`) VALUES (?, ?);";
 
     private static final String SQL_UPDATE_USER_INFO = "UPDATE users SET login=?, surname=?, name=?, email=?, birthday=?, sex=?, country=?, city=?, status=?, key_word=?, key_value=? WHERE id=?;";
 
@@ -58,7 +58,7 @@ public class UserDAOImpl extends AbstractDAO<Integer, User> implements UserDAO {
 
     private static final String SQL_UPDATE_USER_LANGUAGE = "UPDATE users SET language=? WHERE id=?;";
 
-    private static final String SQL_UPDATE_USER_PASSWORD_BY_EMAIL_AND_KEY_WORD = "UPDATE users SET password=? WHERE email=? AND key_word=? AND key_value=?;";
+    private static final String SQL_UPDATE_USER_PASSWORD_BY_EMAIL_AND_KEY_WORD = "UPDATE users SET password=?, users.state='active' WHERE email=? AND key_word=? AND key_value=?;";
 
     private static final String SQL_SELECT_BEST_USERS = "SELECT sql_calc_found_rows users.id, users.name, users.surname, users.avatar, users.role, users.login, users.state, users.status AS u_status, AVG(rates.value) AS rate\n" +
             "FROM users LEFT JOIN posts ON users.id = posts.users_id LEFT JOIN rates ON (posts.id = rates.posts_id AND rates.users_id!=users.id)\n" +
@@ -73,6 +73,8 @@ public class UserDAOImpl extends AbstractDAO<Integer, User> implements UserDAO {
             "(SELECT COUNT(posts.id) FROM posts WHERE users_id=? AND type='answer' and status!='deleted') AS answer_count;";
 
     private static final String SQL_SELECT_FOUND_ROWS = "SELECT FOUND_ROWS();";
+
+    private static final String SQL_UPDATE_USER_STATE_TO_DELETED = "UPDATE users SET state='deleted', avatar='/img/no_avatar.jpg' WHERE id=? AND password=?;";
 
     private static final String ID = "id";
     private static final String LOGIN = "login";
@@ -322,6 +324,29 @@ public class UserDAOImpl extends AbstractDAO<Integer, User> implements UserDAO {
             st.setString(2, email);
             st.setString(3, User.KeyWord.fromValue(Integer.parseInt(keyWordType)).name().toLowerCase());
             st.setString(4, keyWordValue);
+
+            int count = st.executeUpdate();
+            if(count == 1){
+                updated = true;
+            }
+        } catch (SQLException e) {
+            throw new DAOException("SQL Error, check source", e);
+        } finally {
+            connection.closeStatement(st);
+        }
+        return updated;
+    }
+
+    @Override
+    public boolean updateUserStateToDeleted(int userId, String password) throws DAOException {
+
+        PreparedStatement st = null;
+        boolean updated = false;
+        String shaPassword = DigestUtils.sha1Hex(password);
+        try {
+            st = connection.prepareStatement(SQL_UPDATE_USER_STATE_TO_DELETED);
+            st.setInt(1, userId);
+            st.setString(2, shaPassword);
 
             int count = st.executeUpdate();
             if(count == 1){

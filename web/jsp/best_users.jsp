@@ -50,7 +50,7 @@
                         <div class="user_img">
                             <a href="${go_to_profile}${best_user.id}" class="user_image">
                                 <p>
-                                    <img class="mini_img" src="${best_user.avatar}" alt="avatar">
+                                    <img class="mini_img" src="${best_user.avatar}" alt="avatar" onerror="src='/img/no_avatar.jpg'">
                                 </p>
                             </a>
                         </div>

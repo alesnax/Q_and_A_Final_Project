@@ -36,7 +36,7 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
 
     private static final String SQL_SELECT_SINGLE_CATEGORY_INFO = "SELECT categories.id AS category_id, title_en, title_ru, categories.users_id AS moderator_id  FROM categories WHERE categories.id=?";
 
-    private static final String SQL_ADD_NEW_QUESTION = "INSERT INTO `likeit_db`.`posts` " +
+    private static final String SQL_ADD_NEW_QUESTION = "INSERT INTO posts " +
             "(`users_id`, `category_id`, `type`, `title`, `content`) VALUES (?,?,?,?,?);";  //+++
 
     private static final String SQL_ADD_NEW_ANSWER = "INSERT INTO posts (users_id, category_id, type, content, parent_id) VALUES (?,?,?,?,?);";
@@ -82,7 +82,7 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
             "FROM posts JOIN users ON users.id = posts.users_id JOIN categories ON posts.category_id=categories.id JOIN rates ON posts.id = rates.posts_id \n" +
             "LEFT JOIN posts AS parent ON posts.parent_id = parent.id LEFT JOIN rates AS r ON ( r.users_id=? AND posts.id=r.posts_id )\n" +
             "WHERE posts.type = 'answer' AND posts.status != 'deleted'\n" +
-            "GROUP BY posts.id ORDER BY mark DESC LIMIT ?, ?;";                      // ++++++++
+            "GROUP BY posts.id ORDER BY mark DESC LIMIT ?, ?;";
 
 
     private static final String SQL_SELECT_QUESTIONS_BY_CATEGORY = "SELECT sql_calc_found_rows posts.id, posts.users_id, posts.category_id, posts.type,   posts.title, posts.content, posts.status, cast(posts.published_time AS datetime) AS published_time, \n" +

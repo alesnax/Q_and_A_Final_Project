@@ -1,10 +1,12 @@
 package by.alesnax.qanda.constant;
 
 /**
- * Created by alesnax on 23.12.2016.
+ * Class contains constants that are frequently used in Command layer
+ *
+ * @author alesnax
  */
-public class CommandConstants {
 
+public class CommandConstants {
     public static final String TYPE_PAGE_DELIMITER = " ";
     public static final String RESPONSE_TYPE = "response";
     public static final String REQUEST_TYPE = "request";
@@ -14,7 +16,8 @@ public class CommandConstants {
     public static final int USERS_PER_PAGE = 6;
     public static final int BANS_PER_PAGE = 6;
     public static final int COMPLAINTS_PER_PAGE = 5;
-
-
+    public static final int FIRST_PAGE_NO = 1;
+    public static final int START_ITEM_NO = 0;
+    public static final int DEFAULT_USER_ID = 0;
 
 }

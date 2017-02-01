@@ -1,7 +1,6 @@
 package by.alesnax.qanda.command.impl.moderator;
 
 import by.alesnax.qanda.command.Command;
-import by.alesnax.qanda.command.impl.admin.CreateNewCategoryCommand;
 import by.alesnax.qanda.command.util.QueryUtil;
 import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
@@ -19,36 +18,27 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
-import static by.alesnax.qanda.constant.CommandConstants.ERROR_REQUEST_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
+//static import
+import static by.alesnax.qanda.constant.CommandConstants.*;
 
 /**
- * Created by alesnax on 24.01.2017.
+ * Class has method that processes correcting category. Access for authorised users with role ADMIN or MODERARTOR,
+ * otherwise user will redirected to authorisation page. If validation failed, user will
+ * be redirected to previous page with error message as an attribute.
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
 public class CorrectCategoryCommand implements Command {
     private static Logger logger = LogManager.getLogger(CorrectCategoryCommand.class);
 
+    /**
+     * Names of attributes and parameters taking from request or session
+     */
     private static final String USER = "user";
     private static final String USER_ROLE = "user";
     private static final String MODERATOR_ROLE = "moderator";
     private static final String ADMIN_ROLE = "admin";
-
-    private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
-    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
-    private static final String WARN_LOGIN_BEFORE_WATCH_PROFILE = "warn.login_before_watch_profile";
-    private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
-    private static final String GO_TO_PROFILE_COMMAND = "command.go_to_profile";
-    private static final String UNDEFINED_COMMAND_MESSAGE = "error.error_msg.undefined_command";
-    private static final String NO_MODERATOR_FOR_CATEGORY = "error.error_msg.no_such_user_for_category";
-    private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
-    private static final String SUCCESS_UPDATE_ATTR = "attr.success_category_create_message";
-    private static final String SUCCESS_UPDATE_MSG = "category.success_update_msg";
-    private static final String ERROR_CATEGORY_VALIDATION_ATTR = "attr.correct_category_validation_error";
-    private static final String SHOW_CATEGORY_CORRECTION_ATTR = "show_category_correction";
-    private static final String GO_TO_MODERATED_CATEGORIES = "command.go_to_moderated_categories";
-    private static final String PAGE_NO_QUERY_PART = "command.page_query_part";
-    private static final String PAGE_NO = "attr.page_no";
     private static final String CORRECTED_TITLE_EN = "corrected_title_en";
     private static final String CORRECTED_TITLE_RU = "corrected_title_ru";
     private static final String CORRECTED_DESCRIPTION_EN = "corrected_description_en";
@@ -56,8 +46,47 @@ public class CorrectCategoryCommand implements Command {
     private static final String CORRECTED_MODERATOR = "corrected_moderator";
     private static final String CATEGORY_STATUS = "category_status";
     private static final String CATEGORY_ID = "category_id";
+    private static final String SHOW_CATEGORY_CORRECTION_ATTR = "show_category_correction";
 
+    /**
+     * Keys of error or success messages attributes that are located in config.properties file
+     */
+    private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
+    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
+    private static final String SUCCESS_UPDATE_ATTR = "attr.success_category_create_message";
+    private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
+    private static final String ERROR_CATEGORY_VALIDATION_ATTR = "attr.correct_category_validation_error";
 
+    /**
+     * Keys of error or success messages in loc.properties file
+     */
+    private static final String WARN_LOGIN_BEFORE_WATCH_PROFILE = "warn.login_before_watch_profile";
+    private static final String UNDEFINED_COMMAND_MESSAGE = "error.error_msg.undefined_command";
+    private static final String NO_MODERATOR_FOR_CATEGORY = "error.error_msg.no_such_user_for_category";
+    private static final String SUCCESS_UPDATE_MSG = "category.success_update_msg";
+
+    /**
+     * Keys of page_no and page_no_query attributes that are located in config.properties file
+     */
+    private static final String PAGE_NO_QUERY_PART = "command.page_query_part";
+    private static final String PAGE_NO = "attr.page_no";
+
+    /**
+     * Keys of commands that are located in config.properties file
+     */
+    private static final String GO_TO_PROFILE_COMMAND = "command.go_to_profile";
+    private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
+    private static final String GO_TO_MODERATED_CATEGORIES = "command.go_to_moderated_categories";
+
+    /**
+     * method that processes correcting category. Access for authorised users with role ADMIN or MODERARTOR,
+     * otherwise user will redirected to authorisation page. If validation failed, user will
+     * be redirected to previous page with error message as an attribute.
+     * Moderator has less rights, they can't close category and correct moderator of category.
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of moderated category page or authorisation page or error500 page
+     */
     @Override
     public String execute(HttpServletRequest request) {
         String page;
@@ -80,16 +109,16 @@ public class CorrectCategoryCommand implements Command {
             String descriptionEn = request.getParameter(CORRECTED_DESCRIPTION_EN);
             String categoryStatus = request.getParameter(CATEGORY_STATUS);
             String categoryId = request.getParameter(CATEGORY_ID);
-            int pageNo = 1;
+            int pageNo = FIRST_PAGE_NO;
             String pageNoAttr = configurationManager.getProperty(PAGE_NO);
             if (request.getParameter(pageNoAttr) != null) {
                 pageNo = Integer.parseInt(request.getParameter(pageNoAttr));
-                if (pageNo < 1) {
-                    pageNo = 1;
+                if (pageNo < FIRST_PAGE_NO) {
+                    pageNo = FIRST_PAGE_NO;
                 }
             }
             CategoryValidation categoryValidation = new CategoryValidation();
-            List<String> validationErrors = null;
+            List<String> validationErrors;
 
             switch (role) {
                 case ADMIN_ROLE:
@@ -123,7 +152,7 @@ public class CorrectCategoryCommand implements Command {
                         } catch (ServiceException e) {
                             logger.log(Level.ERROR, e);
                             String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                            request.setAttribute(errorMessageAttr, e.getMessage());
+                            request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
                             page = ERROR_REQUEST_TYPE;
                         }
                     } else {

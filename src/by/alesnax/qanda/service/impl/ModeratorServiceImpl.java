@@ -15,13 +15,25 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Created by alesnax on 17.12.2016.
+ * Class contains list of implemented methods to provide linking between command
+ * and DAO layers. Methods processes data before calling DAO layer and process result of returned parameters
+ * from DAO layer before sending back to command layer.
+ * Methods processes operations related with user with MODERATOR or ADMIN role.
  *
+ * @author Aliaksandr Nakhankou
  */
 public class ModeratorServiceImpl implements ModeratorService {
     private static Logger logger = LogManager.getLogger(ModeratorServiceImpl.class);
 
-
+    /**
+     * method takes info about users from DAO layer method and checks if first item number less than
+     * last one from query, if true repeat query with corrected number of first item
+     *
+     * @param startUser number of first item to be taken from database
+     * @param usersPerPage number of items to be taken from database
+     * @return container with list of users and pagination parameters
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public PaginatedList<Friend> findAllUsers(int startUser, int usersPerPage) throws ServiceException {
         WrappedConnection connection = null;
@@ -48,6 +60,16 @@ public class ModeratorServiceImpl implements ModeratorService {
         return allUsers;
     }
 
+    /**
+     * method takes list of bans by definite moderator from DAO layer method and checks if first item number less than
+     * last one from query, if true repeat query with corrected number of first item
+     *
+     * @param userId id of moderator who banned users
+     * @param startBan number of first item to be taken from database
+     * @param bansPerPage number of items to be taken from database
+     * @return container with list of bans and pagination parameters
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public PaginatedList<Ban> findBannedUsersById(int userId, int startBan, int bansPerPage) throws ServiceException {
         WrappedConnection connection = null;
@@ -75,6 +97,12 @@ public class ModeratorServiceImpl implements ModeratorService {
 
     }
 
+    /**
+     * method send to DAO method id of ban for updating date of ban end to current date
+     *
+     * @param banId id of updating ban
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public void stopUserBan(int banId) throws ServiceException {
         WrappedConnection connection = null;
@@ -95,6 +123,14 @@ public class ModeratorServiceImpl implements ModeratorService {
         }
     }
 
+    /**
+     *
+     * @param userId moderator id
+     * @param startComplaint number of first item to be taken from database
+     * @param complaintsPerPage number of items to be taken from database
+     * @return container with list of complaints and pagination parameters
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public PaginatedList<Complaint> findComplaintsByModeratorId(int userId, int startComplaint, int complaintsPerPage) throws ServiceException {
         WrappedConnection connection = null;
@@ -121,6 +157,11 @@ public class ModeratorServiceImpl implements ModeratorService {
         return complaints;
     }
 
+    /**
+     * sends to DAO method parameters of complaint decision
+     *
+     * @throws ServiceException if exception while processing SQL query and connection will be caught or wrong status param
+     */
     @Override
     public void addComplaintDecision(int moderatorId, int complaintPostId, int complaintAuthorId, String decision, int status) throws ServiceException {
         WrappedConnection connection = null;
@@ -147,6 +188,11 @@ public class ModeratorServiceImpl implements ModeratorService {
         }
     }
 
+    /**
+     * sends category data to DAO method to update category info
+     *
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
+     */
     @Override
     public void correctCategoryInfo(String categoryId, String titleEn, String titleRu, String descriptionEn, String descriptionRu, String categoryStatus) throws ServiceException {
         WrappedConnection connection = null;
@@ -166,5 +212,4 @@ public class ModeratorServiceImpl implements ModeratorService {
             }
         }
     }
-
 }

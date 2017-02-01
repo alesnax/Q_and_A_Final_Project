@@ -14,21 +14,36 @@ import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 /**
- * Created by alesnax on 11.12.2016.
+ * Command implements method that redirects user to user_registration.jsp if user attribute
+ * doesn't exist in session otherwise it redirects to go_to_profile command
+ *
+ * @author Aliaksandr Nakhankou
+ * @see Command
  */
-
 public class GotoRegistrationPageCommand implements Command {
-    private static final String USER_ROLE = "user";
-    private static final String MODERATOR_ROLE = "moderator";
-    private static final String ADMIN_ROLE = "admin";
+    /**
+     * User attribute taking from session
+     */
     private static final String USER_ATTR = "user";
+
+    /**
+     * Keys of returned command or page which value are located in config.properties file
+     */
     private static final String REGISTRATION_PAGE = "path.page.register_new_user";
     private static final String GO_TO_PROFILE_COMMAND = "command.go_to_profile";
 
+    /**
+     * checks if attribute 'user' exists in session and returns value of registration page.
+     * Otherwise return redirecting to go_to_profile command
+     *
+     * @param request Processed HttpServletRequest
+     * @return value of registration page (if user exists in session), value of go_to_profile command string otherwise
+     */
+    @SuppressWarnings("Duplicates")
     @Override
     public String execute(HttpServletRequest request) {
-        String page = null;
         ConfigurationManager configurationManager = new ConfigurationManager();
+        String page;
         HttpSession session = request.getSession(true);
 
         QueryUtil.savePreviousQueryToSession(request);
@@ -38,19 +53,8 @@ public class GotoRegistrationPageCommand implements Command {
             String registrationPath = configurationManager.getProperty(REGISTRATION_PAGE);
             page = REQUEST_TYPE + TYPE_PAGE_DELIMITER + registrationPath;
         } else {
-            String role = user.getRole().getValue();
-            switch (role) {
-                case USER_ROLE:
-                case MODERATOR_ROLE:
-                case ADMIN_ROLE:
-                    String gotoProfileCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
-                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoProfileCommand;
-                    break;
-                default:
-                    String registrationPath = configurationManager.getProperty(REGISTRATION_PAGE);
-                    page = REQUEST_TYPE + TYPE_PAGE_DELIMITER + registrationPath;
-                    break;
-            }
+            String gotoProfileCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
+            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoProfileCommand;
         }
         return page;
     }

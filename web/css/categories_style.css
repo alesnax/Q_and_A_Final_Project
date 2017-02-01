@@ -444,5 +444,19 @@ a {
     margin: 50px 268px;
 }
 
-
+.welcome_block{
+    display: block;
+    text-align: center;
+    color: #218aaf;
+    font-size: 16px;
+    font-weight: 600;
+    position: relative;
+    float: left;
+    width: 745px;
+    background: #99d9f1;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;
+    margin: 15px 0 -14px;
+    padding: 20px 15px;
+}
 

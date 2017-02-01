@@ -472,7 +472,7 @@
                                     <div class="page_block wide_block post_content">
                                         <div class="cat_img">
                                             <a href="${go_to_category}${cat.id}" class="cat_image">
-                                                <img class="cat_mini_img" src="${cat.imageLink}" alt="some">
+                                                <img class="cat_mini_img" src="${cat.imageLink}" alt="some" onerror="src='/img/no_avatar.jpg'">
                                             </a>
                                         </div>
                                         <div class="cat_description">
