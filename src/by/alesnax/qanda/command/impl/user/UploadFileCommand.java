@@ -5,7 +5,7 @@ import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
 import by.alesnax.qanda.service.ServiceFactory;
 import by.alesnax.qanda.service.UserService;
-import by.alesnax.qanda.service.impl.ServiceException;
+import by.alesnax.qanda.service.ServiceException;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.FileUploadException;

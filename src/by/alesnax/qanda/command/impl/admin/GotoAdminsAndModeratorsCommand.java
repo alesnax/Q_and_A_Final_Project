@@ -8,7 +8,7 @@ import by.alesnax.qanda.pagination.PaginatedList;
 import by.alesnax.qanda.resource.ConfigurationManager;
 import by.alesnax.qanda.service.AdminService;
 import by.alesnax.qanda.service.ServiceFactory;
-import by.alesnax.qanda.service.impl.ServiceException;
+import by.alesnax.qanda.service.ServiceException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

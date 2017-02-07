@@ -553,3 +553,16 @@ input, select {
     padding: 20px 15px;
     float: left;
 }
+
+.success_message_block{
+    background-color: #aae076;
+
+}
+
+.success_add_msg {
+    text-align: center;
+    color: #405a73;
+    font-size: 16px;
+    padding: 0 15px 0;
+    font-weight: 600;
+}

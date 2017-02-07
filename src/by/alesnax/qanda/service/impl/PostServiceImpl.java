@@ -1,7 +1,7 @@
 package by.alesnax.qanda.service.impl;
 
-import by.alesnax.qanda.dao.impl.DAODuplicatedInfoException;
-import by.alesnax.qanda.dao.impl.DAOException;
+import by.alesnax.qanda.dao.DAODuplicatedInfoException;
+import by.alesnax.qanda.dao.DAOException;
 import by.alesnax.qanda.dao.impl.PostDAOImpl;
 import by.alesnax.qanda.pagination.PaginatedList;
 import by.alesnax.qanda.pool.ConnectionPool;
@@ -11,6 +11,8 @@ import by.alesnax.qanda.entity.Category;
 import by.alesnax.qanda.entity.CategoryInfo;
 import by.alesnax.qanda.entity.Post;
 import by.alesnax.qanda.service.PostService;
+import by.alesnax.qanda.service.ServiceDuplicatedInfoException;
+import by.alesnax.qanda.service.ServiceException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,7 +57,7 @@ public class PostServiceImpl implements PostService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -92,7 +94,7 @@ public class PostServiceImpl implements PostService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -130,7 +132,7 @@ public class PostServiceImpl implements PostService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -158,15 +160,15 @@ public class PostServiceImpl implements PostService {
         try {
             connection = ConnectionPool.getInstance().takeConnection();
             PostDAOImpl postDAO = new PostDAOImpl(connection);
-            posts = postDAO.takeLikedPosts(userId, startPost, postsPerPage);
+            posts = postDAO.takeRatedPosts(userId, startPost, postsPerPage);
             if(startPost > posts.getTotalCount()){
                 startPost = 0;
-                posts = postDAO.takeLikedPosts(userId, startPost, postsPerPage);
+                posts = postDAO.takeRatedPosts(userId, startPost, postsPerPage);
             }
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -193,7 +195,7 @@ public class PostServiceImpl implements PostService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -229,7 +231,7 @@ public class PostServiceImpl implements PostService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -260,7 +262,7 @@ public class PostServiceImpl implements PostService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -274,19 +276,21 @@ public class PostServiceImpl implements PostService {
     /**
      * send answer parameters for adding new answers into database
      *
+     * @return status of operation
      * @throws ServiceException  if exception while processing SQL query and connection will be caught
      */
     @Override
-    public void addNewAnswer(int userId, String questionId, String categoryId, String description) throws ServiceException {
+    public String addNewAnswer(int userId, String questionId, String categoryId, String description) throws ServiceException {
         WrappedConnection connection = null;
+        String status = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
             PostDAOImpl postDAO = new PostDAOImpl(connection);
-            postDAO.addNewAnswer(userId, questionId, categoryId, description);
+            status = postDAO.addNewAnswer(userId, questionId, categoryId, description);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -294,6 +298,7 @@ public class PostServiceImpl implements PostService {
                 logger.log(Level.ERROR, "Error while returning connection to ConnectionPool", e);
             }
         }
+        return status;
     }
 
     /**
@@ -314,7 +319,7 @@ public class PostServiceImpl implements PostService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -341,7 +346,7 @@ public class PostServiceImpl implements PostService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -354,20 +359,21 @@ public class PostServiceImpl implements PostService {
     /**
      * send to DAO method parameters of corrected question for updating
      *
-     * @throws ServiceException      * @return container with list of users and pagination parameters
-
+     * @return status of operation
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
      */
     @Override
-    public void addCorrectedQuestion(int questionId, int catId, String correctedTitle, String description) throws ServiceException {
+    public String addCorrectedQuestion(int userId, int questionId, int catId, String correctedTitle, String description) throws ServiceException {
         WrappedConnection connection = null;
+        String status = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
             PostDAOImpl postDAO = new PostDAOImpl(connection);
-            postDAO.addCorrectedQuestion(questionId, catId, correctedTitle, description);
+            status = postDAO.addCorrectedQuestion(userId, questionId, catId, correctedTitle, description);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -376,6 +382,7 @@ public class PostServiceImpl implements PostService {
             }
         }
 
+        return status;
     }
 
     /**
@@ -393,11 +400,11 @@ public class PostServiceImpl implements PostService {
         try {
             connection = ConnectionPool.getInstance().takeConnection();
             PostDAOImpl postDAO = new PostDAOImpl(connection);
-            post = postDAO.takePostById(postId);
+            post = postDAO.findEntityById(postId);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -427,9 +434,9 @@ public class PostServiceImpl implements PostService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAODuplicatedInfoException e) {
-            throw new ServiceDuplicatedInfoException(e.getMessage(), e);
+            throw new ServiceDuplicatedInfoException(e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -464,7 +471,7 @@ public class PostServiceImpl implements PostService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -513,7 +520,7 @@ public class PostServiceImpl implements PostService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -548,7 +555,7 @@ public class PostServiceImpl implements PostService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -583,7 +590,7 @@ public class PostServiceImpl implements PostService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -612,7 +619,7 @@ public class PostServiceImpl implements PostService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -626,19 +633,21 @@ public class PostServiceImpl implements PostService {
     /**
      * sends parameters of question to DAO method to insert it into database
      *
+     * @return status of operation
      * @throws ServiceException if exception while processing SQL query and connection will be caught
      */
     @Override
-    public void addNewQuestion(int id, String category, String title, String description) throws ServiceException {
+    public String addNewQuestion(int id, String category, String title, String description) throws ServiceException {
         WrappedConnection connection = null;
+        String status = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
             PostDAOImpl postDAO = new PostDAOImpl(connection);
-            postDAO.addNewQuestion(id, category, title, description);
+            status = postDAO.addNewQuestion(id, category, title, description);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -646,5 +655,6 @@ public class PostServiceImpl implements PostService {
                 logger.log(Level.ERROR, "Error while returning connection to ConnectionPool", e);
             }
         }
+        return status;
     }
 }

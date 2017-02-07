@@ -1,13 +1,17 @@
 package by.alesnax.qanda.dao;
 
-import by.alesnax.qanda.dao.impl.DAOException;
 import by.alesnax.qanda.entity.Ban;
 import by.alesnax.qanda.entity.Complaint;
 import by.alesnax.qanda.entity.Friend;
 import by.alesnax.qanda.pagination.PaginatedList;
 
 /**
- * Created by alesnax on 05.12.2016.
+ * Interface that has declaration of methods that process operations of
+ * manipulating with information that stores in databases and related with session user role 'ADMIN'.
+ * Methods of classes sends SQL statements to the database and
+ * get result as ResultSet of objects or number of processed rows in database.
+ *
+ * @author Aliaksandr Nakhankou
  */
 public interface AdminDAO {
     PaginatedList<Friend> takeManagingUsers(int startUser, int usersPerPage) throws DAOException;

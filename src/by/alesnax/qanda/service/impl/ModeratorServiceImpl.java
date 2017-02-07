@@ -1,6 +1,6 @@
 package by.alesnax.qanda.service.impl;
 
-import by.alesnax.qanda.dao.impl.DAOException;
+import by.alesnax.qanda.dao.DAOException;
 import by.alesnax.qanda.dao.impl.ModeratorDAOImpl;
 import by.alesnax.qanda.pagination.PaginatedList;
 import by.alesnax.qanda.pool.ConnectionPool;
@@ -10,6 +10,7 @@ import by.alesnax.qanda.entity.Ban;
 import by.alesnax.qanda.entity.Complaint;
 import by.alesnax.qanda.entity.Friend;
 import by.alesnax.qanda.service.ModeratorService;
+import by.alesnax.qanda.service.ServiceException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,7 +50,7 @@ public class ModeratorServiceImpl implements ModeratorService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -85,7 +86,7 @@ public class ModeratorServiceImpl implements ModeratorService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -113,7 +114,7 @@ public class ModeratorServiceImpl implements ModeratorService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -146,7 +147,7 @@ public class ModeratorServiceImpl implements ModeratorService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -178,7 +179,7 @@ public class ModeratorServiceImpl implements ModeratorService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);
@@ -203,7 +204,7 @@ public class ModeratorServiceImpl implements ModeratorService {
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         } finally {
             try {
                 ConnectionPool.getInstance().returnConnection(connection);

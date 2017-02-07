@@ -4,7 +4,6 @@ import by.alesnax.qanda.entity.Category;
 import by.alesnax.qanda.entity.CategoryInfo;
 import by.alesnax.qanda.entity.Post;
 import by.alesnax.qanda.pagination.PaginatedList;
-import by.alesnax.qanda.service.impl.ServiceException;
 
 import java.util.List;
 
@@ -27,7 +26,7 @@ public interface PostService {
 
     List<CategoryInfo> takeShortCategoriesList() throws ServiceException;
 
-    void addNewQuestion(int id, String category, String title, String description) throws ServiceException;
+    String addNewQuestion(int id, String category, String title, String description) throws ServiceException;
 
     PaginatedList<Post> findQuestionsByCategoryList(String categoryId, int userId, int startPost, int postsPerPage) throws ServiceException;
 
@@ -41,13 +40,13 @@ public interface PostService {
 
     List<Post> findQuestionWithAnswersById(int questionId, int userId) throws ServiceException;
 
-    void addNewAnswer(int id, String questionId, String categoryId, String description) throws ServiceException;
+    String addNewAnswer(int id, String questionId, String categoryId, String description) throws ServiceException;
 
     void ratePost(int postId, int mark, int userId) throws ServiceException;
 
     void addCorrectedAnswer(int answerId, String description) throws ServiceException;
 
-    void addCorrectedQuestion(int questionId, int catId, String correctedTitle, String description) throws ServiceException;
+    String addCorrectedQuestion(int userId, int questionId, int catId, String correctedTitle, String description) throws ServiceException;
 
     Post findPostById(int postId) throws ServiceException;
 

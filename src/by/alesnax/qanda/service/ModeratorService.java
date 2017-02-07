@@ -4,7 +4,6 @@ import by.alesnax.qanda.entity.Ban;
 import by.alesnax.qanda.entity.Complaint;
 import by.alesnax.qanda.entity.Friend;
 import by.alesnax.qanda.pagination.PaginatedList;
-import by.alesnax.qanda.service.impl.ServiceException;
 
 /**
  * ModeratorService contains list of methods that should be implemented to provide linking between command

@@ -2,11 +2,12 @@ package by.alesnax.qanda.command.impl.user;
 
 import by.alesnax.qanda.command.Command;
 import by.alesnax.qanda.command.util.QueryUtil;
+import by.alesnax.qanda.entity.CategoryInfo;
 import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
 import by.alesnax.qanda.service.PostService;
 import by.alesnax.qanda.service.ServiceFactory;
-import by.alesnax.qanda.service.impl.ServiceException;
+import by.alesnax.qanda.service.ServiceException;
 import by.alesnax.qanda.validation.PostValidation;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -17,9 +18,8 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 //static import
-import static by.alesnax.qanda.constant.CommandConstants.ERROR_REQUEST_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
+import static by.alesnax.qanda.constant.CommandConstants.*;
+
 
 /**
  * Class process adding new question. Access for authorised users, otherwise user will redirected to
@@ -51,11 +51,15 @@ public class AddCorrectedQuestionCommand implements Command {
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
     private static final String CORRECT_QUESTION_VALIDATION_FAILED_ATTR = "attr.correct_question_validation_failed";
+    private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
+    private static final String SHORT_CATEGORIES_ATTR = "attr.request.categories_info";
 
     /**
      * Key of error message located in loc.properties file
      */
     private static final String WARN_LOGIN_BEFORE_ADD = "common.add_new_answer.error_msg.login_before_add";
+    private static final String USER_BANNED_FOR_QUESTION_ERROR = "common.add_corrected_question.user_banned_for_add";
+    private static final String CATEGORY_CLOSED_ERROR = "common.add_new_answer.error_msg.category_closed";
 
     /**
      * Key of command that is located in config.properties file
@@ -89,12 +93,27 @@ public class AddCorrectedQuestionCommand implements Command {
 
         if (validationErrors.isEmpty()) {
             User user = (User) session.getAttribute(USER_ATTR);
-            if (user != null) {
+            if (user != null && !user.isBanned()) {
                 PostService postService = ServiceFactory.getInstance().getPostService();
                 try {
                     int questionId = Integer.parseInt(postId);
                     int catId = Integer.parseInt(categoryId);
-                    postService.addCorrectedQuestion(questionId, catId, correctedTitle, description);
+                    String status = postService.addCorrectedQuestion(user.getId(), questionId, catId, correctedTitle, description);
+                    if (USER_BANNED.equals(status)) {
+                        String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                        session.setAttribute(wrongCommandMessageAttr, USER_BANNED_FOR_QUESTION_ERROR);
+                        user.setBanned(true);
+                    } else if(!OPERATION_PROCESSED.equals(status)){
+                        List<CategoryInfo> categoriesInfo = postService.takeShortCategoriesList();
+                        String shortCategoriesAttr = configurationManager.getProperty(SHORT_CATEGORIES_ATTR);
+                        session.setAttribute(shortCategoriesAttr, categoriesInfo);
+                        String editPostIdAttr = configurationManager.getProperty(EDIT_POST_ID_ATTR);
+                        session.setAttribute(editPostIdAttr, postId);
+                        session.setAttribute(CORRECTED_POST_TITLE, correctedTitle);
+                        session.setAttribute(CORRECTED_QUESTION_DESCRIPTION, description);
+                        String questionValidationFailedAttr = configurationManager.getProperty(CORRECT_QUESTION_VALIDATION_FAILED_ATTR);
+                        session.setAttribute(questionValidationFailedAttr, CATEGORY_CLOSED_ERROR);
+                    }
                     String nextCommand = QueryUtil.getPreviousQuery(request);
                     page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
                 } catch (ServiceException e) {

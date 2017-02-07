@@ -2,11 +2,12 @@ package by.alesnax.qanda.command.impl.guest;
 
 import by.alesnax.qanda.command.Command;
 import by.alesnax.qanda.command.util.QueryUtil;
+import by.alesnax.qanda.entity.CategoryInfo;
 import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
 import by.alesnax.qanda.service.PostService;
 import by.alesnax.qanda.service.ServiceFactory;
-import by.alesnax.qanda.service.impl.ServiceException;
+import by.alesnax.qanda.service.ServiceException;
 import by.alesnax.qanda.validation.PostValidation;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -17,9 +18,8 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 //static import
-import static by.alesnax.qanda.constant.CommandConstants.ERROR_REQUEST_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
+import static by.alesnax.qanda.constant.CommandConstants.*;
+
 
 /**
  * Class process adding new answer. Access for authorised users, otherwise user will redirected to
@@ -39,21 +39,28 @@ public class AddAnswerCommand implements Command {
     private static final String USER_ATTR = "user";
 
     /**
-     * Keys of error messages attributes that are located in config.properties file
+     * Keys of error or success messages attributes that are located in config.properties file
      */
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
     private static final String ANSWER_VALIDATION_FAILED_ATTR = "attr.answer_validation_failed";
+    private static final String SUCCESS_CHANGE_MSG_ATTR = "attr.success_msg";
+    private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
+    private static final String SHORT_CATEGORIES_ATTR = "attr.request.categories_info";
 
     /**
-     * Key of error message located in loc.properties file
+     * Key of error or success message located in loc.properties file
      */
     private static final String WARN_LOGIN_BEFORE_ADD = "common.add_new_answer.error_msg.login_before_add";
+    private static final String SUCCESS_ADD_ANSWER_MESSAGE = "common.add_new_answer.success.added_answer_msg";
+    private static final String CATEGORY_CLOSED_ERROR = "common.add_new_answer.error_msg.category_closed";
+    private static final String USER_BANNED_FOR_ANSWER_ERROR = "common.add_new_answer.error_msg.user_banned";
 
     /**
      * Keys of commands that is located in config.properties file
      */
     private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
+    private static final String GO_TO_QUESTION_COMMAND = "command.go_to_question";
 
     /**
      * process adding new answer. Checks if attribute user exists in session and validates answer content,
@@ -81,18 +88,37 @@ public class AddAnswerCommand implements Command {
 
         if (validationErrors.isEmpty()) {
             User user = (User) session.getAttribute(USER_ATTR);
-            if (user != null) {
+            if (user != null && !user.isBanned()) {
                 PostService postService = ServiceFactory.getInstance().getPostService();
                 try {
-                    postService.addNewAnswer(user.getId(), questionId, categoryId, description);
-                    String nextCommand = QueryUtil.getPreviousQuery(request);
-                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
+                    String status = postService.addNewAnswer(user.getId(), questionId, categoryId, description);
+                    if (OPERATION_PROCESSED.equals(status)) {
+                        String successChangeMessageAttr = configurationManager.getProperty(SUCCESS_CHANGE_MSG_ATTR);
+                        session.setAttribute(successChangeMessageAttr, SUCCESS_ADD_ANSWER_MESSAGE);
+                    } else if(USER_BANNED.equals(status)){
+                        String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                        session.setAttribute(wrongCommandMessageAttr, USER_BANNED_FOR_ANSWER_ERROR);
+                        user.setBanned(true);
+                    } else {
+                        List<CategoryInfo> categoriesInfo = postService.takeShortCategoriesList();
+                        String shortCategoriesAttr = configurationManager.getProperty(SHORT_CATEGORIES_ATTR);
+                        session.setAttribute(shortCategoriesAttr, categoriesInfo);
+                        String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                        session.setAttribute(wrongCommandMessageAttr, CATEGORY_CLOSED_ERROR);
+                    }
+                    String nextCommand = configurationManager.getProperty(GO_TO_QUESTION_COMMAND);
+                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand + questionId;
                 } catch (ServiceException e) {
                     logger.log(Level.ERROR, e);
-                    String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
+                    String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
                     request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
                     page = ERROR_REQUEST_TYPE;
                 }
+            } else if (user != null) {
+                String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                session.setAttribute(wrongCommandMessageAttr, USER_BANNED_FOR_ANSWER_ERROR);
+                String nextCommand = configurationManager.getProperty(GO_TO_QUESTION_COMMAND);
+                page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand + questionId;
             } else {
                 String notRegUserAttr = configurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
                 session.setAttribute(notRegUserAttr, WARN_LOGIN_BEFORE_ADD);
@@ -104,8 +130,8 @@ public class AddAnswerCommand implements Command {
             session.setAttribute(ANSWER_DESCRIPTION, description);
             String answerValidationFailedAttr = configurationManager.getProperty(ANSWER_VALIDATION_FAILED_ATTR);
             session.setAttribute(answerValidationFailedAttr, validationErrors);
-            String previousQuery = QueryUtil.getPreviousQuery(request);
-            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + previousQuery;
+            String nextCommand = configurationManager.getProperty(GO_TO_QUESTION_COMMAND);
+            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand + questionId;
         }
         return page;
     }

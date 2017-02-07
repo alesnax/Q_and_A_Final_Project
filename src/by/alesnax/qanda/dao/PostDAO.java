@@ -1,6 +1,5 @@
 package by.alesnax.qanda.dao;
 
-import by.alesnax.qanda.dao.impl.DAOException;
 import by.alesnax.qanda.entity.Category;
 import by.alesnax.qanda.entity.CategoryInfo;
 import by.alesnax.qanda.entity.Post;
@@ -9,7 +8,12 @@ import by.alesnax.qanda.pagination.PaginatedList;
 import java.util.List;
 
 /**
- * Created by alesnax on 05.12.2016.
+ * Interface has declaration of methods that process operations of
+ * manipulating with information that stores in databases and related with answer's or question's data.
+ * Methods of classes sends SQL statements to the database and
+ * get result as ResultSet of objects or number of processed rows in database.
+ *
+ * @author Aliaksandr Nakhankou
  */
 public interface PostDAO {
 
@@ -23,7 +27,7 @@ public interface PostDAO {
 
     PaginatedList<Post> takePostsByUserId(int profileUserId, int userId, int startPost, int postsPerPage) throws DAOException;
 
-    PaginatedList<Post> takeLikedPosts(int userId, int startPost, int postsPerPage) throws DAOException;
+    PaginatedList<Post> takeRatedPosts(int userId, int startPost, int postsPerPage) throws DAOException;
 
     PaginatedList<Post> takeFriendsPosts(int userId, int startPost, int postsPerPage) throws DAOException;
 
@@ -33,21 +37,19 @@ public interface PostDAO {
 
     PaginatedList<Post> takeBestAnswers(int userId, int startPost, int postsPerPage) throws DAOException;
 
-    void addNewQuestion(int id, String category, String title, String description) throws DAOException;
+    String addNewQuestion(int id, String category, String title, String description) throws DAOException;
 
     CategoryInfo takeCategoryInfoById(String categoryId) throws DAOException;
 
     void deletePostById(int postId) throws DAOException;
 
-    void addNewAnswer(int userId, String questionId, String categoryId, String description) throws DAOException;
+    String addNewAnswer(int userId, String questionId, String categoryId, String description) throws DAOException;
 
     void addNewRate(int postId, int mark, int userId) throws DAOException;
 
     void addCorrectedAnswer(int answerId, String description) throws DAOException;
 
-    void addCorrectedQuestion(int questionId, int catId, String correctedTitle, String description) throws DAOException;
-
-    Post takePostById(int postId) throws DAOException;
+    String addCorrectedQuestion(int userId, int questionId, int catId, String correctedTitle, String description) throws DAOException;
 
     void addNewComplaint(int userId, int complaintPostId, String description) throws DAOException;
 

@@ -1,6 +1,6 @@
 package by.alesnax.qanda.pool;
 
-import by.alesnax.qanda.dao.impl.DAOException;
+import by.alesnax.qanda.dao.DAOException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

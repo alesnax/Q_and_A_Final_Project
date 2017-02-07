@@ -1,7 +1,7 @@
-package by.alesnax.qanda.service.impl;
+package by.alesnax.qanda.service;
 
 /**
- * Thrown to indicate that normal processing of SQL query was
+ * Thrown to indicate that normal processing of SQL statement was
  * interrupted or SQL connection problems were occurred.
  *
  * @author  Aliaksandr Nakhankou
@@ -30,5 +30,12 @@ public class ServiceException extends Exception {
 	public ServiceException(String message, Exception e) {
 		super(message, e);
 	}
+
+	/**
+	 * Constructs a <code>ServiceException</code> with caught exception.
+	 *
+	 * @param e is thrown exception
+	 */
+	public ServiceException(Exception e){super(e);}
 
 }

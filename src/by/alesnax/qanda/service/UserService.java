@@ -3,7 +3,6 @@ package by.alesnax.qanda.service;
 import by.alesnax.qanda.entity.Friend;
 import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.pagination.PaginatedList;
-import by.alesnax.qanda.service.impl.ServiceException;
 
 /**
  * UserService contains list of methods that should be implemented to provide linking between command

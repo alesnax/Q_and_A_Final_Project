@@ -6,8 +6,7 @@ import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
 import by.alesnax.qanda.service.ModeratorService;
 import by.alesnax.qanda.service.ServiceFactory;
-import by.alesnax.qanda.service.impl.ModeratorServiceImpl;
-import by.alesnax.qanda.service.impl.ServiceException;
+import by.alesnax.qanda.service.ServiceException;
 import by.alesnax.qanda.validation.ComplaintValidation;
 
 import org.apache.logging.log4j.Level;

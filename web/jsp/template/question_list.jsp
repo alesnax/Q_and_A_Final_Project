@@ -235,15 +235,17 @@
                                             <span class="icon icon_cross" title="${deleting_title}"></span>
                                         </button>
                                     </form>
-                                    <form action="/Controller" method="post" class="inline">
-                                        <input type="hidden" name="command" value="go_to_post_correction"/>
-                                        <input type="hidden" name="post_id" value="${post.id}"/>
-                                        <input type="hidden" name="moderator_id" value="${post.categoryInfo.userId}"/>
-                                        <input type="hidden" name="post_user_id" value="${post.user.id}"/>
-                                        <button type="submit" class="correct_post">
-                                            <span class="icon icon_pencil" title="${correction_title}"></span>
-                                        </button>
-                                    </form>
+                                    <c:if test="${not empty sessionScope.user and sessionScope.user.banned eq false}">
+                                        <form action="/Controller" method="post" class="inline">
+                                            <input type="hidden" name="command" value="go_to_post_correction"/>
+                                            <input type="hidden" name="post_id" value="${post.id}"/>
+                                            <input type="hidden" name="moderator_id" value="${post.categoryInfo.userId}"/>
+                                            <input type="hidden" name="post_user_id" value="${post.user.id}"/>
+                                            <button type="submit" class="correct_post">
+                                                <span class="icon icon_pencil" title="${correction_title}"></span>
+                                            </button>
+                                        </form>
+                                    </c:if>
                                 </c:if>
                             </div>
                         </div>
@@ -302,16 +304,17 @@
                                         <span class="icon icon_cross" title="${deleting_title}"></span>
                                     </button>
                                 </form>
-
-                                <form action="/Controller" method="post" class="inline">
-                                    <input type="hidden" name="command" value="go_to_post_correction"/>
-                                    <input type="hidden" name="post_id" value="${post.id}"/>
-                                    <input type="hidden" name="moderator_id" value="${post.categoryInfo.userId}"/>
-                                    <input type="hidden" name="post_user_id" value="${post.user.id}"/>
-                                    <button type="submit" class="correct_post">
-                                        <span class="icon icon_pencil" title="${correction_title}"></span>
-                                    </button>
-                                </form>
+                                <c:if test="${not empty sessionScope.user and sessionScope.user.banned eq false}">
+                                    <form action="/Controller" method="post" class="inline">
+                                        <input type="hidden" name="command" value="go_to_post_correction"/>
+                                        <input type="hidden" name="post_id" value="${post.id}"/>
+                                        <input type="hidden" name="moderator_id" value="${post.categoryInfo.userId}"/>
+                                        <input type="hidden" name="post_user_id" value="${post.user.id}"/>
+                                        <button type="submit" class="correct_post">
+                                            <span class="icon icon_pencil" title="${correction_title}"></span>
+                                        </button>
+                                    </form>
+                                </c:if>
                             </c:if>
                         </div>
                         <c:if test="${empty sessionScope.edit_post_id}">

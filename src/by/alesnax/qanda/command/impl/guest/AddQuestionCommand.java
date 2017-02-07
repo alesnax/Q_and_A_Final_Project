@@ -2,11 +2,12 @@ package by.alesnax.qanda.command.impl.guest;
 
 import by.alesnax.qanda.command.Command;
 import by.alesnax.qanda.command.util.QueryUtil;
+import by.alesnax.qanda.entity.CategoryInfo;
 import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
 import by.alesnax.qanda.service.PostService;
 import by.alesnax.qanda.service.ServiceFactory;
-import by.alesnax.qanda.service.impl.ServiceException;
+import by.alesnax.qanda.service.ServiceException;
 import by.alesnax.qanda.validation.PostValidation;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -46,12 +47,16 @@ public class AddQuestionCommand implements Command {
     private static final String QUESTION_VALIDATION_FAILED_ATTR = "attr.question_validation_failed";
     private static final String QUEST_ADDED_STATUS_ATTR = "attr.question_added_status";
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
+    private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
+    private static final String SHORT_CATEGORIES_ATTR = "attr.request.categories_info";
 
     /**
      * Keys of error or success messages in loc.properties file
      */
     private static final String WARN_LOGIN_BEFORE_ADD = "common.add_new_question.error_msg.login_before_add";
     private static final String QUEST_ADDED_STATUS = "common.add_new_question.status_added";
+    private static final String USER_BANNED_FOR_QUESTION_ERROR = "common.add_new_question.user_banned_for_add";
+    private static final String CATEGORY_CLOSED_ERROR = "common.add_new_answer.error_msg.category_closed";
 
     /**
      * Keys of commands that are located in config.properties file
@@ -84,15 +89,33 @@ public class AddQuestionCommand implements Command {
 
         if (validationErrors.isEmpty()) {
             User user = (User) session.getAttribute(USER_ATTR);
-            if (user != null) {
+            if (user != null && !user.isBanned()) {
                 PostService postService = ServiceFactory.getInstance().getPostService();
                 try {
-                    postService.addNewQuestion(user.getId(), category, title, description);
-                    session.removeAttribute(TITLE);
-                    session.removeAttribute(CATEGORY);
-                    session.removeAttribute(DESCRIPTION);
-                    String questionAddedAttr = configurationManager.getProperty(QUEST_ADDED_STATUS_ATTR);
-                    session.setAttribute(questionAddedAttr, QUEST_ADDED_STATUS);
+                    String status = postService.addNewQuestion(user.getId(), category, title, description);
+                    if (OPERATION_PROCESSED.equals(status)) {
+                        session.removeAttribute(TITLE);
+                        session.removeAttribute(CATEGORY);
+                        session.removeAttribute(DESCRIPTION);
+                        String questionAddedAttr = configurationManager.getProperty(QUEST_ADDED_STATUS_ATTR);
+                        session.setAttribute(questionAddedAttr, QUEST_ADDED_STATUS);
+                    } else if(USER_BANNED.equals(status)){
+                        String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                        session.setAttribute(wrongCommandMessageAttr, USER_BANNED_FOR_QUESTION_ERROR);
+                        user.setBanned(true);
+                        session.removeAttribute(TITLE);
+                        session.removeAttribute(CATEGORY);
+                        session.removeAttribute(DESCRIPTION);
+                    } else {
+                        List<CategoryInfo> categoriesInfo = postService.takeShortCategoriesList();
+                        String shortCategoriesAttr = configurationManager.getProperty(SHORT_CATEGORIES_ATTR);
+                        session.setAttribute(shortCategoriesAttr, categoriesInfo);
+                        session.setAttribute(TITLE, title);
+                        session.removeAttribute(CATEGORY);
+                        session.setAttribute(DESCRIPTION, description);
+                        String questionValidationFailedAttr = configurationManager.getProperty(QUESTION_VALIDATION_FAILED_ATTR);
+                        session.setAttribute(questionValidationFailedAttr, CATEGORY_CLOSED_ERROR);
+                    }
                     String nextCommand = QueryUtil.getPreviousQuery(request);
                     page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
                 } catch (ServiceException e) {

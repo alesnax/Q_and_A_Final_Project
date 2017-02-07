@@ -45,6 +45,7 @@
 <fmt:message bundle="${loc}" key="common.post.complaint_submit" var="complaint_submit"/>
 <fmt:message bundle="${loc}" key="common.post.complaint_header" var="complaint_header"/>
 <fmt:message bundle="${loc}" key="common.post.complaint_ph" var="complaint_ph"/>
+<fmt:message bundle="${loc}" key="common.post.go_to_cat_title" var="go_to_cat_title"/>
 
 
 <c:import url="template/header_common.jsp"/>
@@ -53,6 +54,14 @@
     <div class="content">
         <c:import url="template/left_bar.jsp"/>
         <section>
+            <c:if test="${not empty sessionScope.success_msg}">
+                <div class="page_block post_content success_message_block">
+                    <div class="success_add_msg">
+                        <fmt:message bundle="${loc}" key="${sessionScope.success_msg}"/>
+                        <c:remove var="success_msg" scope="session"/>
+                    </div>
+                </div>
+            </c:if>
             <c:if test="${not empty sessionScope.wrong_command_message}">
                 <div class=" wrong_message_block">
                     <div class="error_msg">
@@ -95,6 +104,7 @@
                         </div>
                         <div class="post_header_right">
                             <div>
+
                                 <c:if test="${(not empty sessionScope.user.id and sessionScope.user.id ne post.user.id and post.user.role eq 'USER') or (not empty sessionScope.complaint_id and sessionScope.complaint_id ne post.id)}">
                                     <form action="/Controller" method="post" class="inline">
                                         <input type="hidden" name="command" value="go_to_post_complaint"/>
@@ -114,20 +124,23 @@
                                             <span class="icon icon_cross" title="${deleting_title}"></span>
                                         </button>
                                     </form>
-                                    <form action="/Controller" method="post" class="inline">
-                                        <input type="hidden" name="command" value="go_to_post_correction"/>
-                                        <input type="hidden" name="post_id" value="${post.id}"/>
-                                        <input type="hidden" name="post_user_id" value="${post.user.id}"/>
-                                        <input type="hidden" name="moderator_id" value="${post.categoryInfo.userId}"/>
-                                        <button type="submit" class="correct_post">
-                                            <span class="icon icon_pencil" title="${correction_title}"></span>
-                                        </button>
-                                    </form>
+                                    <c:if test="${not empty sessionScope.user and sessionScope.user.banned eq false}">
+                                        <form action="/Controller" method="post" class="inline">
+                                            <input type="hidden" name="command" value="go_to_post_correction"/>
+                                            <input type="hidden" name="post_id" value="${post.id}"/>
+                                            <input type="hidden" name="post_user_id" value="${post.user.id}"/>
+                                            <input type="hidden" name="moderator_id" value="${post.categoryInfo.userId}"/>
+                                            <button type="submit" class="correct_post">
+                                                <span class="icon icon_pencil" title="${correction_title}"></span>
+                                            </button>
+                                        </form>
+                                    </c:if>
                                 </c:if>
                             </div>
                             <c:if test="${empty sessionScope.edit_post_id or sessionScope.edit_post_id ne post.id}">
                                 <div class="post_category">
-                                    <a href="${go_to_category}${post.categoryInfo.id}" title="go to all category questions">
+
+                                    <a href="${go_to_category}${post.categoryInfo.id}" title="${go_to_cat_title}">
                                         <c:choose>
                                             <c:when test="${sessionScope.locale eq 'ru'}">
                                                 ${post.categoryInfo.titleRu}
@@ -376,15 +389,17 @@
                                                             <span class="icon icon_cross" title="${deleting_title}"></span>
                                                         </button>
                                                     </form>
-                                                    <form action="/Controller" method="post" class="inline">
-                                                        <input type="hidden" name="command" value="go_to_post_correction"/>
-                                                        <input type="hidden" name="post_id" value="${post.id}"/>
-                                                        <input type="hidden" name="moderator_id" value="${post.categoryInfo.userId}"/>
-                                                        <input type="hidden" name="post_user_id" value="${post.user.id}"/>
-                                                        <button type="submit" class="correct_post">
-                                                            <span class="icon icon_pencil" title="${correction_title}"></span>
-                                                        </button>
-                                                    </form>
+                                                    <c:if test="${not empty sessionScope.user and sessionScope.user.banned eq false}">
+                                                        <form action="/Controller" method="post" class="inline">
+                                                            <input type="hidden" name="command" value="go_to_post_correction"/>
+                                                            <input type="hidden" name="post_id" value="${post.id}"/>
+                                                            <input type="hidden" name="moderator_id" value="${post.categoryInfo.userId}"/>
+                                                            <input type="hidden" name="post_user_id" value="${post.user.id}"/>
+                                                            <button type="submit" class="correct_post">
+                                                                <span class="icon icon_pencil" title="${correction_title}"></span>
+                                                            </button>
+                                                        </form>
+                                                    </c:if>
                                                 </c:if>
                                             </div>
                                         </div>
@@ -509,45 +524,48 @@
                         </c:if>
                         <%--                ADD ANSWER BLOCK             --%>
                         <c:choose>
-                        <c:when test="${not empty sessionScope.user and sessionScope.user.banned eq false}">
-                            <div class="add_answer_block">
-                                <form class="answer_form" action="/Controller" method="post">
-                                    <div class="">
-                                        <c:if test="${not empty sessionScope.answer_validation_failed}">
-                                            <c:forEach var="error" items="${sessionScope.answer_validation_failed}">
-                                                <fmt:message bundle="${loc}" key="${error}" var="msg"/>
-                                                <span class="errormsg">
-                                                        <c:out value="${msg}"/><br/>
-                                                </span>
-                                            </c:forEach>
-
-                                        </c:if>
-                                    </div>
-                                    <input type="hidden" name="command" value="add_answer">
-                                    <input type="hidden" name="question_id" value="${requestScope.question[0].id}">
-                                    <input type="hidden" name="category_id" value="${requestScope.question[0].categoryInfo.id}">
-                                    <textarea class="q_place" rows="3" maxlength="2000" placeholder="${add_answer_ph}"
-                                              name="answer_description">${sessionScope.answer_description}</textarea>
-                                    <c:remove var="answer_description" scope="session"/>
-                                    <input class="q_submit" type="submit" value="${add_answer_submit}">
-                                    <c:if test="${not empty sessionScope.answer_validation_failed}">
-                                        <div class="cancel_submit_block" >
-                                            <fmt:message bundle="${config}" key="command.go_to_question" var="go_to_question"/>
-                                            <fmt:message bundle="${loc}" key="common.post.cancel_text" var="cancel_text"/>
-                                            <a class="cancel_link" href="${go_to_question}${requestScope.question[0].id}">${cancel_text}</a>
-                                            <c:remove var="answer_validation_failed" scope="session"/>
-                                        </div>
-                                    </c:if>
-                                </form>
-                            </div>
-                        </c:when>
-                        <c:when test="${not empty sessionScope.user and sessionScope.user.banned eq true}">
-                            <div class=" ban_answer_message_block">
-                                <div class="error_msg">
+                            <c:when test="${requestScope.question[0].categoryInfo.status eq 'CLOSED'}">
+                                <span class="errormsg">
+                                    <fmt:message bundle="${loc}" key="common.post.cat_closed.add_answer_not_allowed"/>
+                                </span>
+                            </c:when>
+                            <c:when test="${not empty sessionScope.user and sessionScope.user.banned eq true}">
+                                <span class="errormsg">
                                     <fmt:message bundle="${loc}" key="common.add_answer_block.banned_message"/>
+                                </span>
+                            </c:when>
+                            <c:when test="${not empty sessionScope.user and sessionScope.user.banned eq false}">
+                                <div class="add_answer_block">
+                                    <form class="answer_form" action="/Controller" method="post">
+                                        <div class="">
+                                            <c:if test="${not empty sessionScope.answer_validation_failed}">
+                                                <c:forEach var="error" items="${sessionScope.answer_validation_failed}">
+                                                    <fmt:message bundle="${loc}" key="${error}" var="msg"/>
+                                                    <span class="errormsg">
+                                                            <c:out value="${msg}"/><br/>
+                                                    </span>
+                                                </c:forEach>
+
+                                            </c:if>
+                                        </div>
+                                        <input type="hidden" name="command" value="add_answer">
+                                        <input type="hidden" name="question_id" value="${requestScope.question[0].id}">
+                                        <input type="hidden" name="category_id" value="${requestScope.question[0].categoryInfo.id}">
+                                        <textarea class="q_place" rows="3" maxlength="2000" placeholder="${add_answer_ph}"
+                                                  name="answer_description">${sessionScope.answer_description}</textarea>
+                                        <c:remove var="answer_description" scope="session"/>
+                                        <input class="q_submit" type="submit" value="${add_answer_submit}">
+                                        <c:if test="${not empty sessionScope.answer_validation_failed}">
+                                            <div class="cancel_submit_block" >
+                                                <fmt:message bundle="${config}" key="command.go_to_question" var="go_to_question"/>
+                                                <fmt:message bundle="${loc}" key="common.post.cancel_text" var="cancel_text"/>
+                                                <a class="cancel_link" href="${go_to_question}${requestScope.question[0].id}">${cancel_text}</a>
+                                                <c:remove var="answer_validation_failed" scope="session"/>
+                                            </div>
+                                        </c:if>
+                                    </form>
                                 </div>
-                            </div>
-                        </c:when>
+                            </c:when>
                         </c:choose>
                     </div>
                 </div>

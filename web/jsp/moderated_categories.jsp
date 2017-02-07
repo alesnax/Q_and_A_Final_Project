@@ -71,6 +71,7 @@
                                 <form class="create_category_form"
                                       id="create_category" name="create_category" action="/Controller" method="post">
                                     <input type="hidden" name="command" value="create_new_category"/>
+                                    <input type="hidden" name="page_no" value="${requestScope.full_categories.getCurrentPage()}"/>
                                     <div class="form_element ">
                                         <c:if test="${not empty sessionScope.category_validation_error}">
                                             <c:forEach var="error" items="${sessionScope.category_validation_error}">
@@ -93,9 +94,9 @@
                                                 </strong>
                                             </div>
                                             <div class="right_form_field">
-                                                <input type="text" value="${sessionScope.created_titleEn}" name="title_en" id="title_en" class="" placeholder="${title_en_ph}">
+                                                <input type="text" value="${sessionScope.created_title_en}" name="title_en" id="title_en" class="" placeholder="${title_en_ph}">
                                                 <span class="errormsg" id="error_0_title_en"></span>
-                                                <c:remove var="created_titleEn" scope="session"/>
+                                                <c:remove var="created_title_en" scope="session"/>
                                             </div>
                                         </label>
                                     </div>
@@ -110,9 +111,9 @@
                                                 </strong>
                                             </div>
                                             <div class="right_form_field">
-                                                <input type="text" value="${sessionScope.created_titleRu}" name="title_ru" id="title_ru" class="" placeholder="${title_ru_ph}">
+                                                <input type="text" value="${sessionScope.created_title_ru}" name="title_ru" id="title_ru" class="" placeholder="${title_ru_ph}">
                                                 <span class="errormsg" id="error_0_title_ru"></span>
-                                                <c:remove var="created_titleRu" scope="session"/>
+                                                <c:remove var="created_title_ru" scope="session"/>
                                             </div>
                                         </label>
                                     </div>
@@ -128,9 +129,9 @@
                                                 </strong>
                                             </div>
                                             <div class="right_form_field">
-                                                <input type="text" value="${sessionScope.created_descriptionEn}" name="description_en" id="description_en" class="" placeholder="${description_en_ph}">
+                                                <input type="text" value="${sessionScope.created_description_en}" name="description_en" id="description_en" class="" placeholder="${description_en_ph}">
                                                 <span class="errormsg" id="error_0_description_en"></span>
-                                                <c:remove var="created_descriptionEn" scope="session"/>
+                                                <c:remove var="created_description_en" scope="session"/>
                                             </div>
                                         </label>
                                     </div>
@@ -145,9 +146,9 @@
                                                 </strong>
                                             </div>
                                             <div class="right_form_field">
-                                                <input type="text" value="${sessionScope.created_descriptionRu}" name="description_ru" id="description_ru" class="" placeholder="${description_ru_ph}">
+                                                <input type="text" value="${sessionScope.created_description_ru}" name="description_ru" id="description_ru" class="" placeholder="${description_ru_ph}">
                                                 <span class="errormsg" id="error_0_description_ru"></span>
-                                                <c:remove var="created_descriptionRu" scope="session"/>
+                                                <c:remove var="created_description_ru" scope="session"/>
                                             </div>
                                         </label>
                                     </div>

@@ -1,16 +1,20 @@
 package by.alesnax.qanda.dao;
 
-import by.alesnax.qanda.dao.impl.DAOException;
 import by.alesnax.qanda.entity.Friend;
 import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.entity.UserStatistics;
 import by.alesnax.qanda.pagination.PaginatedList;
 
 /**
- * Created by alesnax on 04.12.2016.
+ * Interface has declaration of methods that process operations of
+ * manipulating with information that stores in databases and related with information about users.
+ * Methods of classes sends SQL statements to the database and
+ * get result as ResultSet of objects or number of processed rows in database.
+ *
+ * @author Aliaksandr Nakhankou
  */
 public interface UserDAO {
-    PaginatedList<Friend> takeFriends(int userId, int startUser, int usersPerPage) throws DAOException;
+    PaginatedList<Friend> takeFollowingUsers(int userId, int startUser, int usersPerPage) throws DAOException;
 
     PaginatedList<Friend> takeFollowers(int userId, int startUser, int usersPerPage) throws DAOException;
 

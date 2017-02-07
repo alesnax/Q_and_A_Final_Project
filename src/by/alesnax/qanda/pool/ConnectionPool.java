@@ -1,6 +1,6 @@
 package by.alesnax.qanda.pool;
 
-import by.alesnax.qanda.dao.impl.DAOException;
+import by.alesnax.qanda.dao.DAOException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,17 +13,16 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by alesnax on 04.12.2016.
- *
  */
 public class ConnectionPool {
     private static Logger logger = LogManager.getLogger(ConnectionPool.class);
     private static ReentrantLock lock = new ReentrantLock();
 
-    private static final ConnectionPool INSTANCE = new ConnectionPool();
+    private static ConnectionPool instance = null;
 
 
-    private static final String CONNECTION_COUNT = "db.connection_count";
     private static final String DB_PROPERTIES_FILE = "resources.db";
+    private static final String CONNECTION_COUNT = "db.connection_count";
     private static final int MINIMAL_CONNECTION_COUNT = 5;
 
     private BlockingQueue<WrappedConnection> freeConnections;
@@ -33,12 +32,15 @@ public class ConnectionPool {
     }
 
     public static ConnectionPool getInstance() {
-        try{
-            lock.lock();
-            return INSTANCE;
+        lock.lock();
+        try {
+            if(instance == null){
+                instance = new ConnectionPool();
+            }
         } finally {
             lock.unlock();
         }
+        return instance;
     }
 
     public void init() throws ConnectionPoolException {
