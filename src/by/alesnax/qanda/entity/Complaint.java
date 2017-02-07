@@ -3,16 +3,50 @@ package by.alesnax.qanda.entity;
 import java.util.Date;
 
 /**
- * Created by alesnax on 15.01.2017.
+ * This class represents information about user's complaints
+ *
+ * @author Aliaksandr Nakhankou
  */
 public class Complaint extends Entity {
+
+    /**
+     * post's id that to be cause of complaint
+     */
     private int postId;
+
+    /**
+     * user who created complaint
+     */
     private ShortUser user;
+
+    /**
+     * description of complaint
+     */
     private String description;
+
+    /**
+     * time complaint was published
+     */
     private Date publishedTime;
+
+    /**
+     * status of processing complaint
+     */
     private ComplaintStatus status;
+
+    /**
+     * time when complaint was processed
+     */
     private Date processedTime;
+
+    /**
+     * moderator who processed complaint
+     */
     private ShortUser moderator;
+
+    /**
+     * decision of moderator after complaint processing
+     */
     private String decision;
 
     public Complaint() {

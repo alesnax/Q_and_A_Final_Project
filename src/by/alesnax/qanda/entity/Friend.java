@@ -1,14 +1,36 @@
 package by.alesnax.qanda.entity;
 
 /**
- * Created by alesnax on 05.12.2016.
+ * This class represents information about users showed in
+ * list of followers or 'following' users
+ *
+ * @author Aliaksandr Nakhankou
  */
 public class Friend extends ShortUser {
+
+    /**
+     * showed if user is 'following' for definite 'session' user
+     */
     private boolean friend;
+
+    /**
+     * name of user
+     */
     private String name;
+
+    /**
+     * surname of user
+     */
     private String surname;
+
+    /**
+     * quote or motto of user
+     */
     private String userStatus;
-    private int followers;
+
+    /**
+     * average user's rate based on rates for posts by they authority
+     */
     private double userRate;
 
     public Friend() {
@@ -46,14 +68,6 @@ public class Friend extends ShortUser {
         this.userStatus = userStatus;
     }
 
-    public int getFollowers() {
-        return followers;
-    }
-
-    public void setFollowers(int followers) {
-        this.followers = followers;
-    }
-
     public double getUserRate() {
         return userRate;
     }
@@ -72,7 +86,6 @@ public class Friend extends ShortUser {
         Friend friend1 = (Friend) o;
 
         if (friend != friend1.friend) return false;
-        if (followers != friend1.followers) return false;
         if (Double.compare(friend1.userRate, userRate) != 0) return false;
         if (name != null ? !name.equals(friend1.name) : friend1.name != null) return false;
         if (surname != null ? !surname.equals(friend1.surname) : friend1.surname != null) return false;
@@ -88,7 +101,6 @@ public class Friend extends ShortUser {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (surname != null ? surname.hashCode() : 0);
         result = 31 * result + (userStatus != null ? userStatus.hashCode() : 0);
-        result = 31 * result + followers;
         temp = Double.doubleToLongBits(userRate);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
@@ -101,7 +113,6 @@ public class Friend extends ShortUser {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", userStatus='" + userStatus + '\'' +
-                ", followers=" + followers +
                 ", userRate=" + userRate +
                 "} " + super.toString();
     }

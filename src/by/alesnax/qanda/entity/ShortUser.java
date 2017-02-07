@@ -1,12 +1,30 @@
 package by.alesnax.qanda.entity;
 
 /**
- * Created by alesnax on 20.12.2016.
+ * 	This class represents cut information about user
+ *
+ * @author Aliaksandr Nakhankou
  */
 public class ShortUser extends Entity {
+
+    /**
+     * id of user (unique number)
+     */
     private int id;
+
+    /**
+     * role of user, that gives access ti different user's right and functions
+     */
     private Role role;
+
+    /**
+     * user's nickname
+     */
     private String login;
+
+    /**
+     * path to user's avatar
+     */
     private String avatar;
 
     public int getId() {

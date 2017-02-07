@@ -3,21 +3,75 @@ package by.alesnax.qanda.entity;
 import java.util.Date;
 
 /**
- * Created by alesnax on 05.12.2016.
+ * This class represents information about user's posts (answers and questions)
+ *
+ * @author Aliaksandr Nakhankou
  */
 public class Post extends Entity {
+
+    /**
+     * post's id (unique number)
+     */
     private int id;
+
+    /**
+     * cut information about category of post
+     */
     private CategoryInfo categoryInfo;
+
+    /**
+     * type of post
+     */
     private PostType type;
+
+    /**
+     * post's title (short description)
+     */
     private String title;
+
+    /**
+     * post's description
+     */
     private String content;
+
+    /**
+     * id of question for answer, null for questions
+     */
     private int parentId;
+
+    /**
+     * time of post's publishing
+     */
     private Date publishedTime;
+
+    /**
+     * status of post (new, modified or deleted)
+     */
     private Status status;
+
+    /**
+     * time of post's modifying
+     */
     private Date modifiedTime;
+
+    /**
+     * average rate for post
+     */
     private double averageMark;
+
+    /**
+     * cut info about post's author
+     */
     private ShortUser user;
+
+    /**
+     * rate of session user if exists
+     */
     private int currentUserMark;
+
+    /**
+     * title of question if type of post is 'answer'
+     */
     private String parentTitle;
 
     public Post() {

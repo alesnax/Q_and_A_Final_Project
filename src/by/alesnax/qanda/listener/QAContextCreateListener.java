@@ -16,7 +16,6 @@ import javax.servlet.annotation.WebListener;
  *
  * @author Aliaksandr Nakhankou
  * @see javax.servlet.ServletContextListener
- *
  */
 @WebListener
 public class QAContextCreateListener implements ServletContextListener {
@@ -38,11 +37,7 @@ public class QAContextCreateListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        try {
-            pool.destroyPool();
-        } catch (ConnectionPoolException e) {
-            logger.log(Level.ERROR, "ConnectionPool exception while destroying.");
-        }
+        pool.destroyPool();
         logger.log(Level.INFO, "ConnectionPool was destroyed");
     }
 }

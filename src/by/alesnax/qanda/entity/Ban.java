@@ -3,16 +3,47 @@ package by.alesnax.qanda.entity;
 import java.util.Date;
 
 /**
- * Created by alesnax on 05.12.2016.
+ * This class represents information about user's ban.
+ *
+ * @author Aliaksandr Nakhankou
  */
 public class Ban extends Entity {
+
+    /**
+     * ban's id number
+     */
     private int id;
+
+    /**
+     * post's id that has content for what user was banned
+     */
     private int postId;
+
+    /**
+     * cause user was banned for
+     */
     private String cause;
+
+    /**
+     * Date of ban's start
+     */
     private Date start;
+
+    /**
+     * Date of ban's end
+     */
     private Date end;
+
+    /**
+     * user who was banned
+     */
     private ShortUser user;
+
+    /**
+     * user who created ban
+     */
     private ShortUser moderator;
+
 
     public Ban() {
     }

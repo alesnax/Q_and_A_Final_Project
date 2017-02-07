@@ -3,14 +3,40 @@ package by.alesnax.qanda.entity;
 import java.util.Date;
 
 /**
- * Created by alesnax on 05.12.2016.
+ * This class represents full information about category
+ *
+ * @author Aliaksandr Nakhankou
  */
 public class Category extends CategoryInfo {
+
+    /**
+     * date when category was created
+     */
     private Date creationDate;
+
+    /**
+     * english description of category
+     */
     private String descriptionEn;
+
+    /**
+     * russian description of category
+     */
     private String descriptionRu;
+
+    /**
+     * information about user who moderates this category
+     */
     private ShortUser moderator;
+
+    /**
+     * number of questions category contains
+     */
     private int questionQuantity;
+
+    /**
+     * path to image of category
+     */
     private String imageLink;
 
     public Category() {

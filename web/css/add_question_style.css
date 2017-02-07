@@ -102,10 +102,11 @@ input[type=text], input[type=password], input[type=number] {
 }
 
 .errormsg {
-    margin: 6px 0 0;
+    margin: 6px 0 0 50px;
     display: block;
     color: #dd4b39;
     line-height: 17px;
+    float: left;
 }
 
 

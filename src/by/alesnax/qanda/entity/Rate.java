@@ -3,12 +3,30 @@ package by.alesnax.qanda.entity;
 import java.util.Date;
 
 /**
- * Created by alesnax on 05.12.2016.
+ * This class represents information about rate for post
+ *
+ * @author Aliaksandr Nakhankou
  */
 public class Rate extends Entity{
+
+    /**
+     * id of user who rated post
+     */
     private int userId;
+
+    /**
+     * id of rated post
+     */
     private int postId;
+
+    /**
+     * value of rate
+     */
     private int value;
+
+    /**
+     * time of adding rate
+     */
     private Date addingTime;
 
     public Rate() {

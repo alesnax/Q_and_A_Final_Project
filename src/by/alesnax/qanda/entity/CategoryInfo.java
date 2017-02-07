@@ -1,13 +1,35 @@
 package by.alesnax.qanda.entity;
 
 /**
- * Created by alesnax on 17.12.2016.
+ * Class represents cut information about Category of questions
+ *
+ * @author Aliaksandr Nakhankou
  */
 public class CategoryInfo extends Entity {
+
+    /**
+     * category's id number
+     */
     private int id;
+
+    /**
+     * english title of category
+     */
     private String titleEn;
+
+    /**
+     * russian title of category
+     */
     private String titleRu;
+
+    /**
+     * id of user who moderates category
+     */
     private int userId;
+
+    /**
+     * status of category
+     */
     private CategoryStatus status;
 
     public CategoryInfo() {
@@ -53,6 +75,9 @@ public class CategoryInfo extends Entity {
         this.status = status;
     }
 
+    /**
+     * status of category
+     */
     public enum CategoryStatus {
         NEW("new"),
         HOT("hot"),

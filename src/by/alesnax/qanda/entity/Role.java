@@ -1,5 +1,11 @@
 package by.alesnax.qanda.entity;
 
+/**
+ * This class represents information about user's role,
+ * that gives access to the different functions and rights
+ *
+ * @author Aliaksandr Nakhankou
+ */
 public enum Role {
     ADMIN("admin"),
     MODERATOR("moderator"),

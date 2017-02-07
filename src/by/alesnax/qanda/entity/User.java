@@ -4,25 +4,95 @@ package by.alesnax.qanda.entity;
 import java.util.Date;
 
 /**
- * Created by alesnax on 04.12.2016.
+ * This class represents full information about users.
+ *
+ * @author Aliaksandr Nakhankou
  */
 public class User extends ShortUser  {
+
+    /**
+     * first name of user
+     */
     private String name;
+
+    /**
+     * user's surname
+     */
     private String surname;
+
+    /**
+     * password
+     */
     private String password;
+
+    /**
+     * email, used for site entering
+     */
     private String email;
+
+    /**
+     * user's birthday
+     */
     private Date birthday;
+
+    /**
+     * user's gender
+     */
     private boolean sex;
+
+    /**
+     * date of user's registration
+     */
     private Date registrationDate;
+
+    /**
+     * user's account state('active' or 'deleted')
+     */
     private UserState state;
+
+    /**
+     * country where user lives
+     */
     private String country;
+
+    /**
+     * user's hometown
+     */
     private String city;
+
+    /**
+     * quote or motto
+     */
     private String status;
+
+    /**
+     * language used while session
+     */
     private Language language;
+
+    /**
+     * Type of key word  used for password recovering
+     */
     private KeyWord keyWord;
+
+    /**
+     * Key word used for password recovering
+     */
     private String keyWordValue;
+
+    /**
+     * shows if user is 'following' for current session user
+     */
     private boolean friend;
+
+    /**
+     * user's statistics
+     */
     private UserStatistics statistics;
+
+    /**
+     * shows if user currently banned
+     */
     private boolean banned;
 
     public User() {

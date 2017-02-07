@@ -1,13 +1,35 @@
 package by.alesnax.qanda.entity;
 
 /**
- * Created by alesnax on 04.01.2017.
+ * This class represents information about user's statistics
+ *
+ * @author Aliaksandr Nakhankou
  */
 public class UserStatistics extends Entity {
+
+    /**
+     * number of users marked as 'following'
+     */
     private int followingUsersCount;
+
+    /**
+     * number of users who marked current user as 'following'
+     */
     private int followersCount;
+
+    /**
+     * average user's rate
+     */
     private double rate;
+
+    /**
+     * number of questions published by user
+     */
     private int questionsCount;
+
+    /**
+     * number of answers published by user
+     */
     private int answersCount;
 
     public UserStatistics() {
