@@ -60,9 +60,9 @@ public class RatePostCommand implements Command {
     private static final String MAX_RATE_ATTR = "attr.max_rate";
 
     /**
-     *  Method add rate to definite post or changes its value if user rate to this post has already exists.
-     *  If user is unauthorised they will be redirected to authorisation page.
-     *  If exception will be caught user will be redirected to error505 page.
+     * Method add rate to definite post or changes its value if user rate to this post has already exists.
+     * If user is unauthorised they will be redirected to authorisation page.
+     * If exception will be caught user will be redirected to error505 page.
      *
      * @param request Processed HttpServletRequest
      * @return value of page where processed request will be send back
@@ -76,36 +76,30 @@ public class RatePostCommand implements Command {
         QueryUtil.logQuery(request);
 
         User user = (User) session.getAttribute(USER_ATTR);
-        if (user == null) {
-            String notRegUserAttr = configurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
-            session.setAttribute(notRegUserAttr, WARN_LOGIN_BEFORE_MAKE_OPERATION);
-            String nextCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
-            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-        } else {
-            try {
-                PostService postService = ServiceFactory.getInstance().getPostService();
-                int postId = Integer.parseInt(request.getParameter(POST_ID));
-                int mark = Integer.parseInt(request.getParameter(MARK));
-                int minRate = Integer.parseInt(configurationManager.getProperty(MIN_RATE_ATTR));
-                int maxRate = Integer.parseInt(configurationManager.getProperty(MAX_RATE_ATTR));
-                if (mark <= maxRate && mark >= minRate) {
-                    postService.ratePost(postId, mark, user.getId());
-                    String nextCommand = QueryUtil.getPreviousQuery(request);
-                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-                } else {
-                    logger.log(Level.WARN, "invalid rate value while rate post, user id=" + user.getId() + ", post id=" + postId);
-                    String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
-                    session.setAttribute(wrongCommandMessageAttr, WRONG_PARAMETER);
-                    String nextCommand = QueryUtil.getPreviousQuery(request);
-                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-                }
-            } catch (NumberFormatException | ServiceException e) {
-                logger.log(Level.ERROR, e);
-                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
-                page = ERROR_REQUEST_TYPE;
+        try {
+            PostService postService = ServiceFactory.getInstance().getPostService();
+            int postId = Integer.parseInt(request.getParameter(POST_ID));
+            int mark = Integer.parseInt(request.getParameter(MARK));
+            int minRate = Integer.parseInt(configurationManager.getProperty(MIN_RATE_ATTR));
+            int maxRate = Integer.parseInt(configurationManager.getProperty(MAX_RATE_ATTR));
+            if (mark <= maxRate && mark >= minRate) {
+                postService.ratePost(postId, mark, user.getId());
+                String nextCommand = QueryUtil.getPreviousQuery(request);
+                page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
+            } else {
+                logger.log(Level.WARN, "invalid rate value while rate post, user id=" + user.getId() + ", post id=" + postId);
+                String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                session.setAttribute(wrongCommandMessageAttr, WRONG_PARAMETER);
+                String nextCommand = QueryUtil.getPreviousQuery(request);
+                page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
             }
+        } catch (NumberFormatException | ServiceException e) {
+            logger.log(Level.ERROR, e);
+            String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
+            request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
+            page = ERROR_REQUEST_TYPE;
         }
+
         return page;
     }
 }

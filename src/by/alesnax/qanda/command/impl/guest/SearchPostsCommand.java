@@ -86,11 +86,10 @@ public class SearchPostsCommand implements Command {
         } else {
             try {
                 PostService postService = ServiceFactory.getInstance().getPostService();
-                int pageNo = FIRST_PAGE_NO;
                 int startPost = START_ITEM_NO;
                 String pageNoAttr = configurationManager.getProperty(PAGE_NO);
                 if (request.getParameter(pageNoAttr) != null) {
-                    pageNo = Integer.parseInt(request.getParameter(pageNoAttr));
+                    int pageNo = Integer.parseInt(request.getParameter(pageNoAttr));
                     if (pageNo < FIRST_PAGE_NO) {
                         pageNo = FIRST_PAGE_NO;
                     }

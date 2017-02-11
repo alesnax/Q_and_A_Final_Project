@@ -70,7 +70,7 @@ public class CommandFactory {
                 }
                 command = CommandHelper.getInstance().getCommand(role, commandName);
                 if (command == null) {
-                    logger.log(Level.ERROR, "Illegal access, Command " + commandName + " wasn't found for role " + role);
+                    logger.log(Level.ERROR, "Illegal access, Command " + commandName + " wasn't found for role '" + role + "'");
                     addWrongCommandMessage(request, UNDEFINED_COMMAND_MESSAGE);
                     command = new GotoMainPageCommand();
                 }

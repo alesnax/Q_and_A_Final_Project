@@ -80,6 +80,7 @@ public class ChangeUserLanguageCommand implements Command {
             logger.log(Level.INFO, "User " + user.getId() + " (" + user.getLogin() + ") has successfully change his used language.");
             String successChangeMessageAttr = configurationManager.getProperty(SUCCESS_CHANGE_MSG_ATTR);
             session.setAttribute(successChangeMessageAttr, SUCCESS_CHANGE_LANG_MESSAGE);
+
             String gotoEditProfileCommand = configurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoEditProfileCommand;
         } catch (ServiceException e) {

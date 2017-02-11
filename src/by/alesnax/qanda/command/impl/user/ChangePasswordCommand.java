@@ -91,17 +91,14 @@ public class ChangePasswordCommand implements Command {
                 if (changed) {
                     logger.log(Level.INFO, "User " + user.getId() + " has successfully change his profile information");
                     String successChangeMessageAttr = configurationManager.getProperty(SUCCESS_CHANGE_MSG_ATTR);
-                    request.getSession(true).setAttribute(successChangeMessageAttr, SUCCESS_CHANGE_PASSWORD_MESSAGE);
-                    String gotoEditProfileCommand = configurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
-                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoEditProfileCommand;
+                    session.setAttribute(successChangeMessageAttr, SUCCESS_CHANGE_PASSWORD_MESSAGE);
                 } else {
                     logger.log(Level.WARN, "User id=" + user.getId() + " :Wrong password was found while changing password try.");
                     String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
-                    request.getSession().setAttribute(wrongCommandMessageAttr, WRONG_PASSWORD_FOUND);
-
-                    String gotoEditProfileCommand = configurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
-                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoEditProfileCommand;
+                    session.setAttribute(wrongCommandMessageAttr, WRONG_PASSWORD_FOUND);
                 }
+                String gotoEditProfileCommand = configurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
+                page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoEditProfileCommand;
             } catch (ServiceException e) {
                 logger.log(Level.ERROR, e);
                 String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
@@ -111,7 +108,7 @@ public class ChangePasswordCommand implements Command {
         } else {
             logger.log(Level.WARN, "User id=" + user.getId() + " :Validation of user passwords while changing failed.");
             String errorUserValidationAttr = configurationManager.getProperty(ERROR_PASSWORD_VALIDATION_ATTR);// try-catch
-            request.getSession(true).setAttribute(errorUserValidationAttr, validationErrors);
+            session.setAttribute(errorUserValidationAttr, validationErrors);
             String gotoEditProfileCommand = configurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoEditProfileCommand;
         }

@@ -49,7 +49,6 @@ public class AddCorrectedQuestionCommand implements Command {
      * Keys of error messages attributes that are located in config.properties file
      */
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
-    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
     private static final String CORRECT_QUESTION_VALIDATION_FAILED_ATTR = "attr.correct_question_validation_failed";
     private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
     private static final String SHORT_CATEGORIES_ATTR = "attr.request.categories_info";
@@ -57,14 +56,8 @@ public class AddCorrectedQuestionCommand implements Command {
     /**
      * Key of error message located in loc.properties file
      */
-    private static final String WARN_LOGIN_BEFORE_ADD = "common.add_new_answer.error_msg.login_before_add";
     private static final String USER_BANNED_FOR_QUESTION_ERROR = "common.add_corrected_question.user_banned_for_add";
     private static final String CATEGORY_CLOSED_ERROR = "common.add_new_answer.error_msg.category_closed";
-
-    /**
-     * Key of command that is located in config.properties file
-     */
-    private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
 
     /**
      * process adding new question. Checks if attribute user exists in session and validates question content,
@@ -100,32 +93,33 @@ public class AddCorrectedQuestionCommand implements Command {
                     int catId = Integer.parseInt(categoryId);
                     String status = postService.addCorrectedQuestion(user.getId(), questionId, catId, correctedTitle, description);
                     if (USER_BANNED.equals(status)) {
+                        user.setBanned(true);
                         String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
                         session.setAttribute(wrongCommandMessageAttr, USER_BANNED_FOR_QUESTION_ERROR);
-                        user.setBanned(true);
                     } else if(!OPERATION_PROCESSED.equals(status)){
                         List<CategoryInfo> categoriesInfo = postService.takeShortCategoriesList();
                         String shortCategoriesAttr = configurationManager.getProperty(SHORT_CATEGORIES_ATTR);
                         session.setAttribute(shortCategoriesAttr, categoriesInfo);
+
                         String editPostIdAttr = configurationManager.getProperty(EDIT_POST_ID_ATTR);
                         session.setAttribute(editPostIdAttr, postId);
-                        session.setAttribute(CORRECTED_POST_TITLE, correctedTitle);
                         session.setAttribute(CORRECTED_QUESTION_DESCRIPTION, description);
+                        session.setAttribute(CORRECTED_POST_TITLE, correctedTitle);
                         String questionValidationFailedAttr = configurationManager.getProperty(CORRECT_QUESTION_VALIDATION_FAILED_ATTR);
                         session.setAttribute(questionValidationFailedAttr, CATEGORY_CLOSED_ERROR);
                     }
                     String nextCommand = QueryUtil.getPreviousQuery(request);
                     page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-                } catch (ServiceException e) {
+                } catch (ServiceException | NumberFormatException e) {
                     logger.log(Level.ERROR, e);
                     String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
                     request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
                     page = ERROR_REQUEST_TYPE;
                 }
             } else {
-                String notRegUserAttr = configurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
-                session.setAttribute(notRegUserAttr, WARN_LOGIN_BEFORE_ADD);
-                String nextCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
+                String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                session.setAttribute(wrongCommandMessageAttr, USER_BANNED_FOR_QUESTION_ERROR);
+                String nextCommand = QueryUtil.getPreviousQuery(request);
                 page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
             }
         } else {

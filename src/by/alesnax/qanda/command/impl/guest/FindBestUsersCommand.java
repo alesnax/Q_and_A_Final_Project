@@ -56,11 +56,10 @@ public class FindBestUsersCommand implements Command {
 
         UserService userService = ServiceFactory.getInstance().getUserService();
         try {
-            int pageNo = FIRST_PAGE_NO;
             int startUser = START_ITEM_NO;
             String pageNoAttr = configurationManager.getProperty(PAGE_NO);
             if (request.getParameter(pageNoAttr) != null) {
-                pageNo = Integer.parseInt(request.getParameter(pageNoAttr));
+                int pageNo = Integer.parseInt(request.getParameter(pageNoAttr));
                 if (pageNo < FIRST_PAGE_NO) {
                     pageNo = FIRST_PAGE_NO;
                 }
@@ -71,7 +70,7 @@ public class FindBestUsersCommand implements Command {
             request.setAttribute(bestUsersAttr, bestUsers);
             String bestUsersPath = configurationManager.getProperty(BEST_USERS_PATH);
             page = REQUEST_TYPE + TYPE_PAGE_DELIMITER + bestUsersPath;
-        } catch (ServiceException e) {
+        } catch (ServiceException | NumberFormatException e) {
             logger.log(Level.ERROR, e);
             String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
             request.setAttribute(errorMessageAttr, e.getClass() + ": " + e.getMessage());

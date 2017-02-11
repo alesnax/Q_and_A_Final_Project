@@ -39,19 +39,16 @@ public class DeleteAccountCommand implements Command {
      * Keys of error messages attributes that are located in config.properties file
      */
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
-    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
     private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
 
     /**
      * Keys of error messages located in loc.properties file
      */
-    private static final String WARN_LOGIN_BEFORE_MAKE_OPERATION = "warn.login_before_make_operation";
     private static final String WRONG_PASSWORD = "warn.delete_account.wrong_password";
 
     /**
      * Keys of commands that is located in config.properties file
      */
-    private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
     private static final String GO_TO_EDIT_PROFILE_COMMAND = "command.go_to_edit_profile";
     private static final String LOG_OUT_COMMAND = "command.log_out";
 
@@ -72,34 +69,25 @@ public class DeleteAccountCommand implements Command {
         QueryUtil.logQuery(request);
 
         User user = (User) session.getAttribute(USER_ATTR);
-        if (user == null) {
-            String notRegUserAttr = configurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
-            session.setAttribute(notRegUserAttr, WARN_LOGIN_BEFORE_MAKE_OPERATION);
-            String nextCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
-            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-        } else {
-            try {
-                int userId = user.getId();
-                UserService userService = ServiceFactory.getInstance().getUserService();
-                String password = request.getParameter(PASSWORD);
-                boolean deleted = userService.deleteAccount(userId, password);
-                if (deleted) {
-
-                    String logOutCommand = configurationManager.getProperty(LOG_OUT_COMMAND);
-                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + logOutCommand;
-                } else {
-                    String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
-                    String gotoEditProfileCommand = configurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
-                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoEditProfileCommand;
-                    session.setAttribute(wrongCommandMessageAttr, WRONG_PASSWORD);
-                }
-
-            } catch (ServiceException e) {
-                logger.log(Level.ERROR, e);
-                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
-                page = ERROR_REQUEST_TYPE;
+        try {
+            int userId = user.getId();
+            UserService userService = ServiceFactory.getInstance().getUserService();
+            String password = request.getParameter(PASSWORD);
+            boolean deleted = userService.deleteAccount(userId, password);
+            if (deleted) {
+                String logOutCommand = configurationManager.getProperty(LOG_OUT_COMMAND);
+                page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + logOutCommand;
+            } else {
+                String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                String gotoEditProfileCommand = configurationManager.getProperty(GO_TO_EDIT_PROFILE_COMMAND);
+                session.setAttribute(wrongCommandMessageAttr, WRONG_PASSWORD);
+                page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoEditProfileCommand;
             }
+        } catch (ServiceException e) {
+            logger.log(Level.ERROR, e);
+            String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
+            request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
+            page = ERROR_REQUEST_TYPE;
         }
         return page;
     }

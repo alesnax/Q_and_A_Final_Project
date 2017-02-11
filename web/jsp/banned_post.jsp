@@ -164,15 +164,17 @@
                                                     <span class="icon icon_cross" title="${deleting_title}"></span>
                                                 </button>
                                             </form>
-                                            <form action="/Controller" method="post" class="inline">
-                                                <input type="hidden" name="command" value="go_to_post_correction"/>
-                                                <input type="hidden" name="post_id" value="${requestScope.post.id}"/>
-                                                <input type="hidden" name="post_user_id" value="${requestScope.post.user.id}"/>
-                                                <input type="hidden" name="moderator_id" value="${requestScope.post.categoryInfo.userId}"/>
-                                                <button type="submit" class="correct_post">
-                                                    <span class="icon icon_pencil" title="${correction_title}"></span>
-                                                </button>
-                                            </form>
+                                            <c:if test="${requestScope.post.categoryInfo.status ne 'CLOSED'}">
+                                                <form action="/Controller" method="post" class="inline">
+                                                    <input type="hidden" name="command" value="go_to_post_correction"/>
+                                                    <input type="hidden" name="post_id" value="${requestScope.post.id}"/>
+                                                    <input type="hidden" name="post_user_id" value="${requestScope.post.user.id}"/>
+                                                    <input type="hidden" name="moderator_id" value="${requestScope.post.categoryInfo.userId}"/>
+                                                    <button type="submit" class="correct_post">
+                                                        <span class="icon icon_pencil" title="${correction_title}"></span>
+                                                    </button>
+                                                </form>
+                                            </c:if>
                                             <div class="fl_l">
                                                 <fmt:message bundle="${loc}" key="banned_post.q_status"/>
                                                     ${requestScope.post.status}
@@ -225,16 +227,15 @@
                                                 <span class="icon icon_cross" title="${deleting_title}"></span>
                                             </button>
                                         </form>
-
-                                        <form action="/Controller" method="post" class="inline">
-                                            <input type="hidden" name="command" value="go_to_post_correction"/>
-                                            <input type="hidden" name="post_id" value="${requestScope.post.id}"/>
-                                            <input type="hidden" name="post_user_id" value="${requestScope.post.user.id}"/>
-                                            <input type="hidden" name="moderator_id" value="${requestScope.post.categoryInfo.userId}"/>
-                                            <button type="submit" class="correct_post">
-                                                <span class="icon icon_pencil" title="${correction_title}"></span>
-                                            </button>
-                                        </form>
+                                            <form action="/Controller" method="post" class="inline">
+                                                <input type="hidden" name="command" value="go_to_post_correction"/>
+                                                <input type="hidden" name="post_id" value="${requestScope.post.id}"/>
+                                                <input type="hidden" name="post_user_id" value="${requestScope.post.user.id}"/>
+                                                <input type="hidden" name="moderator_id" value="${requestScope.post.categoryInfo.userId}"/>
+                                                <button type="submit" class="correct_post">
+                                                    <span class="icon icon_pencil" title="${correction_title}"></span>
+                                                </button>
+                                            </form>
                                     </div>
                                     <div class="fl_r">
                                         <fmt:message bundle="${loc}" key="banned_post.q_status"/>

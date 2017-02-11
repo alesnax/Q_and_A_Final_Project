@@ -47,7 +47,7 @@ public interface PostDAO {
 
     void addNewRate(int postId, int mark, int userId) throws DAOException;
 
-    void addCorrectedAnswer(int answerId, String description) throws DAOException;
+    String addCorrectedAnswer(int userId, int answerId, String description) throws DAOException;
 
     String addCorrectedQuestion(int userId, int questionId, int catId, String correctedTitle, String description) throws DAOException;
 

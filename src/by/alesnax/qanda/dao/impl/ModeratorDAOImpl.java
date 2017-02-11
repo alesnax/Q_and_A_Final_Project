@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.*;
-import java.util.Date;
 
 /**
  * Implements ModeratorDAO interface and extends AbstractDAO class.
@@ -118,6 +117,7 @@ public class ModeratorDAOImpl extends AbstractDAO<Integer, User> implements Mode
     private static final String COMPLAINT_STATUS = "status";
     private static final String AUTHOR_ID = "users_id";
 
+    private static final int DEFAULT_BAN_DAYS = 3;
 
     /**
      * Constructs ModeratorDAOImpl class with the specified initial connection.
@@ -252,6 +252,7 @@ public class ModeratorDAOImpl extends AbstractDAO<Integer, User> implements Mode
      * @param banId ban id
      * @throws DAOException if exception while processing SQL statement and connection will be caught
      */
+    @SuppressWarnings("Duplicates")
     @Override
     public void updateBansStatusFinished(int banId) throws DAOException {
         PreparedStatement stopBanStatement = null;
@@ -370,9 +371,9 @@ public class ModeratorDAOImpl extends AbstractDAO<Integer, User> implements Mode
             approveComplaintStatement.executeUpdate();
 
 
-            java.util.Date date = new Date();
-            date.setDate(date.getDate() + 3);
-            Timestamp end = new Timestamp(date.getTime());
+            Calendar currentDate = new GregorianCalendar();
+            currentDate.set(Calendar.DAY_OF_MONTH, new GregorianCalendar().get(Calendar.DAY_OF_MONTH) + DEFAULT_BAN_DAYS);
+            Timestamp end = new Timestamp(currentDate.getTimeInMillis());
 
             insertBanStatement = connection.prepareStatement(SQL_INSERT_NEW_BAN);
             insertBanStatement.setInt(1, complaintPostId);

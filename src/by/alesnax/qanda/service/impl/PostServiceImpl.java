@@ -332,17 +332,20 @@ public class PostServiceImpl implements PostService {
     /**
      * send to DAO corrected content of answer for updating
      *
+     *
+     * @param userId
      * @param answerId id of answer
      * @param description content of answer
      * @throws ServiceException  if exception while processing SQL query and connection will be caught
      */
     @Override
-    public void addCorrectedAnswer(int answerId, String description) throws ServiceException {
+    public String addCorrectedAnswer(int userId, int answerId, String description) throws ServiceException {
+        String status = null;
         WrappedConnection connection = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
             PostDAOImpl postDAO = new PostDAOImpl(connection);
-            postDAO.addCorrectedAnswer(answerId, description);
+            status = postDAO.addCorrectedAnswer(userId, answerId, description);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
@@ -354,6 +357,7 @@ public class PostServiceImpl implements PostService {
                 logger.log(Level.ERROR, "Error while returning connection to ConnectionPool", e);
             }
         }
+        return status;
     }
 
     /**

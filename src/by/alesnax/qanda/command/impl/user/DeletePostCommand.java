@@ -45,19 +45,16 @@ public class DeletePostCommand implements Command {
      */
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
-    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
 
     /**
      * Keys of error messages located in loc.properties file
      */
-    private static final String WARN_LOGIN_BEFORE_MAKE_OPERATION = "warn.login_before_make_operation";
     private static final String ILLEGAL_OPERATION = "warn.illegal_operation_on_other_profile";
     private static final String UNDEFINED_COMMAND_MESSAGE = "error.error_msg.undefined_command";
 
     /**
      * Keys of commands that is located in config.properties file
      */
-    private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
     private static final String GO_TO_PROFILE_COMMAND = "command.go_to_profile";
 
     /**
@@ -79,65 +76,53 @@ public class DeletePostCommand implements Command {
         QueryUtil.logQuery(request);
 
         User user = (User) session.getAttribute(USER_ATTR);
-        if (user == null) {
-            String notRegUserAttr = configurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
-            session.setAttribute(notRegUserAttr, WARN_LOGIN_BEFORE_MAKE_OPERATION);
-            String nextCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
-            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-        } else {
-            try {
-                String role = user.getRole().getValue();
-                int userId = user.getId();
-                PostService postService = ServiceFactory.getInstance().getPostService();
-                int postId = Integer.parseInt(request.getParameter(POST_ID));
-                int postUserId = Integer.parseInt(request.getParameter(POST_USER_ID));
-                String nextCommand;
-                switch (role) {
-                    case MODERATOR_ROLE:
-                        int postModeratorId = Integer.parseInt(request.getParameter(POST_MODERATOR_ID));
-                        if (postModeratorId == user.getId()) {
-                            postService.deletePost(postId);
-                            nextCommand = QueryUtil.getPreviousQuery(request);
-                            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-                        } else {
-                            logger.log(Level.WARN, "illegal try to delete post of other people, owner id=" + postUserId + ", post id=" + postId + ", from user id=" + user.getId());
-                            String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
-                            nextCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
-                            session.setAttribute(wrongCommandMessageAttr, ILLEGAL_OPERATION);
-                            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-                        }
-                        break;
-                    case ADMIN_ROLE:
+        try {
+            String role = user.getRole().getValue();
+            int userId = user.getId();
+            PostService postService = ServiceFactory.getInstance().getPostService();
+            int postId = Integer.parseInt(request.getParameter(POST_ID));
+            int postUserId = Integer.parseInt(request.getParameter(POST_USER_ID));
+            String nextCommand;
+            switch (role) {
+                case MODERATOR_ROLE:
+                    int postModeratorId = Integer.parseInt(request.getParameter(POST_MODERATOR_ID));
+                    if (postModeratorId == user.getId()) {
                         postService.deletePost(postId);
                         nextCommand = QueryUtil.getPreviousQuery(request);
-                        page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-                        break;
-                    case USER_ROLE:
-                        if (postUserId == user.getId()) {
-                            postService.deletePost(postId);
-                            nextCommand = QueryUtil.getPreviousQuery(request);
-                            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-                        } else {
-                            logger.log(Level.WARN, "illegal try to delete post of other people, owner id=" + postUserId + ", post id=" + postId + ", from user id=" + user.getId());
-                            String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
-                            session.setAttribute(wrongCommandMessageAttr, ILLEGAL_OPERATION);
-                            nextCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
-                            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-                        }
-                        break;
-                    default:
+                    } else {
+                        logger.log(Level.WARN, "illegal try to delete post of other people, owner id=" + postUserId + ", post id=" + postId + ", from user id=" + user.getId());
                         String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
-                        session.setAttribute(wrongCommandMessageAttr, UNDEFINED_COMMAND_MESSAGE);
-                        nextCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + userId;
-                        page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-                        break;
-                }
-            } catch (NumberFormatException | ServiceException e) {
-                logger.log(Level.ERROR, e);
-                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
-                page = ERROR_REQUEST_TYPE;
+                        nextCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
+                        session.setAttribute(wrongCommandMessageAttr, ILLEGAL_OPERATION);
+                    }
+                    break;
+                case ADMIN_ROLE:
+                    postService.deletePost(postId);
+                    nextCommand = QueryUtil.getPreviousQuery(request);
+                    break;
+                case USER_ROLE:
+                    if (postUserId == user.getId()) {
+                        postService.deletePost(postId);
+                        nextCommand = QueryUtil.getPreviousQuery(request);
+                    } else {
+                        logger.log(Level.WARN, "illegal try to delete post of other people, owner id=" + postUserId + ", post id=" + postId + ", from user id=" + user.getId());
+                        String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                        session.setAttribute(wrongCommandMessageAttr, ILLEGAL_OPERATION);
+                        nextCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
+                    }
+                    break;
+                default:
+                    String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                    session.setAttribute(wrongCommandMessageAttr, UNDEFINED_COMMAND_MESSAGE);
+                    nextCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + userId;
+                    break;
             }
+            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
+        } catch (NumberFormatException | ServiceException e) {
+            logger.log(Level.ERROR, e);
+            String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
+            request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
+            page = ERROR_REQUEST_TYPE;
         }
         return page;
     }

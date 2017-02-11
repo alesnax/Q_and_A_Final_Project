@@ -41,19 +41,16 @@ public class FollowUserCommand implements Command {
      */
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
-    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
 
     /**
      * Keys of error messages located in loc.properties file
      */
-    private static final String WARN_LOGIN_BEFORE_WATCH_PROFILE = "warn.login_before_watch_profile";
     private static final String USER_ALREADY_FOLLOWER = "profile.error.message.user_already_follower";
 
     /**
      * Keys of commands that are located in config.properties file
      */
     private static final String GO_TO_PROFILE_COMMAND = "command.go_to_profile";
-    private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
 
     /**
      * creates note that user follow another user, calls process method from service layer,
@@ -73,36 +70,24 @@ public class FollowUserCommand implements Command {
         QueryUtil.logQuery(request);
 
         User user = (User) session.getAttribute(USER_ATTR);
-        if (user == null) {
-            String notRegUserAttr = configurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
-            session.setAttribute(notRegUserAttr, WARN_LOGIN_BEFORE_WATCH_PROFILE);
-            String nextCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
+        UserService userService = ServiceFactory.getInstance().getUserService();
+        String requestUserId = request.getParameter(USER_ID);
+        try {
+            int followingUserId = Integer.parseInt(requestUserId);
+            userService.addFollower(followingUserId, user.getId());
+            String nextCommand = QueryUtil.getPreviousQuery(request);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-        } else {
-            UserService userService = ServiceFactory.getInstance().getUserService();
-            String requestUserId = request.getParameter(USER_ID);
-            try {
-                int followingUserId = Integer.parseInt(requestUserId);
-                userService.addFollower(followingUserId, user.getId());
-                String nextCommand = QueryUtil.getPreviousQuery(request);
-                page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-            } catch (NumberFormatException e) {
-                logger.log(Level.ERROR, e);
-                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
-                request.setAttribute(errorMessageAttr, e.getMessage());
-                page = ERROR_REQUEST_TYPE;
-            } catch (ServiceDuplicatedInfoException e) {
-                logger.log(Level.WARN, e);
-                String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
-                session.setAttribute(wrongCommandMessageAttr, USER_ALREADY_FOLLOWER);
-                String gotoProfileCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
-                page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoProfileCommand;
-            } catch (ServiceException e) {
-                logger.log(Level.ERROR, e);
-                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
-                request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
-                page = ERROR_REQUEST_TYPE;
-            }
+        } catch (ServiceDuplicatedInfoException e) {
+            logger.log(Level.WARN, e);
+            String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+            session.setAttribute(wrongCommandMessageAttr, USER_ALREADY_FOLLOWER);
+            String gotoProfileCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
+            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoProfileCommand;
+        } catch (ServiceException | NumberFormatException e) {
+            logger.log(Level.ERROR, e);
+            String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
+            request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
+            page = ERROR_REQUEST_TYPE;
         }
         return page;
     }

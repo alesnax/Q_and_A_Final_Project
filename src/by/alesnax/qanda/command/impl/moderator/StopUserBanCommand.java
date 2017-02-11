@@ -35,27 +35,22 @@ public class StopUserBanCommand implements Command {
     private static final String USER_ATTR = "user";
     private static final String BAN_ID = "ban_id";
     private static final String MODERATOR_USER_ID = "moderator_user_id";
-    private static final String USER_ROLE = "user";
     private static final String MODERATOR_ROLE = "moderator";
-    private static final String ADMIN_ROLE = "admin";
 
     /**
      * Keys of error attributes that are located in config.properties file
      */
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
-    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
 
     /**
      * Keys of error messages in loc.properties file
      */
     private static final String ILLEGAL_OPERATION = "warn.illegal_operation_on_other_profile";
-    private static final String WARN_LOGIN_BEFORE_MAKE_OPERATION = "warn.login_before_make_operation";
 
     /**
      * Keys of returned command and page that are located in config.properties file
      */
-    private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
     private static final String GO_TO_PROFILE_COMMAND = "command.go_to_profile";
     private static final String GO_TO_BANS_COMMAND = "command.go_to_banned_users";
 
@@ -76,52 +71,33 @@ public class StopUserBanCommand implements Command {
         QueryUtil.logQuery(request);
 
         User user = (User) session.getAttribute(USER_ATTR);
-        if (user == null) {
-            String notRegUserAttr = configurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
-            session.setAttribute(notRegUserAttr, WARN_LOGIN_BEFORE_MAKE_OPERATION);
-            String nextCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
-            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-        } else {
-            try {
-                ModeratorService moderatorService = ServiceFactory.getInstance().getModeratorService();
-                String role = user.getRole().getValue();
-                int banId = Integer.parseInt(request.getParameter(BAN_ID));
-                String nextCommand;
-                switch (role) {
-                    case MODERATOR_ROLE:
-                        int moderatorUserId = Integer.parseInt(request.getParameter(MODERATOR_USER_ID));
-                        if (moderatorUserId == user.getId()) {
-                            moderatorService.stopUserBan(banId);
-                            nextCommand = configurationManager.getProperty(GO_TO_BANS_COMMAND);
-                            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-                        } else {
-                            logger.log(Level.WARN, "illegal try to stop user block from user id=" + user.getId() + ", on ban id=" + banId);
-                            String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
-                            session.setAttribute(wrongCommandMessageAttr, ILLEGAL_OPERATION);
-                            nextCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
-                            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-                        }
-                        break;
-                    case ADMIN_ROLE:
-                        moderatorService.stopUserBan(banId);
-                        nextCommand = configurationManager.getProperty(GO_TO_BANS_COMMAND);
-                        page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-                        break;
-                    case USER_ROLE:
-                    default:
-                        logger.log(Level.WARN, "illegal try to stop user block from user id=" + user.getId() + ", on ban id=" + banId);
-                        String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
-                        session.setAttribute(wrongCommandMessageAttr, ILLEGAL_OPERATION);
-                        nextCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
-                        page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-                        break;
+
+        try {
+            ModeratorService moderatorService = ServiceFactory.getInstance().getModeratorService();
+            String role = user.getRole().getValue();
+            int banId = Integer.parseInt(request.getParameter(BAN_ID));
+            String nextCommand;
+            if (MODERATOR_ROLE.equals(role)) {
+                int moderatorUserId = Integer.parseInt(request.getParameter(MODERATOR_USER_ID));
+                if (moderatorUserId == user.getId()) {
+                    moderatorService.stopUserBan(banId);
+                    nextCommand = configurationManager.getProperty(GO_TO_BANS_COMMAND);
+                } else {
+                    logger.log(Level.WARN, "illegal try to stop user block from user id=" + user.getId() + ", on ban id=" + banId);
+                    String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                    session.setAttribute(wrongCommandMessageAttr, ILLEGAL_OPERATION);
+                    nextCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + user.getId();
                 }
-            } catch (NumberFormatException | ServiceException e) {
-                logger.log(Level.ERROR, e);
-                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
-                page = ERROR_REQUEST_TYPE;
+            } else {
+                moderatorService.stopUserBan(banId);
+                nextCommand = configurationManager.getProperty(GO_TO_BANS_COMMAND);
             }
+            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
+        } catch (NumberFormatException | ServiceException e) {
+            logger.log(Level.ERROR, e);
+            String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
+            request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
+            page = ERROR_REQUEST_TYPE;
         }
         return page;
     }

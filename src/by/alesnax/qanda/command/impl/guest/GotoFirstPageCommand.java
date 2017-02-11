@@ -75,7 +75,7 @@ public class GotoFirstPageCommand implements Command {
             String locale = (String) session.getAttribute(LOCALE);
             if (locale == null || locale.isEmpty()) {
                 String acceptLanguage = request.getHeader(ACCEPT_LANG);
-                if (acceptLanguage.contains(RU_LANG)) {
+                if (acceptLanguage != null && acceptLanguage.contains(RU_LANG)) {
                     session.setAttribute(LOCALE, RU_LANG);
                 } else {
                     session.setAttribute(LOCALE, EN_LANG);

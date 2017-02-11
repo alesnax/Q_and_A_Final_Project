@@ -41,17 +41,6 @@ public class RemoveFollowingUserCommand implements Command {
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
 
     /**
-     * Key of error message located in loc.properties file
-     */
-    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
-
-    /**
-     * Keys of returned command or page that are located in config.properties file
-     */
-    private static final String WARN_LOGIN_BEFORE_WATCH_PROFILE = "warn.login_before_watch_profile";
-    private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
-
-    /**
      * method  removes user from following users and redirects to following users page if user authorised,
      * or to authorisation page otherwise.
      *
@@ -66,26 +55,20 @@ public class RemoveFollowingUserCommand implements Command {
         QueryUtil.logQuery(request);
 
         User user = (User) session.getAttribute(USER_ATTR);
-        if (user == null) {
-            String notRegUserAttr = configurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
-            session.setAttribute(notRegUserAttr, WARN_LOGIN_BEFORE_WATCH_PROFILE);
-            String nextCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
+        UserService userService = ServiceFactory.getInstance().getUserService();
+        String requestUserId = request.getParameter(USER_ID);
+        try {
+            int removedUserId = Integer.parseInt(requestUserId);
+            userService.removeUserFromFollowing(removedUserId, user.getId());
+            String nextCommand = QueryUtil.getPreviousQuery(request);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-        } else {
-            UserService userService = ServiceFactory.getInstance().getUserService();
-            String requestUserId = request.getParameter(USER_ID);
-            try {
-                int removedUserId = Integer.parseInt(requestUserId);
-                userService.removeUserFromFollowing(removedUserId, user.getId());
-                String nextCommand = QueryUtil.getPreviousQuery(request);
-                page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-            } catch (NumberFormatException | ServiceException e) {
-                logger.log(Level.ERROR, e);
-                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
-                page = ERROR_REQUEST_TYPE;
-            }
+        } catch (NumberFormatException | ServiceException e) {
+            logger.log(Level.ERROR, e);
+            String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
+            request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
+            page = ERROR_REQUEST_TYPE;
         }
+
         return page;
     }
 }

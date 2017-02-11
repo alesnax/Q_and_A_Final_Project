@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -187,6 +188,11 @@ public class ConnectionPool {
             } catch (InterruptedException e) {
                 logger.log(Level.ERROR, "Interrupted exception while taking connection from freeConnections for close connection and destroying pool", e);
             }
+        }
+        try {
+            DriverManager.deregisterDriver(new com.mysql.jdbc.Driver());
+        } catch (SQLException e) {
+            logger.log(Level.ERROR, e + " DriverManager wasn't found");
         }
     }
 }

@@ -39,8 +39,9 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
      * SQL query that selects information about all categories,
      * finds limited list of users.
      */
-    private static final String SQL_SELECT_ALL_CATEGORIES = "SELECT sql_calc_found_rows categories.id AS category_id, categories.users_id as users_id, title_en, title_ru, creation_date, description_ru, description_en, categories.status AS category_status, image, " +
-            "login, avatar, role, count(posts.id) AS quantity " +
+    private static final String SQL_SELECT_ALL_CATEGORIES = "SELECT sql_calc_found_rows categories.id AS category_id, " +
+            "categories.users_id as users_id, title_en, title_ru, creation_date, description_ru, description_en, " +
+            "categories.status AS category_status, image, login, avatar, role, count(posts.id) AS quantity " +
             "FROM categories LEFT  JOIN posts ON (posts.category_id = categories.id AND posts.type='question' AND posts.status!='deleted') JOIN users ON users.id = categories.users_id " +
             "group by categories.id ORDER BY quantity DESC, category_id LIMIT ?,?;";
 
@@ -48,8 +49,9 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
      * SQL query that selects information about moderated categories,
      * selects limited list of categories.
      */
-    private static final String SQL_SELECT_MODERATED_CATEGORIES = "SELECT sql_calc_found_rows categories.id AS category_id, categories.users_id as users_id, title_en, title_ru, creation_date, description_ru, description_en, categories.status AS category_status, image,\n" +
-            "login, avatar, role, count(posts.id) AS quantity\n" +
+    private static final String SQL_SELECT_MODERATED_CATEGORIES = "SELECT sql_calc_found_rows categories.id AS category_id," +
+            " categories.users_id as users_id, title_en, title_ru, creation_date, description_ru, description_en, " +
+            "categories.status AS category_status, image, login, avatar, role, count(posts.id) AS quantity\n" +
             "FROM categories LEFT JOIN posts ON (posts.category_id = categories.id AND posts.type='question') JOIN users ON (users.id = categories.users_id AND users.id = ?)\n" +
             " group by categories.id LIMIT ?,?;";
 
@@ -78,6 +80,11 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
      * SQL query that selects id of category if category not closed or exists
      */
     private static final String SQL_SELECT_NOT_CLOSED_CATEGORY_ID = "SELECT id FROM categories WHERE id=? AND status!='closed';";
+
+    /**
+     * SQL query that selects id of answer's category if category not closed or exists
+     */
+    private static final String SQL_SELECT_NOT_CLOSED_CATEGORY_ID_OF_ANSWER = "SELECT id FROM categories WHERE id=(SELECT posts.category_id FROM posts WHERE id=?) AND status!='closed';";
 
     /**
      * SQL query that selects information about posts of definite author,
@@ -124,7 +131,7 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
             " AVG(coalesce(rates.value, 0)) AS mark, categories.title_en, categories.title_ru, categories.status AS category_status, categories.users_id AS moderator_id, users.login, users.avatar, users.role, r.value\n" +
             "FROM posts JOIN users  ON users.id = posts.users_id JOIN categories ON categories.id = posts.category_id \n" +
             "JOIN rates ON posts.id = rates.posts_id LEFT JOIN rates AS r ON ( r.users_id=? AND posts.id=r.posts_id )\n" +
-            "WHERE posts.type = 'question' AND posts.status != 'deleted' GROUP BY posts.id ORDER BY mark DESC LIMIT ?, ?";         // +++++
+            "WHERE posts.type = 'question' AND posts.status != 'deleted' GROUP BY posts.id ORDER BY mark DESC LIMIT ?, ?";
 
     /**
      * SQL query that selects information about answers with their question's title with the highest average marks,
@@ -272,8 +279,8 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
      * Constructs PostDAOImpl class with the specified initial connection.
      *
      * @param connection A connection (session) with a specific
-     * database. SQL statements are executed and results are returned
-     * within the context of a connection.
+     *                   database. SQL statements are executed and results are returned
+     *                   within the context of a connection.
      */
     public PostDAOImpl(WrappedConnection connection) {
         super(connection);
@@ -287,7 +294,7 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
      * @throws DAOException if exception while processing SQL statement and connection will be caught
      */
     @Override
-    public Post findEntityById(Integer postId) throws DAOException{
+    public Post findEntityById(Integer postId) throws DAOException {
         Post post = null;
         PreparedStatement selectPostStatement = null;
         ResultSet postResultSet;
@@ -332,9 +339,9 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
      * method creates PreparedStatement for selecting limited number of rows with information
      * about questions of definite category and statement for selecting total rows count of statement
      *
-     * @param categoryId id of category
-     * @param userId id of user who could rate posts
-     * @param startPost number of first selected row
+     * @param categoryId   id of category
+     * @param userId       id of user who could rate posts
+     * @param startPost    number of first selected row
      * @param postsPerPage number of selected rows
      * @return container with list of questions and pagination parameters
      * @throws DAOException if exception while processing SQL statement and connection will be caught
@@ -382,9 +389,9 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
      * posts data created by definite user and statement for selecting total rows count of statement
      *
      * @param profileUserId id of user who is author of selecting list of posts
-     * @param userId id of session user who could rate some posts
-     * @param startPost number of first selected row
-     * @param postsPerPage number of selected rows
+     * @param userId        id of session user who could rate some posts
+     * @param startPost     number of first selected row
+     * @param postsPerPage  number of selected rows
      * @return container with list of posts and pagination parameters
      * @throws DAOException if exception while processing SQL statement and connection will be caught
      */
@@ -429,7 +436,7 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
      * method creates PreparedStatement for selecting limited number of rows with information
      * about questions of definite category and statement for selecting total rows count of statement
      *
-     * @param startCategory number of first selected row
+     * @param startCategory     number of first selected row
      * @param categoriesPerPage number of selected rows
      * @return container with list of categories and pagination parameters
      * @throws DAOException if exception while processing SQL statement and connection will be caught
@@ -472,8 +479,8 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
      * creates PreparedStatement for selecting limited number of rows with information
      * about categories that have definite moderator and statement for selecting total rows count of statement
      *
-     * @param userId id of moderator of selecting categories
-     * @param startCategory number of first selected row
+     * @param userId            id of moderator of selecting categories
+     * @param startCategory     number of first selected row
      * @param categoriesPerPage number of selected rows
      * @return container with list of categories and pagination parameters
      * @throws DAOException if exception while processing SQL statement and connection will be caught
@@ -598,10 +605,10 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
      * method creates PreparedStatement for selecting limited number of rows with information
      * about posts rated by definite user and statement for selecting total rows count of statement
      *
-     * @param userId id of user who rated posts
-     * @param startPost number of first selected row
+     * @param userId       id of user who rated posts
+     * @param startPost    number of first selected row
      * @param postsPerPage number of selected rows
-     * @return  container with list of rated posts and pagination parameters
+     * @return container with list of rated posts and pagination parameters
      * @throws DAOException if exception while processing SQL statement and connection will be caught
      */
     @Override
@@ -684,8 +691,8 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
      * about posts of users who are marked as 'following' by definite user
      * and statement for selecting total rows count of statement
      *
-     * @param userId id of user
-     * @param startPost number of first selected row
+     * @param userId       id of user
+     * @param startPost    number of first selected row
      * @param postsPerPage number of selected rows
      * @return container with list of posts and pagination parameters
      * @throws DAOException if exception while processing SQL statement and connection will be caught
@@ -731,7 +738,7 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
      * about definite question and list of answers to it and statement for selecting total rows count of statement
      *
      * @param questionId id of question
-     * @param userId id of user who could rate some posts from list
+     * @param userId     id of user who could rate some posts from list
      * @return container with list of posts and pagination parameters
      * @throws DAOException if exception while processing SQL statement and connection will be caught
      */
@@ -759,9 +766,9 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
      * method creates PreparedStatement for inserting new answer and checks if user banned and category
      * of question exists and wasn't closed
      *
-     * @param userId id of author
-     * @param questionId id of question
-     * @param categoryId id of category
+     * @param userId      id of author
+     * @param questionId  id of question
+     * @param categoryId  id of category
      * @param description answer content
      * @return status of adding
      * @throws DAOException if exception while processing SQL statement and connection will be caught
@@ -818,8 +825,8 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
      * about best questions sorted by average mark in reverse order
      * and statement for selecting total rows count of statement
      *
-     * @param userId id of user who could rate some posts from list
-     * @param startPost number of first selected row
+     * @param userId       id of user who could rate some posts from list
+     * @param startPost    number of first selected row
      * @param postsPerPage number of selected rows
      * @return container with list of best questions sorted in reverse order by average mark and pagination parameters
      * @throws DAOException if exception while processing SQL statement and connection will be caught
@@ -864,8 +871,8 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
      * about best answers sorted by average mark in reverse order
      * and statement for selecting total rows count of statement
      *
-     * @param userId id of user who could rate some posts from list
-     * @param startPost number of first selected row
+     * @param userId       id of user who could rate some posts from list
+     * @param startPost    number of first selected row
      * @param postsPerPage number of selected rows
      * @return container with list of best answers sorted in reverse order by average mark and pagination parameters
      * @throws DAOException if exception while processing SQL statement and connection will be caught
@@ -909,7 +916,7 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
      * creates PreparedStatements that inserts or updates rate
      *
      * @param postId id of rated post
-     * @param mark value
+     * @param mark   value
      * @param userId id of user who rates post
      * @throws DAOException if exception while processing SQL statement and connection will be caught
      */
@@ -944,35 +951,68 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
     }
 
     /**
-     * creates PreparedStatements that updates answers content
+     * method creates statements for updating answer data and checking if user not
+     * blocked and category not closed or exists
      *
-     * @param answerId id of corrected answer
+     * @param userId id of user who corrects answer
+     * @param answerId    id of corrected answer
      * @param description answer content
      * @throws DAOException if exception while processing SQL statement and connection will be caught
      */
     @Override
-    public void addCorrectedAnswer(int answerId, String description) throws DAOException {
+    public String addCorrectedAnswer(int userId, int answerId, String description) throws DAOException {
+        PreparedStatement selectBanStatusStatement = null;
+        PreparedStatement selectNotClosedCategoryIdStatement = null;
         PreparedStatement updateAnswerStatement = null;
+
+        ResultSet banStatusResultSet;
+        ResultSet categoryIdResultSet;
+        String status = OPERATION_FAILED;
         try {
-            updateAnswerStatement = connection.prepareStatement(SQL_UPDATE_ANSWER_DESCRIPTION);
-            updateAnswerStatement.setInt(2, answerId);
-            updateAnswerStatement.setString(1, description);
-            updateAnswerStatement.executeUpdate();
+            connection.setAutoCommit(false);
+            selectBanStatusStatement = connection.prepareStatement(SQL_SELECT_USER_BAN_STATUS);
+            selectBanStatusStatement.setInt(1, userId);
+            banStatusResultSet = selectBanStatusStatement.executeQuery();
+            if (banStatusResultSet.next()) {
+                status = USER_BANNED;
+            } else {
+                selectNotClosedCategoryIdStatement = connection.prepareStatement(SQL_SELECT_NOT_CLOSED_CATEGORY_ID_OF_ANSWER);
+                selectNotClosedCategoryIdStatement.setInt(1, answerId);
+                categoryIdResultSet = selectNotClosedCategoryIdStatement.executeQuery();
+                if (categoryIdResultSet.next()) {
+                    updateAnswerStatement = connection.prepareStatement(SQL_UPDATE_ANSWER_DESCRIPTION);
+                    updateAnswerStatement.setInt(2, answerId);
+                    updateAnswerStatement.setString(1, description);
+                    updateAnswerStatement.executeUpdate();
+
+                    status = OPERATION_PROCESSED;
+                }
+            }
+            connection.commit();
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                logger.log(Level.ERROR, "Exception while connection rollback, " + e1);
+            }
             throw new DAOException("SQL Error,check source", e);
         } finally {
             connection.closeStatement(updateAnswerStatement);
+            connection.closeStatement(selectBanStatusStatement);
+            connection.closeStatement(selectNotClosedCategoryIdStatement);
         }
+        return status;
     }
 
     /**
      * method creates statements for updating question data and checking if user not
      * blocked and category not closed or exists
      *
-     * @param questionId id of corrected question
-     * @param catId category id
+     * @param userId id of user who corrects question
+     * @param questionId     id of corrected question
+     * @param catId          category id
      * @param correctedTitle corrected title
-     * @param description question content
+     * @param description    question content
      * @return operation status
      * @throws DAOException if exception while processing SQL statement and connection will be caught
      */
@@ -1032,9 +1072,9 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
     /**
      * method creates statements for inserting new complaint
      *
-     * @param userId id of author
+     * @param userId          id of author
      * @param complaintPostId id of post caused complaint
-     * @param description cause of complaint
+     * @param description     cause of complaint
      * @throws DAOException if exception while processing SQL statement and connection will be caught
      */
     @Override
@@ -1056,10 +1096,9 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
     }
 
     /**
-     *
-     * @param userId id of user who could rate any posts from result list
-     * @param content key words
-     * @param startPost number of first selected row
+     * @param userId       id of user who could rate any posts from result list
+     * @param content      key words
+     * @param startPost    number of first selected row
      * @param postsPerPage number of selected rows
      * @return container with list of found posts and pagination parameters
      * @throws DAOException if exception while processing SQL statement and connection will be caught

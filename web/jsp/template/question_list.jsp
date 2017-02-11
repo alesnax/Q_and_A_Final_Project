@@ -235,7 +235,7 @@
                                             <span class="icon icon_cross" title="${deleting_title}"></span>
                                         </button>
                                     </form>
-                                    <c:if test="${not empty sessionScope.user and sessionScope.user.banned eq false}">
+                                    <c:if test="${not empty sessionScope.user and not sessionScope.user.banned and post.categoryInfo.status ne 'CLOSED'}">
                                         <form action="/Controller" method="post" class="inline">
                                             <input type="hidden" name="command" value="go_to_post_correction"/>
                                             <input type="hidden" name="post_id" value="${post.id}"/>
@@ -304,7 +304,7 @@
                                         <span class="icon icon_cross" title="${deleting_title}"></span>
                                     </button>
                                 </form>
-                                <c:if test="${not empty sessionScope.user and sessionScope.user.banned eq false}">
+                                <c:if test="${not empty sessionScope.user and not sessionScope.user.banned}">
                                     <form action="/Controller" method="post" class="inline">
                                         <input type="hidden" name="command" value="go_to_post_correction"/>
                                         <input type="hidden" name="post_id" value="${post.id}"/>

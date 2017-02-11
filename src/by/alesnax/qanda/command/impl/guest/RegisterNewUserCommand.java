@@ -120,19 +120,19 @@ public class RegisterNewUserCommand implements Command {
             } catch (ServiceDuplicatedInfoException e) {
                 validationErrors.add(ERROR_USER_ALREADY_EXIST);
                 logger.log(Level.WARN, e);
-                String errorUserValidationAttr = configurationManager.getProperty(ERROR_USER_VALIDATION_ATTR);// try-catch
+                String errorUserValidationAttr = configurationManager.getProperty(ERROR_USER_VALIDATION_ATTR);
                 session.setAttribute(errorUserValidationAttr, validationErrors);
                 String gotoRegistrationCommand = configurationManager.getProperty(GO_TO_REGISTRATION_COMMAND);
                 page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoRegistrationCommand;
             } catch (ServiceException e) {
                 logger.log(Level.ERROR, e);
-                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);// try-catch
+                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
                 request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
                 page = ERROR_REQUEST_TYPE;
             }
         } else {
             logger.log(Level.WARN, "Validation of user failed.");
-            String errorUserValidationAttr = configurationManager.getProperty(ERROR_USER_VALIDATION_ATTR);// try-catch
+            String errorUserValidationAttr = configurationManager.getProperty(ERROR_USER_VALIDATION_ATTR);
             session.setAttribute(errorUserValidationAttr, validationErrors);
             String gotoRegistrationCommand = configurationManager.getProperty(GO_TO_REGISTRATION_COMMAND);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoRegistrationCommand;

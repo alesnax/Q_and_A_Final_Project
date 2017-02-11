@@ -41,7 +41,7 @@ public class UserAuthorizationCommand implements Command {
 
     @Override
     public String execute(HttpServletRequest request) {
-        String page = null;
+        String page;
         ConfigurationManager configurationManager = new ConfigurationManager();
         String email = request.getParameter(EMAIL);
         String password = request.getParameter(PASSWORD);

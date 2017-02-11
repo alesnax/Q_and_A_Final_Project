@@ -24,9 +24,6 @@ public class GotoMainPageCommand implements Command {
     /**
      * Names of attributes and parameters taking from request or session
      */
-    private static final String USER_ROLE = "user";
-    private static final String MODERATOR_ROLE = "moderator";
-    private static final String ADMIN_ROLE = "admin";
     private static final String USER_ATTR = "user";
 
     /**
@@ -54,20 +51,9 @@ public class GotoMainPageCommand implements Command {
             String gotoCategoriesCommand = configurationManager.getProperty(GO_TO_CATEGORIES_COMMAND);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoCategoriesCommand;
         } else {
-            String role = user.getRole().getValue();
             int userId = user.getId();
-            switch (role) {
-                case USER_ROLE:
-                case MODERATOR_ROLE:
-                case ADMIN_ROLE:
-                    String gotoProfileCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + userId;
-                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoProfileCommand;
-                    break;
-                default:
-                    String gotoCategoriesCommand = configurationManager.getProperty(GO_TO_CATEGORIES_COMMAND);
-                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoCategoriesCommand;
-                    break;
-            }
+            String gotoProfileCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + userId;
+            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoProfileCommand;
         }
         return page;
     }

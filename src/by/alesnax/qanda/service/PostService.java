@@ -44,7 +44,7 @@ public interface PostService {
 
     void ratePost(int postId, int mark, int userId) throws ServiceException;
 
-    void addCorrectedAnswer(int answerId, String description) throws ServiceException;
+    String addCorrectedAnswer(int userId, int answerId, String description) throws ServiceException;
 
     String addCorrectedQuestion(int userId, int questionId, int catId, String correctedTitle, String description) throws ServiceException;
 

@@ -48,7 +48,6 @@ public class AddComplaintCommand implements Command {
     /**
      * Keys of error messages attributes that are located in config.properties file
      */
-    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
     private static final String COMPLAINT_VALIDATION_FAILED_ATTR = "attr.complaint_validation_failed";
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
     private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
@@ -56,13 +55,7 @@ public class AddComplaintCommand implements Command {
     /**
      * Keys of error messages in loc.properties file
      */
-    private static final String WARN_LOGIN_BEFORE_MAKE_OPERATION = "warn.login_before_make_operation";
     private static final String COMPLAINT_ALREADY_EXIST = "warn.complaint_already_exist";
-
-    /**
-     * Key of go_to_authorisation command that is located in config.properties file
-     */
-    private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
 
     /**
      * process adding new complaint. Checks if attribute user exists in session and validates complaint content,
@@ -87,29 +80,22 @@ public class AddComplaintCommand implements Command {
         String postId = request.getParameter(POST_ID);
         if (validationErrors.isEmpty()) {
             User user = (User) session.getAttribute(USER_ATTR);
-            if (user != null) {
-                PostService postService = ServiceFactory.getInstance().getPostService();
-                try {
-                    int complaintPostId = Integer.parseInt(request.getParameter(POST_ID));
-                    postService.addNewComplaint(user.getId(), complaintPostId, description);
-                    String nextCommand = QueryUtil.getPreviousQuery(request);
-                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-                } catch (ServiceDuplicatedInfoException e) {
-                    String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
-                    session.setAttribute(wrongCommandMessageAttr, COMPLAINT_ALREADY_EXIST);
-                    String previousQuery = QueryUtil.getPreviousQuery(request);
-                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + previousQuery;
-                } catch (ServiceException | NumberFormatException e) {
-                    logger.log(Level.ERROR, e);
-                    String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                    request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
-                    page = ERROR_REQUEST_TYPE;
-                }
-            } else {
-                String notRegUserAttr = configurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
-                session.setAttribute(notRegUserAttr, WARN_LOGIN_BEFORE_MAKE_OPERATION);
-                String nextCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
+            PostService postService = ServiceFactory.getInstance().getPostService();
+            try {
+                int complaintPostId = Integer.parseInt(request.getParameter(POST_ID));
+                postService.addNewComplaint(user.getId(), complaintPostId, description);
+                String nextCommand = QueryUtil.getPreviousQuery(request);
                 page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
+            } catch (ServiceDuplicatedInfoException e) {
+                String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                session.setAttribute(wrongCommandMessageAttr, COMPLAINT_ALREADY_EXIST);
+                String previousQuery = QueryUtil.getPreviousQuery(request);
+                page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + previousQuery;
+            } catch (ServiceException | NumberFormatException e) {
+                logger.log(Level.ERROR, e);
+                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
+                request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
+                page = ERROR_REQUEST_TYPE;
             }
         } else {
             logger.log(Level.WARN, "Validation of adding complaint failed.");

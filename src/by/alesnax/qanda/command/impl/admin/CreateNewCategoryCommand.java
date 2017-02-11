@@ -35,9 +35,6 @@ public class CreateNewCategoryCommand implements Command {
      * Names of attributes and parameters taking from request or session
      */
     private static final String USER = "user";
-    private static final String USER_ROLE = "user";
-    private static final String MODERATOR_ROLE = "moderator";
-    private static final String ADMIN_ROLE = "admin";
     private static final String TITLE_EN = "title_en";
     private static final String TITLE_RU = "title_ru";
     private static final String DESCRIPTION_EN = "description_en";
@@ -55,9 +52,7 @@ public class CreateNewCategoryCommand implements Command {
      * Keys of error messages and page_no attributes in loc.properties file
      */
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
-    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
     private static final String SUCCESS_CREATE_ATTR = "attr.success_category_create_message";
-    private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
     private static final String ERROR_CATEGORY_VALIDATION_ATTR = "attr.category_validation_error";
     private static final String PAGE_NO = "attr.page_no";
     private static final String PAGE_NO_QUERY = "command.page_query_part";
@@ -65,16 +60,12 @@ public class CreateNewCategoryCommand implements Command {
     /**
      * Keys of error or success messages attributes that are located in config.properties file
      */
-    private static final String WARN_LOGIN_BEFORE_WATCH_PROFILE = "warn.login_before_watch_profile";
-    private static final String UNDEFINED_COMMAND_MESSAGE = "error.error_msg.undefined_command";
     private static final String SUCCESS_CREATE_MSG = "category.success_create_msg";
     private static final String SHOW_CATEGORY_CREATION_ATTR = "show_category_creation";
 
     /**
      * Keys of commands that are located in config.properties file
      */
-    private static final String GO_TO_PROFILE_COMMAND = "command.go_to_profile";
-    private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
     private static final String GO_TO_MODERATED_CATEGORIES_COMMAND = "command.go_to_moderated_categories";
 
     /**
@@ -84,7 +75,6 @@ public class CreateNewCategoryCommand implements Command {
      *
      * @param request Processed HttpServletRequest
      * @return value of page where processed request will be send back
-     * (redirection to moderated categories page if success scenario or error, authorization or profile page otherwise)
      */
     @Override
     public String execute(HttpServletRequest request) {
@@ -94,68 +84,47 @@ public class CreateNewCategoryCommand implements Command {
         QueryUtil.logQuery(request);
 
         User user = (User) session.getAttribute(USER);
-        if (user == null) {
-            String notRegUserAttr = configurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
-            String nextCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
-            session.setAttribute(notRegUserAttr, WARN_LOGIN_BEFORE_WATCH_PROFILE);
-            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
-        } else {
-            String role = user.getRole().getValue();
-            int userId = user.getId();
-            switch (role) {
-                case ADMIN_ROLE:
-                    String titleEn = request.getParameter(TITLE_EN);
-                    String titleRu = request.getParameter(TITLE_RU);
-                    String descriptionEn = request.getParameter(DESCRIPTION_EN);
-                    String descriptionRu = request.getParameter(DESCRIPTION_RU);
-                    int pageNo = FIRST_PAGE_NO;
-                    String pageNoQuery = configurationManager.getProperty(PAGE_NO_QUERY);
-                    String pageNoAttr = configurationManager.getProperty(PAGE_NO);
-                    if (request.getParameter(pageNoAttr) != null) {
-                        pageNo = Integer.parseInt(request.getParameter(pageNoAttr));
-                        if (pageNo < FIRST_PAGE_NO) {
-                            pageNo = FIRST_PAGE_NO;
-                        }
-                    }
-                    CategoryValidation categoryValidation = new CategoryValidation();
-                    List<String> validationErrors = categoryValidation.validateNewCategory(titleEn, titleRu, descriptionEn, descriptionRu);
-
-                    if (validationErrors.isEmpty()) {
-                        AdminService adminService = ServiceFactory.getInstance().getAdminService();
-                        try {
-                            adminService.createNewCategory(user.getId(), titleEn, titleRu, descriptionEn, descriptionRu);
-                            String successCreateMessage = configurationManager.getProperty(SUCCESS_CREATE_ATTR);
-                            session.setAttribute(successCreateMessage, SUCCESS_CREATE_MSG);
-                            String nextCommand = configurationManager.getProperty(GO_TO_MODERATED_CATEGORIES_COMMAND);
-                            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand + pageNoQuery + pageNo;
-                        } catch (ServiceException e) {
-                            logger.log(Level.ERROR, e);
-                            String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                            request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
-                            page = ERROR_REQUEST_TYPE;
-                        }
-                    } else {
-                        logger.log(Level.WARN, "User id=" + user.getId() + " :Validation of creating category failed.");
-                        String errorCategoryValidationAttr = configurationManager.getProperty(ERROR_CATEGORY_VALIDATION_ATTR);
-                        session.setAttribute(SHOW_CATEGORY_CREATION_ATTR, true);
-
-
-                        session.setAttribute(RETURNED_DESCRIPTION_EN, descriptionEn);
-                        session.setAttribute(RETURNED_DESCRIPTION_RU, descriptionRu);
-                        session.setAttribute(errorCategoryValidationAttr, validationErrors);
-                        String nextCommand = configurationManager.getProperty(GO_TO_MODERATED_CATEGORIES_COMMAND);
-                        page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand + pageNoQuery + pageNo;
-                    }
-                    break;
-                case USER_ROLE:
-                case MODERATOR_ROLE:
-                default:
-                    String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
-                    session.setAttribute(wrongCommandMessageAttr, UNDEFINED_COMMAND_MESSAGE);
-                    String gotoProfileCommand = configurationManager.getProperty(GO_TO_PROFILE_COMMAND) + userId;
-                    page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + gotoProfileCommand;
-                    break;
+        String titleEn = request.getParameter(TITLE_EN);
+        String titleRu = request.getParameter(TITLE_RU);
+        String descriptionEn = request.getParameter(DESCRIPTION_EN);
+        String descriptionRu = request.getParameter(DESCRIPTION_RU);
+        int pageNo = FIRST_PAGE_NO;
+        String pageNoQuery = configurationManager.getProperty(PAGE_NO_QUERY);
+        String pageNoAttr = configurationManager.getProperty(PAGE_NO);
+        if (request.getParameter(pageNoAttr) != null) {
+            pageNo = Integer.parseInt(request.getParameter(pageNoAttr));
+            if (pageNo < FIRST_PAGE_NO) {
+                pageNo = FIRST_PAGE_NO;
             }
+        }
+        CategoryValidation categoryValidation = new CategoryValidation();
+        List<String> validationErrors = categoryValidation.validateNewCategory(titleEn, titleRu, descriptionEn, descriptionRu);
+
+        if (validationErrors.isEmpty()) {
+            AdminService adminService = ServiceFactory.getInstance().getAdminService();
+            try {
+                adminService.createNewCategory(user.getId(), titleEn, titleRu, descriptionEn, descriptionRu);
+                String successCreateMessage = configurationManager.getProperty(SUCCESS_CREATE_ATTR);
+                session.setAttribute(successCreateMessage, SUCCESS_CREATE_MSG);
+                String nextCommand = configurationManager.getProperty(GO_TO_MODERATED_CATEGORIES_COMMAND);
+                page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand + pageNoQuery + pageNo;
+            } catch (ServiceException | NumberFormatException e) {
+                logger.log(Level.ERROR, e);
+                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
+                request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
+                page = ERROR_REQUEST_TYPE;
+            }
+        } else {
+            logger.log(Level.WARN, "User id=" + user.getId() + " :Validation of creating category failed.");
+            String errorCategoryValidationAttr = configurationManager.getProperty(ERROR_CATEGORY_VALIDATION_ATTR);
+            session.setAttribute(SHOW_CATEGORY_CREATION_ATTR, true);
+            session.setAttribute(RETURNED_TITLE_EN, titleEn);
+            session.setAttribute(RETURNED_TITLE_RU, titleRu);
+            session.setAttribute(RETURNED_DESCRIPTION_EN, descriptionEn);
+            session.setAttribute(RETURNED_DESCRIPTION_RU, descriptionRu);
+            session.setAttribute(errorCategoryValidationAttr, validationErrors);
+            String nextCommand = configurationManager.getProperty(GO_TO_MODERATED_CATEGORIES_COMMAND);
+            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand + pageNoQuery + pageNo;
         }
         return page;
     }

@@ -2,6 +2,7 @@ package by.alesnax.qanda.command.impl.user;
 
 import by.alesnax.qanda.command.Command;
 import by.alesnax.qanda.command.util.QueryUtil;
+import by.alesnax.qanda.entity.CategoryInfo;
 import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
 import by.alesnax.qanda.service.PostService;
@@ -17,9 +18,8 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 //static import
-import static by.alesnax.qanda.constant.CommandConstants.ERROR_REQUEST_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
+import static by.alesnax.qanda.constant.CommandConstants.*;
+
 
 /**
  * Class process adding corrected answer. Access for authorised users, otherwise user will redirected to
@@ -40,22 +40,19 @@ public class AddCorrectedAnswerCommand implements Command {
     private static final String USER_ATTR = "user";
 
     /**
-     * Keys of error messages attributes and edit_post_id attribute that are located in config.properties file
+     * Keys of error messages attributes and edit_post_id, categories_info attributes that are located in config.properties file
      */
     private static final String EDIT_POST_ID_ATTR = "attr.edit_post_id";
-    private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
     private static final String CORRECT_ANSWER_VALIDATION_FAILED_ATTR = "attr.correct_answer_validation_failed";
     private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
+    private static final String WRONG_COMMAND_MESSAGE_ATTR = "attr.wrong_command_message";
+    private static final String SHORT_CATEGORIES_ATTR = "attr.request.categories_info";
 
     /**
-     * Key of error message located in loc.properties file
+     * Keys of error messages located in loc.properties file
      */
-    private static final String WARN_LOGIN_BEFORE_ADD = "common.add_new_answer.error_msg.login_before_add";
-
-    /**
-     * Key of returned command if user unauthorised that is located in config.properties file
-     */
-    private static final String GO_TO_AUTHORIZATION_COMMAND = "path.command.go_to_authorization_page";
+    private static final String USER_BANNED_FOR_QUESTION_ERROR = "common.add_corrected_question.user_banned_for_add";
+    private static final String CATEGORY_CLOSED_ERROR = "common.add_new_answer.error_msg.category_closed_for_answer";
 
     /**
      * process adding corrected answer. Checks if attribute user exists in session and validates answer content,
@@ -83,11 +80,24 @@ public class AddCorrectedAnswerCommand implements Command {
 
         if (validationErrors.isEmpty()) {
             User user = (User) session.getAttribute(USER_ATTR);
-            if (user != null) {
+            if (user != null && !user.isBanned()) {
                 PostService postService = ServiceFactory.getInstance().getPostService();
                 try {
                     int postId = Integer.parseInt(answerId);
-                    postService.addCorrectedAnswer(postId, description);
+                    String status = postService.addCorrectedAnswer(user.getId(), postId, description);
+
+                    if (USER_BANNED.equals(status)) {
+                        String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                        session.setAttribute(wrongCommandMessageAttr, USER_BANNED_FOR_QUESTION_ERROR);
+                        user.setBanned(true);
+                    } else if(!OPERATION_PROCESSED.equals(status)){
+                        String shortCategoriesAttr = configurationManager.getProperty(SHORT_CATEGORIES_ATTR);
+                        List<CategoryInfo> categoriesInfo = postService.takeShortCategoriesList();
+                        session.setAttribute(shortCategoriesAttr, categoriesInfo);
+
+                        String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                        session.setAttribute(wrongCommandMessageAttr, CATEGORY_CLOSED_ERROR);
+                    }
                     String nextCommand = QueryUtil.getPreviousQuery(request);
                     page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
                 } catch (ServiceException | NumberFormatException e) {
@@ -97,9 +107,9 @@ public class AddCorrectedAnswerCommand implements Command {
                     page = ERROR_REQUEST_TYPE;
                 }
             } else {
-                String notRegUserAttr = configurationManager.getProperty(NOT_REGISTERED_USER_YET_ATTR);
-                session.setAttribute(notRegUserAttr, WARN_LOGIN_BEFORE_ADD);
-                String nextCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
+                String wrongCommandMessageAttr = configurationManager.getProperty(WRONG_COMMAND_MESSAGE_ATTR);
+                session.setAttribute(wrongCommandMessageAttr, USER_BANNED_FOR_QUESTION_ERROR);
+                String nextCommand = QueryUtil.getPreviousQuery(request);
                 page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
             }
         } else {

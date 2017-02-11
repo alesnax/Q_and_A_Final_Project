@@ -25,7 +25,6 @@ import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
  * @see Command
  */
 public class GotoPostComplaintCommand implements Command {
-    private static Logger logger = LogManager.getLogger(GotoPostComplaintCommand.class);
 
     /**
      * Names of attributes and parameters taking from request or session
@@ -42,7 +41,6 @@ public class GotoPostComplaintCommand implements Command {
      * Keys of error attributes that are located in config.properties file
      */
     private static final String NOT_REGISTERED_USER_YET_ATTR = "attr.not_registered_user_yet";
-    private static final String ERROR_MESSAGE_ATTR = "attr.service_error";
 
     /**
      * Keys of error messages in loc.properties file
@@ -78,18 +76,11 @@ public class GotoPostComplaintCommand implements Command {
             String nextCommand = configurationManager.getProperty(GO_TO_AUTHORIZATION_COMMAND);
             page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + nextCommand;
         } else {
-            try {
-                String postId = request.getParameter(POST_ID);
-                String complaintAttr = configurationManager.getProperty(COMPLAINT_POST_ID_ATTR);
-                session.setAttribute(complaintAttr, postId);
-                String previousQuery = QueryUtil.getPreviousQuery(request);
-                page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + previousQuery;
-            } catch (NumberFormatException e) {
-                logger.log(Level.ERROR, e);
-                String errorMessageAttr = configurationManager.getProperty(ERROR_MESSAGE_ATTR);
-                request.setAttribute(errorMessageAttr, e.getCause() + " : " + e.getMessage());
-                page = ERROR_REQUEST_TYPE;
-            }
+            String postId = request.getParameter(POST_ID);
+            String complaintAttr = configurationManager.getProperty(COMPLAINT_POST_ID_ATTR);
+            session.setAttribute(complaintAttr, postId);
+            String previousQuery = QueryUtil.getPreviousQuery(request);
+            page = RESPONSE_TYPE + TYPE_PAGE_DELIMITER + previousQuery;
         }
         return page;
     }
