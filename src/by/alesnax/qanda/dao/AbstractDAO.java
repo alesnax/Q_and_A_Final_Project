@@ -11,7 +11,6 @@ import by.alesnax.qanda.entity.Entity;
  *
  * @param <K> the id of manipulated entity
  * @param <T> type of returned elements
- *
  * @author Aliaksandr Nakhankou
  */
 public abstract class AbstractDAO<K, T extends Entity> {
@@ -24,14 +23,12 @@ public abstract class AbstractDAO<K, T extends Entity> {
     protected WrappedConnection connection;
 
     /**
-     * Constructs DAO class with the specified initial connection.
-     *
-     * @param connection A connection (session) with a specific
-     * database. SQL statements are executed and results are returned
-     * within the context of a connection.
-     *
+     * Constructs DAO class
      */
-    public AbstractDAO(WrappedConnection connection) {
+    protected AbstractDAO() {
+    }
+
+    public void setConnection(WrappedConnection connection) {
         this.connection = connection;
     }
 

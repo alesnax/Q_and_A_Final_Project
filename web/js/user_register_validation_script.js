@@ -108,7 +108,7 @@ function validateForm() {
 
     var regexp = /(^[A-Za-z][A-Za-z\-]{0,44}$|^[А-Яа-я][А-Яа-я\-]{0,44}$)/;
     var regexp1 = /^[A-Za-z][A-Za-z0-9_]{5,19}$/;
-    var regexp2 = /^(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6}$)/i;
+    var regexp2 = /^([\w\.]+@[a-zA-Z_]+?\.[a-zA-Z]{2,6}$)/i;
     var regexp3 = /(^[A-Za-z]{2,45}$)|^[А-Яа-я]{2,45}$|^$/;
     var regexp4 = /(^[A-Za-zА-Яа-я0-9\-\s]{5,45}$)/;
 

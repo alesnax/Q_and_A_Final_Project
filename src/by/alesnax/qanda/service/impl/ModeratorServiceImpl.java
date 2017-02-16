@@ -1,6 +1,7 @@
 package by.alesnax.qanda.service.impl;
 
 import by.alesnax.qanda.dao.DAOException;
+import by.alesnax.qanda.dao.impl.DAOFactory;
 import by.alesnax.qanda.dao.impl.ModeratorDAOImpl;
 import by.alesnax.qanda.pagination.PaginatedList;
 import by.alesnax.qanda.pool.ConnectionPool;
@@ -23,14 +24,14 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Aliaksandr Nakhankou
  */
-public class ModeratorServiceImpl implements ModeratorService {
+class ModeratorServiceImpl implements ModeratorService {
     private static Logger logger = LogManager.getLogger(ModeratorServiceImpl.class);
 
     /**
      * method takes info about users from DAO layer method and checks if first item number less than
      * last one from query, if true repeat query with corrected number of first item
      *
-     * @param startUser number of first item to be taken from database
+     * @param startUser    number of first item to be taken from database
      * @param usersPerPage number of items to be taken from database
      * @return container with list of users and pagination parameters
      * @throws ServiceException if exception while processing SQL query and connection will be caught
@@ -41,9 +42,9 @@ public class ModeratorServiceImpl implements ModeratorService {
         PaginatedList<Friend> allUsers = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            ModeratorDAOImpl moderatorDAO = new ModeratorDAOImpl(connection);
+            ModeratorDAOImpl moderatorDAO = DAOFactory.getInstance().getModeratorDAO(connection);
             allUsers = moderatorDAO.takeAllUsers(startUser, usersPerPage);
-            if(startUser > allUsers.getTotalCount()){
+            if (startUser > allUsers.getTotalCount()) {
                 startUser = 0;
                 allUsers = moderatorDAO.takeAllUsers(startUser, usersPerPage);
             }
@@ -65,8 +66,8 @@ public class ModeratorServiceImpl implements ModeratorService {
      * method takes list of bans by definite moderator from DAO layer method and checks if first item number less than
      * last one from query, if true repeat query with corrected number of first item
      *
-     * @param userId id of moderator who banned users
-     * @param startBan number of first item to be taken from database
+     * @param userId      id of moderator who banned users
+     * @param startBan    number of first item to be taken from database
      * @param bansPerPage number of items to be taken from database
      * @return container with list of bans and pagination parameters
      * @throws ServiceException if exception while processing SQL query and connection will be caught
@@ -77,9 +78,9 @@ public class ModeratorServiceImpl implements ModeratorService {
         PaginatedList<Ban> currentBans = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            ModeratorDAOImpl moderatorDAO = new ModeratorDAOImpl(connection);
+            ModeratorDAOImpl moderatorDAO = DAOFactory.getInstance().getModeratorDAO(connection);
             currentBans = moderatorDAO.takeCurrentBansByModeratorId(userId, startBan, bansPerPage);
-            if(startBan > currentBans.getTotalCount()){
+            if (startBan > currentBans.getTotalCount()) {
                 startBan = 0;
                 currentBans = moderatorDAO.takeCurrentBansByModeratorId(userId, startBan, bansPerPage);
             }
@@ -109,7 +110,7 @@ public class ModeratorServiceImpl implements ModeratorService {
         WrappedConnection connection = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            ModeratorDAOImpl moderatorDAO = new ModeratorDAOImpl(connection);
+            ModeratorDAOImpl moderatorDAO = DAOFactory.getInstance().getModeratorDAO(connection);
             moderatorDAO.updateBansStatusFinished(banId);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -125,9 +126,8 @@ public class ModeratorServiceImpl implements ModeratorService {
     }
 
     /**
-     *
-     * @param userId moderator id
-     * @param startComplaint number of first item to be taken from database
+     * @param userId            moderator id
+     * @param startComplaint    number of first item to be taken from database
      * @param complaintsPerPage number of items to be taken from database
      * @return container with list of complaints and pagination parameters
      * @throws ServiceException if exception while processing SQL query and connection will be caught
@@ -138,9 +138,9 @@ public class ModeratorServiceImpl implements ModeratorService {
         PaginatedList<Complaint> complaints = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            ModeratorDAOImpl moderatorDAO = new ModeratorDAOImpl(connection);
+            ModeratorDAOImpl moderatorDAO = DAOFactory.getInstance().getModeratorDAO(connection);
             complaints = moderatorDAO.takeComplaintsByModeratorId(userId, startComplaint, complaintsPerPage);
-            if(startComplaint > complaints.getTotalCount()){
+            if (startComplaint > complaints.getTotalCount()) {
                 startComplaint = 0;
                 complaints = moderatorDAO.takeComplaintsByModeratorId(userId, startComplaint, complaintsPerPage);
             }
@@ -168,10 +168,10 @@ public class ModeratorServiceImpl implements ModeratorService {
         WrappedConnection connection = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            ModeratorDAOImpl moderatorDAO = new ModeratorDAOImpl(connection);
-            if(status == 0){
+            ModeratorDAOImpl moderatorDAO = DAOFactory.getInstance().getModeratorDAO(connection);
+            if (status == 0) {
                 moderatorDAO.updateComplaintStatusToApproved(moderatorId, complaintPostId, complaintAuthorId, decision);
-            } else if(status == 1){
+            } else if (status == 1) {
                 moderatorDAO.updateComplaintStatusToCancelled(moderatorId, complaintPostId, complaintAuthorId, decision);
             } else {
                 throw new ServiceException("Wrong expected parameter of complaint status!");
@@ -199,7 +199,7 @@ public class ModeratorServiceImpl implements ModeratorService {
         WrappedConnection connection = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            ModeratorDAOImpl moderatorDAO = new ModeratorDAOImpl(connection);
+            ModeratorDAOImpl moderatorDAO = DAOFactory.getInstance().getModeratorDAO(connection);
             moderatorDAO.updateCategoryInfo(categoryId, titleEn, titleRu, descriptionEn, descriptionRu, categoryStatus);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);

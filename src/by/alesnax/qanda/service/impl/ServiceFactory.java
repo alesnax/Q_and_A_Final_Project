@@ -1,9 +1,9 @@
-package by.alesnax.qanda.service;
+package by.alesnax.qanda.service.impl;
 
-import by.alesnax.qanda.service.impl.AdminServiceImpl;
-import by.alesnax.qanda.service.impl.ModeratorServiceImpl;
-import by.alesnax.qanda.service.impl.PostServiceImpl;
-import by.alesnax.qanda.service.impl.UserServiceImpl;
+import by.alesnax.qanda.service.AdminService;
+import by.alesnax.qanda.service.ModeratorService;
+import by.alesnax.qanda.service.PostService;
+import by.alesnax.qanda.service.UserService;
 
 /**
  * Singleton that returns instance for getting implementations of service classes

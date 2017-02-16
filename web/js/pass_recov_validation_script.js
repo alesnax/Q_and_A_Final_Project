@@ -43,7 +43,7 @@ function validateRecoveringForm() {
         keyWordValue = document.pass_recov_form.key_word_value.value;
 
 
-    var regexp2 = /^(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6}$)/i;
+    var regexp2 = /^([\w\.]+@[a-zA-Z_]+?\.[a-zA-Z]{2,6}$)/i;
     var regexp4 = /(^[A-Za-zА-Яа-я0-9\-\s]{5,45}$)/;
 
     if (!uEmail) {

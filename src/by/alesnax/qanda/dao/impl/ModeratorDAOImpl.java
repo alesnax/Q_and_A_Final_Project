@@ -4,7 +4,6 @@ import by.alesnax.qanda.dao.AbstractDAO;
 import by.alesnax.qanda.dao.DAOException;
 import by.alesnax.qanda.dao.ModeratorDAO;
 import by.alesnax.qanda.pagination.PaginatedList;
-import by.alesnax.qanda.pool.WrappedConnection;
 import by.alesnax.qanda.entity.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -120,15 +119,9 @@ public class ModeratorDAOImpl extends AbstractDAO<Integer, User> implements Mode
     private static final int DEFAULT_BAN_DAYS = 3;
 
     /**
-     * Constructs ModeratorDAOImpl class with the specified initial connection.
-     *
-     * @param connection A connection (session) with a specific
-     * database. SQL statements are executed and results are returned
-     * within the context of a connection.
+     * Constructs ModeratorDAOImpl class, used in package by DAOFactory
      */
-    public ModeratorDAOImpl(WrappedConnection connection) {
-        super(connection);
-    }
+    ModeratorDAOImpl(){}
 
     /**
      * method finds entity by id, not implemented for ModeratorDAOImpl, throws UnsupportedOperationException if called

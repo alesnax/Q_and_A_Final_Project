@@ -5,7 +5,6 @@ import by.alesnax.qanda.dao.DAODuplicatedInfoException;
 import by.alesnax.qanda.dao.DAOException;
 import by.alesnax.qanda.dao.PostDAO;
 import by.alesnax.qanda.pagination.PaginatedList;
-import by.alesnax.qanda.pool.WrappedConnection;
 import by.alesnax.qanda.entity.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -276,15 +275,9 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
     private static final String CURRENT_USER_MARK = "value";
 
     /**
-     * Constructs PostDAOImpl class with the specified initial connection.
-     *
-     * @param connection A connection (session) with a specific
-     *                   database. SQL statements are executed and results are returned
-     *                   within the context of a connection.
+     * Constructs PostDAOImpl class, used in package by DAOFactory
      */
-    public PostDAOImpl(WrappedConnection connection) {
-        super(connection);
-    }
+    PostDAOImpl(){}
 
     /**
      * method creates PreparedStatement for selecting post by id

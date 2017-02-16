@@ -36,7 +36,7 @@ function validateLoginForm() {
     var password1 = document.create_account.Passwd.value,
         uEmail = document.create_account.email.value;
 
-    var regexp2 = /^(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6}$)/i;
+    var regexp2 = /^([\w\.]+@[a-zA-Z_]+?\.[a-zA-Z]{2,6}$)/i;
 
 
     if (!password1) {

@@ -5,7 +5,7 @@ import by.alesnax.qanda.command.util.QueryUtil;
 import by.alesnax.qanda.entity.Post;
 import by.alesnax.qanda.resource.ConfigurationManager;
 import by.alesnax.qanda.service.PostService;
-import by.alesnax.qanda.service.ServiceFactory;
+import by.alesnax.qanda.service.impl.ServiceFactory;
 import by.alesnax.qanda.service.ServiceException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

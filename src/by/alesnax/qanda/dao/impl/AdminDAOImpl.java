@@ -4,7 +4,6 @@ import by.alesnax.qanda.dao.AbstractDAO;
 import by.alesnax.qanda.dao.AdminDAO;
 import by.alesnax.qanda.dao.DAOException;
 import by.alesnax.qanda.pagination.PaginatedList;
-import by.alesnax.qanda.pool.WrappedConnection;
 import by.alesnax.qanda.entity.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -122,15 +121,9 @@ public class AdminDAOImpl extends AbstractDAO<Integer, User> implements AdminDAO
     private static final String AUTHOR_ID = "users_id";
 
     /**
-     * Constructs AdminDAOImpl class with the specified initial connection.
-     *
-     * @param connection A connection (session) with a specific
-     * database. SQL statements are executed and results are returned
-     * within the context of a connection.
+     * Constructs AdminDAOImpl class, used in package by DAOFactory
      */
-    public AdminDAOImpl(WrappedConnection connection) {
-        super(connection);
-    }
+    AdminDAOImpl(){}
 
     /**
      * method finds entity by id, not implemented for AdminDAOImpl, throws UnsupportedOperationException if called

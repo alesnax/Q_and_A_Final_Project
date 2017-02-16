@@ -2,6 +2,7 @@ package by.alesnax.qanda.service.impl;
 
 import by.alesnax.qanda.dao.DAODuplicatedInfoException;
 import by.alesnax.qanda.dao.DAOException;
+import by.alesnax.qanda.dao.impl.DAOFactory;
 import by.alesnax.qanda.dao.impl.PostDAOImpl;
 import by.alesnax.qanda.pagination.PaginatedList;
 import by.alesnax.qanda.pool.ConnectionPool;
@@ -28,15 +29,15 @@ import java.util.List;
  *
  * @author Aliaksandr Nakhankou
  */
-public class PostServiceImpl implements PostService {
+class PostServiceImpl implements PostService {
     private static Logger logger = LogManager.getLogger(PostServiceImpl.class);
 
     /**
      * method takes best answers list from DAO layer method and checks if first item number less than
      * last one from query, if true repeat query with corrected number of first item
      *
-     * @param userId id of session user
-     * @param startPost number of first item to be taken from database
+     * @param userId       id of session user
+     * @param startPost    number of first item to be taken from database
      * @param postsPerPage number of items to be taken from database
      * @return container with list of best answers and pagination parameters
      * @throws ServiceException if exception while processing SQL query and connection will be caught
@@ -48,9 +49,9 @@ public class PostServiceImpl implements PostService {
 
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             answers = postDAO.takeBestAnswers(userId, startPost, postsPerPage);
-            if(startPost > answers.getTotalCount()){
+            if (startPost > answers.getTotalCount()) {
                 startPost = 0;
                 answers = postDAO.takeBestAnswers(userId, startPost, postsPerPage);
             }
@@ -72,8 +73,8 @@ public class PostServiceImpl implements PostService {
      * method takes best questions list from DAO layer method and checks if first item number less than
      * last one from query, if true repeat query with corrected number of first item
      *
-     * @param userId id of session user
-     * @param startPost number of first item to be taken from database
+     * @param userId       id of session user
+     * @param startPost    number of first item to be taken from database
      * @param postsPerPage number of items to be taken from database
      * @return container with list of best questions and pagination parameters
      * @throws ServiceException if exception while processing SQL query and connection will be caught
@@ -85,9 +86,9 @@ public class PostServiceImpl implements PostService {
 
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             questions = postDAO.takeBestQuestions(userId, startPost, postsPerPage);
-            if(startPost > questions.getTotalCount()){
+            if (startPost > questions.getTotalCount()) {
                 startPost = 0;
                 questions = postDAO.takeBestAnswers(userId, startPost, postsPerPage);
             }
@@ -110,9 +111,9 @@ public class PostServiceImpl implements PostService {
      * last one from query, if true repeat query with corrected number of first item
      *
      * @param profileUserId id of user which posts should be taken
-     * @param userId  id of session user
-     * @param startPost number of first item to be taken from database
-     * @param postsPerPage number of items to be taken from database
+     * @param userId        id of session user
+     * @param startPost     number of first item to be taken from database
+     * @param postsPerPage  number of items to be taken from database
      * @return container with list user posts and pagination parameters
      * @throws ServiceException if exception while processing SQL query and connection will be caught
      */
@@ -123,9 +124,9 @@ public class PostServiceImpl implements PostService {
 
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             posts = postDAO.takePostsByUserId(profileUserId, userId, startPost, postsPerPage);
-            if(startPost > posts.getTotalCount()){
+            if (startPost > posts.getTotalCount()) {
                 startPost = 0;
                 posts = postDAO.takeBestAnswers(userId, startPost, postsPerPage);
             }
@@ -147,8 +148,8 @@ public class PostServiceImpl implements PostService {
      * method takes posts where session user left rate from DAO layer method and checks if first item number less than
      * last one from query, if true repeat query with corrected number of first item
      *
-     * @param userId id of session user
-     * @param startPost number of first item to be taken from database
+     * @param userId       id of session user
+     * @param startPost    number of first item to be taken from database
      * @param postsPerPage number of items to be taken from database
      * @return container with list of rated posts and pagination parameters
      * @throws ServiceException if exception while processing SQL query and connection will be caught
@@ -159,9 +160,9 @@ public class PostServiceImpl implements PostService {
         PaginatedList<Post> posts = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             posts = postDAO.takeRatedPosts(userId, startPost, postsPerPage);
-            if(startPost > posts.getTotalCount()){
+            if (startPost > posts.getTotalCount()) {
                 startPost = 0;
                 posts = postDAO.takeRatedPosts(userId, startPost, postsPerPage);
             }
@@ -190,7 +191,7 @@ public class PostServiceImpl implements PostService {
         WrappedConnection connection = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             postDAO.deletePostById(postId);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -209,8 +210,8 @@ public class PostServiceImpl implements PostService {
      * method takes posts where of followers of session user from DAO layer method and checks if first item number less than
      * last one from query, if true repeat query with corrected number of first item
      *
-     * @param userId id of session user
-     * @param startPost number of first item to be taken from database
+     * @param userId       id of session user
+     * @param startPost    number of first item to be taken from database
      * @param postsPerPage number of items to be taken from database
      * @return container with list of followers' posts and pagination parameters
      * @throws ServiceException if exception while processing SQL query and connection will be caught
@@ -222,9 +223,9 @@ public class PostServiceImpl implements PostService {
 
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             posts = postDAO.takeFriendsPosts(userId, startPost, postsPerPage);
-            if(startPost > posts.getTotalCount()){
+            if (startPost > posts.getTotalCount()) {
                 startPost = 0;
                 posts = postDAO.takeFriendsPosts(userId, startPost, postsPerPage);
             }
@@ -246,9 +247,9 @@ public class PostServiceImpl implements PostService {
      * takes question and its answers from DAO method by question id
      *
      * @param questionId id of question
-     * @param userId id of session user for showing rates if exist
+     * @param userId     id of session user for showing rates if exist
      * @return container with list of question and answers and pagination parameters
-     * @throws ServiceException  if exception while processing SQL query and connection will be caught
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
      */
     @Override
     public List<Post> findQuestionWithAnswersById(int questionId, int userId) throws ServiceException {
@@ -257,7 +258,7 @@ public class PostServiceImpl implements PostService {
 
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             question = postDAO.takeQuestionWithAnswersById(questionId, userId);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -277,7 +278,7 @@ public class PostServiceImpl implements PostService {
      * send answer parameters for adding new answers into database
      *
      * @return status of operation
-     * @throws ServiceException  if exception while processing SQL query and connection will be caught
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
      */
     @Override
     public String addNewAnswer(int userId, String questionId, String categoryId, String description) throws ServiceException {
@@ -285,7 +286,7 @@ public class PostServiceImpl implements PostService {
         String status = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             status = postDAO.addNewAnswer(userId, questionId, categoryId, description);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -305,16 +306,16 @@ public class PostServiceImpl implements PostService {
      * send to DAO value of rate for post
      *
      * @param postId id of post
-     * @param mark value of rate
+     * @param mark   value of rate
      * @param userId user who rated post
-     * @throws ServiceException  if exception while processing SQL query and connection will be caught
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
      */
     @Override
     public void ratePost(int postId, int mark, int userId) throws ServiceException {
         WrappedConnection connection = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             postDAO.addNewRate(postId, mark, userId);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -332,11 +333,10 @@ public class PostServiceImpl implements PostService {
     /**
      * send to DAO corrected content of answer for updating
      *
-     *
      * @param userId
-     * @param answerId id of answer
+     * @param answerId    id of answer
      * @param description content of answer
-     * @throws ServiceException  if exception while processing SQL query and connection will be caught
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
      */
     @Override
     public String addCorrectedAnswer(int userId, int answerId, String description) throws ServiceException {
@@ -344,7 +344,7 @@ public class PostServiceImpl implements PostService {
         WrappedConnection connection = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             status = postDAO.addCorrectedAnswer(userId, answerId, description);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -372,7 +372,7 @@ public class PostServiceImpl implements PostService {
         String status = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             status = postDAO.addCorrectedQuestion(userId, questionId, catId, correctedTitle, description);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -403,7 +403,7 @@ public class PostServiceImpl implements PostService {
 
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             post = postDAO.findEntityById(postId);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -422,9 +422,9 @@ public class PostServiceImpl implements PostService {
     /**
      * method send data of new complaint to DAO method
      *
-     * @param userId id of user
+     * @param userId          id of user
      * @param complaintPostId id of post to which user have complaint
-     * @param description content of complaint
+     * @param description     content of complaint
      * @throws ServiceException if exception while processing SQL query and connection will be caught
      */
     @Override
@@ -433,7 +433,7 @@ public class PostServiceImpl implements PostService {
 
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             postDAO.addNewComplaint(userId, complaintPostId, description);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -453,9 +453,9 @@ public class PostServiceImpl implements PostService {
     /**
      * method send parameters to DAO for searching posts matching with query
      *
-     * @param userId session user id for marks
-     * @param content user search query
-     * @param startPost number of first item to be taken from database
+     * @param userId       session user id for marks
+     * @param content      user search query
+     * @param startPost    number of first item to be taken from database
      * @param postsPerPage number of items to be taken from database
      * @return container with list of finding matching with query posts and pagination parameters
      * @throws ServiceException if exception while processing SQL query and connection will be caught
@@ -466,9 +466,9 @@ public class PostServiceImpl implements PostService {
         PaginatedList<Post> posts = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             posts = postDAO.searchPostsByKeyWords(userId, content, startPost, postsPerPage);
-            if(startPost > posts.getTotalCount()){
+            if (startPost > posts.getTotalCount()) {
                 startPost = 0;
                 posts = postDAO.searchPostsByKeyWords(userId, content, startPost, postsPerPage);
             }
@@ -489,11 +489,11 @@ public class PostServiceImpl implements PostService {
     /**
      * takes posts by category id from dao layer
      *
-     * @param categoryId id of category
-     * @param userId id of user for marks
-     * @param startPost number of first item to be taken from database
+     * @param categoryId   id of category
+     * @param userId       id of user for marks
+     * @param startPost    number of first item to be taken from database
      * @param postsPerPage number of items to be taken from database
-     * @return  container with list of posts of definite category and pagination parameters
+     * @return container with list of posts of definite category and pagination parameters
      * @throws ServiceException if exception while processing SQL query and connection will be caught
      */
     @Override
@@ -504,7 +504,7 @@ public class PostServiceImpl implements PostService {
 
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             questions = postDAO.takeQuestionsByCategory(categoryId, userId, startPost, postsPerPage);
 
             if (questions.getItems() == null || questions.getItems().isEmpty()) {
@@ -518,9 +518,10 @@ public class PostServiceImpl implements PostService {
                     questions.setItems(items);
                 }
             }
-            if(startPost > questions.getTotalCount() & questions.getTotalCount() > 0){
+            if (startPost > questions.getTotalCount() & questions.getTotalCount() > 0) {
                 startPost = 0;
-                questions = postDAO.takeQuestionsByCategory(categoryId, userId, startPost, postsPerPage);            }
+                questions = postDAO.takeQuestionsByCategory(categoryId, userId, startPost, postsPerPage);
+            }
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
         } catch (DAOException e) {
@@ -538,7 +539,7 @@ public class PostServiceImpl implements PostService {
     /**
      * takes list of categories from DAO layer
      *
-     * @param startCategory number of first item to be taken from database
+     * @param startCategory     number of first item to be taken from database
      * @param categoriesPerPage number of items to be taken from database
      * @return container with list of categories and pagination parameters
      * @throws ServiceException if exception while processing SQL query and connection will be caught
@@ -550,9 +551,9 @@ public class PostServiceImpl implements PostService {
 
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             categories = postDAO.takeAllCategories(startCategory, categoriesPerPage);
-            if(startCategory > categories.getTotalCount()){
+            if (startCategory > categories.getTotalCount()) {
                 startCategory = 0;
                 categories = postDAO.takeAllCategories(startCategory, categoriesPerPage);
             }
@@ -573,8 +574,8 @@ public class PostServiceImpl implements PostService {
     /**
      * takes list of moderated categories by definite user from DAO layer
      *
-     * @param userId moderator id
-     * @param startCategory number of first item to be taken from database
+     * @param userId            moderator id
+     * @param startCategory     number of first item to be taken from database
      * @param categoriesPerPage number of items to be taken from database
      * @return container with list of moderated categories and pagination parameters
      * @throws ServiceException if exception while processing SQL query and connection will be caught
@@ -585,9 +586,9 @@ public class PostServiceImpl implements PostService {
         PaginatedList<Category> moderatedCategories = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             moderatedCategories = postDAO.takeModeratedCategories(userId, startCategory, categoriesPerPage);
-            if(startCategory > moderatedCategories.getTotalCount()){
+            if (startCategory > moderatedCategories.getTotalCount()) {
                 startCategory = 0;
                 moderatedCategories = postDAO.takeModeratedCategories(userId, startCategory, categoriesPerPage);
             }
@@ -609,7 +610,7 @@ public class PostServiceImpl implements PostService {
      * takes info about categories from DAO layer to be showed in add question form
      *
      * @return list of cut info about categories
-     * @throws ServiceException  if exception while processing SQL query and connection will be caught
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
      */
     @Override
     public List<CategoryInfo> takeShortCategoriesList() throws ServiceException {
@@ -618,7 +619,7 @@ public class PostServiceImpl implements PostService {
 
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             categories = postDAO.takeCategoriesInfo();
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -646,7 +647,7 @@ public class PostServiceImpl implements PostService {
         String status = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            PostDAOImpl postDAO = new PostDAOImpl(connection);
+            PostDAOImpl postDAO = DAOFactory.getInstance().getPostDAO(connection);
             status = postDAO.addNewQuestion(id, category, title, description);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);

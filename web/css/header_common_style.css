@@ -112,10 +112,11 @@ header {
 }
 
 .topbar_wrapper {
-    width: 960px;
+    max-width: 960px;
     position: relative;
     margin: 0 auto;
     height: 50px;
+    min-width: 800px;
 }
 
 

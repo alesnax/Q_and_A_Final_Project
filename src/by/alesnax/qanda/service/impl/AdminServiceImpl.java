@@ -1,7 +1,8 @@
 package by.alesnax.qanda.service.impl;
 
-import by.alesnax.qanda.dao.impl.AdminDAOImpl;
 import by.alesnax.qanda.dao.DAOException;
+import by.alesnax.qanda.dao.impl.AdminDAOImpl;
+import by.alesnax.qanda.dao.impl.DAOFactory;
 import by.alesnax.qanda.pagination.PaginatedList;
 import by.alesnax.qanda.pool.ConnectionPool;
 import by.alesnax.qanda.pool.ConnectionPoolException;
@@ -23,14 +24,14 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Aliaksandr Nakhankou
  */
-public class AdminServiceImpl implements AdminService {
+class AdminServiceImpl implements AdminService {
     private static Logger logger = LogManager.getLogger(AdminServiceImpl.class);
 
     /**
      * method takes managing users from DAO layer method and checks if first item number less than
      * last one from query, if true repeat query with corrected number of first item
      *
-     * @param startUser number of first item to be taken from database
+     * @param startUser    number of first item to be taken from database
      * @param usersPerPage number of items to be taken from database
      * @return container with list of admins and moderators and pagination parameters
      * @throws ServiceException if exception while processing SQL query and connection will be caught
@@ -41,9 +42,9 @@ public class AdminServiceImpl implements AdminService {
         PaginatedList<Friend> management = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            AdminDAOImpl adminDAO = new AdminDAOImpl(connection);
+            AdminDAOImpl adminDAO = DAOFactory.getInstance().getAdminDAO(connection);
             management = adminDAO.takeManagingUsers(startUser, usersPerPage);
-            if(startUser > management.getTotalCount()){
+            if (startUser > management.getTotalCount()) {
                 startUser = 0;
                 management = adminDAO.takeManagingUsers(startUser, usersPerPage);
             }
@@ -65,7 +66,7 @@ public class AdminServiceImpl implements AdminService {
      * method takes user bans from DAO layer method and checks if first item number less than
      * last one from query, if true repeat query with corrected number of first item
      *
-     * @param startBan number of first item to be taken from database
+     * @param startBan    number of first item to be taken from database
      * @param bansPerPage number of items to be taken from database
      * @return container with list of user bans and pagination parameters
      * @throws ServiceException if exception while processing SQL query and connection will be caught
@@ -76,9 +77,9 @@ public class AdminServiceImpl implements AdminService {
         PaginatedList<Ban> allCurrentBans = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            AdminDAOImpl adminDAO = new AdminDAOImpl(connection);
+            AdminDAOImpl adminDAO = DAOFactory.getInstance().getAdminDAO(connection);
             allCurrentBans = adminDAO.takeAllCurrentBans(startBan, bansPerPage);
-            if(startBan > allCurrentBans.getTotalCount()){
+            if (startBan > allCurrentBans.getTotalCount()) {
                 startBan = 0;
                 allCurrentBans = adminDAO.takeAllCurrentBans(startBan, bansPerPage);
             }
@@ -100,7 +101,7 @@ public class AdminServiceImpl implements AdminService {
      * method takes complaints from DAO layer method and checks if first item number less than
      * last one from query, if true repeat query with corrected number of first item
      *
-     * @param startComplaint number of first item to be taken from database
+     * @param startComplaint    number of first item to be taken from database
      * @param complaintsPerPage number of items to be taken from database
      * @return container with list of user complaints and pagination parameters
      * @throws ServiceException if exception while processing SQL query and connection will be caught
@@ -111,9 +112,9 @@ public class AdminServiceImpl implements AdminService {
         PaginatedList<Complaint> complaints = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            AdminDAOImpl adminDAO = new AdminDAOImpl(connection);
+            AdminDAOImpl adminDAO = DAOFactory.getInstance().getAdminDAO(connection);
             complaints = adminDAO.takeAllComplaints(startComplaint, complaintsPerPage);
-            if(startComplaint > complaints.getTotalCount()){
+            if (startComplaint > complaints.getTotalCount()) {
                 startComplaint = 0;
                 complaints = adminDAO.takeAllComplaints(startComplaint, complaintsPerPage);
             }
@@ -136,7 +137,7 @@ public class AdminServiceImpl implements AdminService {
      * method calls DAO method for updating user role
      *
      * @param login of user for changing role
-     * @param role new user's role
+     * @param role  new user's role
      * @return true if user role was changed, false otherwise
      * @throws ServiceException if exception while processing SQL query and connection will be caught
      */
@@ -146,7 +147,7 @@ public class AdminServiceImpl implements AdminService {
         boolean changed = false;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            AdminDAOImpl adminDAO = new AdminDAOImpl(connection);
+            AdminDAOImpl adminDAO = DAOFactory.getInstance().getAdminDAO(connection);
             changed = adminDAO.updateUserStatus(login, role);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -173,7 +174,7 @@ public class AdminServiceImpl implements AdminService {
 
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            AdminDAOImpl adminDAO = new AdminDAOImpl(connection);
+            AdminDAOImpl adminDAO = DAOFactory.getInstance().getAdminDAO(connection);
             adminDAO.addNewCategory(userId, titleEn, titleRu, descriptionEn, descriptionRu);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -200,7 +201,7 @@ public class AdminServiceImpl implements AdminService {
 
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            AdminDAOImpl adminDAO = new AdminDAOImpl(connection);
+            AdminDAOImpl adminDAO = DAOFactory.getInstance().getAdminDAO(connection);
             adminDAO.updateCategoryStatusToClosed(catId);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -220,7 +221,7 @@ public class AdminServiceImpl implements AdminService {
      * sends category data to DAO method to update category info
      *
      * @return true if category updated, false otherwise
-     * @throws ServiceException  if exception while processing SQL query and connection will be caught
+     * @throws ServiceException if exception while processing SQL query and connection will be caught
      */
     @Override
     public boolean correctCategoryInfo(String categoryId, String titleEn, String titleRu, String descriptionEn, String descriptionRu, String login, String categoryStatus) throws ServiceException {
@@ -228,7 +229,7 @@ public class AdminServiceImpl implements AdminService {
         boolean updated = false;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            AdminDAOImpl adminDAO = new AdminDAOImpl(connection);
+            AdminDAOImpl adminDAO = DAOFactory.getInstance().getAdminDAO(connection);
             updated = adminDAO.updateCategoryInfo(categoryId, titleEn, titleRu, descriptionEn, descriptionRu, login, categoryStatus);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);

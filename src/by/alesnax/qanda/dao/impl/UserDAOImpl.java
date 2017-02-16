@@ -5,7 +5,6 @@ import by.alesnax.qanda.dao.DAODuplicatedInfoException;
 import by.alesnax.qanda.dao.DAOException;
 import by.alesnax.qanda.dao.UserDAO;
 import by.alesnax.qanda.pagination.PaginatedList;
-import by.alesnax.qanda.pool.WrappedConnection;
 import by.alesnax.qanda.entity.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -188,15 +187,9 @@ public class UserDAOImpl extends AbstractDAO<Integer, User> implements UserDAO {
     private static final int MONTH_DIFFERENCE = 1;
 
     /**
-     * Constructs UserDAOImpl class with the specified initial connection.
-     *
-     * @param connection A connection (session) with a specific
-     * database. SQL statements are executed and results are returned
-     * within the context of a connection.
+     * Constructs UserDAOImpl class, used in package by DAOFactory
      */
-    public UserDAOImpl(WrappedConnection connection) {
-        super(connection);
-    }
+    UserDAOImpl(){}
 
     /**
      * method finds entity by id, not implemented for UserDAOImpl, throws UnsupportedOperationException if called

@@ -2,6 +2,7 @@ package by.alesnax.qanda.service.impl;
 
 import by.alesnax.qanda.dao.DAODuplicatedInfoException;
 import by.alesnax.qanda.dao.DAOException;
+import by.alesnax.qanda.dao.impl.DAOFactory;
 import by.alesnax.qanda.dao.impl.UserDAOImpl;
 import by.alesnax.qanda.pagination.PaginatedList;
 import by.alesnax.qanda.pool.ConnectionPool;
@@ -28,7 +29,7 @@ import java.util.Random;
  *
  * @author Aliaksandr Nakhankou
  */
-public class UserServiceImpl implements UserService {
+class UserServiceImpl implements UserService {
     private static Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
     private static Random rand = new Random();
@@ -60,7 +61,7 @@ public class UserServiceImpl implements UserService {
         User user = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            UserDAOImpl userDAO = new UserDAOImpl(connection);
+            UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
             user = userDAO.takeUserById(userId, sessionUserId);
             if (user != null) {
                 UserStatistics statistics = userDAO.findUserStatistics(user.getId());
@@ -95,7 +96,7 @@ public class UserServiceImpl implements UserService {
         PaginatedList<Friend> friends = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            UserDAOImpl userDAO = new UserDAOImpl(connection);
+            UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
             friends = userDAO.takeFollowingUsers(userId, startUser, usersPerPage);
             if (startUser > friends.getTotalCount()) {
                 startUser = 0;
@@ -130,7 +131,7 @@ public class UserServiceImpl implements UserService {
         PaginatedList<Friend> followers = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            UserDAOImpl userDAO = new UserDAOImpl(connection);
+            UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
             followers = userDAO.takeFollowers(userId, startUser, usersPerPage);
             if (startUser > followers.getTotalCount()) {
                 startUser = 0;
@@ -162,7 +163,7 @@ public class UserServiceImpl implements UserService {
         WrappedConnection connection = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            UserDAOImpl userDAO = new UserDAOImpl(connection);
+            UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
             userDAO.removeUserFromFriends(removedUserId, userId);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -189,7 +190,7 @@ public class UserServiceImpl implements UserService {
         WrappedConnection connection = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            UserDAOImpl userDAO = new UserDAOImpl(connection);
+            UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
             userDAO.addFollower(followingUserId, userId);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -218,7 +219,7 @@ public class UserServiceImpl implements UserService {
         User user = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            UserDAOImpl userDAO = new UserDAOImpl(connection);
+            UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
             user = userDAO.updateUserInfo(userId, login, name, surname, email, bDay, bMonth, bYear, sex, country, city, status, keyWordType, keyWordValue);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -251,7 +252,7 @@ public class UserServiceImpl implements UserService {
         boolean updated = false;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            UserDAOImpl userDAO = new UserDAOImpl(connection);
+            UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
             password1 = encryptPassword(password1);
             password2 = encryptPassword(password2);
             updated = userDAO.updatePassword(userId, password1, password2);
@@ -281,7 +282,7 @@ public class UserServiceImpl implements UserService {
         WrappedConnection connection = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            UserDAOImpl userDAO = new UserDAOImpl(connection);
+            UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
             userDAO.updateAvatar(userId, avatarPath);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -309,7 +310,7 @@ public class UserServiceImpl implements UserService {
         WrappedConnection connection = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            UserDAOImpl userDAO = new UserDAOImpl(connection);
+            UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
             userDAO.updateUserLanguage(userId, language);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -338,7 +339,7 @@ public class UserServiceImpl implements UserService {
         PaginatedList<Friend> bestUsers = null;
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            UserDAOImpl userDAO = new UserDAOImpl(connection);
+            UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
             bestUsers = userDAO.takeBestUsers(startUser, usersPerPage);
             if (startUser > bestUsers.getTotalCount()) {
                 startUser = 0;
@@ -375,7 +376,7 @@ public class UserServiceImpl implements UserService {
         String password = encryptPassword(changedPassword);
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            UserDAOImpl userDAO = new UserDAOImpl(connection);
+            UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
             boolean changed = userDAO.updateUserPassWordByKeyword(password, email, keyWordType, keyWordValue);
             if (!changed) {
                 changedPassword = null;
@@ -406,7 +407,7 @@ public class UserServiceImpl implements UserService {
         password = encryptPassword(password);
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            UserDAOImpl userDAO = new UserDAOImpl(connection);
+            UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
             deleted = userDAO.updateUserStateToDeleted(userId, password);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -434,7 +435,7 @@ public class UserServiceImpl implements UserService {
         password = encryptPassword(password);
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            UserDAOImpl userDAO = new UserDAOImpl(connection);
+            UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
             userDAO.registerNewAccount(login, password, name, surname, email, bDay, bMonth, bYear, sex, country, city, status, keyWordType, keyWordValue);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -466,7 +467,7 @@ public class UserServiceImpl implements UserService {
         password = encryptPassword(password);
         try {
             connection = ConnectionPool.getInstance().takeConnection();
-            UserDAOImpl userDAO = new UserDAOImpl(connection);
+            UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
             user = userDAO.userAuthorization(email, password);
             if (user != null) {
                 UserStatistics statistics = userDAO.findUserStatistics(user.getId());

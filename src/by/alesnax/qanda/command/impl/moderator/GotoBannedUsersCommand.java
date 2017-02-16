@@ -8,7 +8,7 @@ import by.alesnax.qanda.pagination.PaginatedList;
 import by.alesnax.qanda.resource.ConfigurationManager;
 import by.alesnax.qanda.service.AdminService;
 import by.alesnax.qanda.service.ModeratorService;
-import by.alesnax.qanda.service.ServiceFactory;
+import by.alesnax.qanda.service.impl.ServiceFactory;
 import by.alesnax.qanda.service.ServiceException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +19,6 @@ import javax.servlet.http.HttpSession;
 
 //static import
 import static by.alesnax.qanda.constant.CommandConstants.*;
-import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 /**
