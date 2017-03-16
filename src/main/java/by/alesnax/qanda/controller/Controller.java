@@ -26,7 +26,7 @@ import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
  * which checked and chooses implementation of Command, and forms response with new attributes,
  * definite address and type of sending methods(forward() or sendRedirect()).
  *
- * @author alesnax
+ * @author Aliaksandr Nakhankou
  * @see javax.servlet.http.HttpServlet
  */
 

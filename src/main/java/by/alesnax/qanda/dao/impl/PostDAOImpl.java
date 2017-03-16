@@ -87,7 +87,7 @@ public class PostDAOImpl extends AbstractDAO<Integer, Post> implements PostDAO {
 
     /**
      * SQL query that selects information about posts of definite author,
-     * selects limited list of posts in reversed order by published time .
+     * selects limited list of posts in reversed order by published time.
      */
     private static final String SQL_SELECT_USERS_POSTS = "SELECT sql_calc_found_rows posts.id, posts.users_id, posts.category_id, posts.type, posts.title, posts.content, posts.status,\n" +
             "posts.published_time, posts.modified_time, posts.parent_id, parent.title AS parent_title,  AVG(coalesce(rates.value, 0)) AS mark, categories.title_en, categories.title_ru, " +

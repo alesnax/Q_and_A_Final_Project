@@ -3,7 +3,7 @@ package by.alesnax.qanda.command.client;
 /**
  * Specifies names of commands which should be processed in {@code Controller}
  *
- * @author alesnax
+ * @author Aliaksandr Nakhankou
  */
 
 public enum CommandName {

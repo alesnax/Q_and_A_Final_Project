@@ -47,7 +47,7 @@ public class ConnectionPool {
     /**
      * Name of .properties that contains init params of connection pool
      */
-    private static final String DB_PROPERTIES_FILE = "resources.db";
+    private static final String DB_PROPERTIES_FILE = "db";
 
     /**
      * key of the number of connections located in db.properties file
@@ -185,6 +185,16 @@ public class ConnectionPool {
                 connection.closeConnection();
             } catch (SQLException e) {
                 logger.log(Level.ERROR, "DestroyPoolException in freeConnections", e);
+            } catch (InterruptedException e) {
+                logger.log(Level.ERROR, "Interrupted exception while taking connection from freeConnections for close connection and destroying pool", e);
+            }
+        }
+        for (int i = 0; i < givenConnections.size(); i++) {
+            try {
+                WrappedConnection connection = givenConnections.take();
+                connection.closeConnection();
+            } catch (SQLException e) {
+                logger.log(Level.ERROR, "DestroyPoolException in givenConnections", e);
             } catch (InterruptedException e) {
                 logger.log(Level.ERROR, "Interrupted exception while taking connection from freeConnections for close connection and destroying pool", e);
             }

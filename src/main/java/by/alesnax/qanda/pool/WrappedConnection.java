@@ -65,7 +65,7 @@ public class WrappedConnection {
     /**
      * Name of .properties that contains init params of connection pool
      */
-    private static final String DB_PROPERTIES_FILE = "resources.db";
+    private static final String DB_PROPERTIES_FILE = "db";
 
     /**
      * Connection to the URL

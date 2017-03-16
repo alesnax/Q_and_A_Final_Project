@@ -441,14 +441,14 @@ public class AdminDAOImpl extends AbstractDAO<Integer, User> implements AdminDAO
         boolean updated = false;
         PreparedStatement selectUserIdStatement = null;
         PreparedStatement updateCategoryStatement = null;
-        ResultSet userIdResulSet;
+        ResultSet userIdResultSet;
 
         try {
             connection.setAutoCommit(false);
             selectUserIdStatement = connection.prepareStatement(SQL_SELECT_USER_ID_BY_LOGIN);
             selectUserIdStatement.setString(1, login);
-            userIdResulSet = selectUserIdStatement.executeQuery();
-            if(userIdResulSet.next()){
+            userIdResultSet = selectUserIdStatement.executeQuery();
+            if(userIdResultSet.next()){
                updateCategoryStatement = connection.prepareStatement(SQL_UPDATE_CATEGORY_INFO);
                 updateCategoryStatement.setString(1, login);
                 updateCategoryStatement.setString(2, titleEn);

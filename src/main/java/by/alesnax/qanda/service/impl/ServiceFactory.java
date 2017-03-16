@@ -18,6 +18,9 @@ public class ServiceFactory {
     private PostService postService = new PostServiceImpl();
     private ModeratorService moderatorService = new ModeratorServiceImpl();
 
+    private ServiceFactory() {
+    }
+
     public static ServiceFactory getInstance() {
         return INSTANCE;
     }

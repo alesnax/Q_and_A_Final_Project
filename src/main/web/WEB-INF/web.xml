@@ -10,12 +10,12 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
-    <jsp-config>
+   <!-- <jsp-config>
         <taglib>
             <taglib-uri>customtags</taglib-uri>
-            <taglib-location>/WEB-INF/tld/custom.tld</taglib-location>
+            <taglib-location>/web/WEB-INF/tld/custom.tld</taglib-location>
         </taglib>
-    </jsp-config>
+    </jsp-config>-->
     <listener>
         <listener-class>
             org.apache.commons.fileupload.servlet.FileCleanerCleanup
@@ -25,13 +25,13 @@
         <param-name>feedback_mail</param-name>
         <param-value>alesnax@gmail.com</param-value>
     </context-param>
-    <error-page>
+   <!-- <error-page>
         <error-code>404</error-code>
-        <location>/jsp/error/error404.jsp</location>
+        <location>/web/jsp/error/error404.jsp</location>
     </error-page>
     <error-page>
         <error-code>500</error-code>
-        <location>/jsp/error/error500.jsp</location>
-    </error-page>
+        <location>/web/jsp/error/error500.jsp</location>
+    </error-page>-->
 
 </web-app>
