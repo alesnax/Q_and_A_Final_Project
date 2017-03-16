@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="QandA_Final_Project:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="qanda.war">
+      <element id="artifact" artifact-name="QandA_Final_Project:war exploded" />
+    </root>
+  </artifact>
+</component>
