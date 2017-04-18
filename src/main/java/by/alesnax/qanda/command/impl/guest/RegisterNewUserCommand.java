@@ -3,10 +3,10 @@ package by.alesnax.qanda.command.impl.guest;
 import by.alesnax.qanda.command.Command;
 import by.alesnax.qanda.command.util.QueryUtil;
 import by.alesnax.qanda.resource.ConfigurationManager;
-import by.alesnax.qanda.service.impl.ServiceFactory;
-import by.alesnax.qanda.service.UserService;
 import by.alesnax.qanda.service.ServiceDuplicatedInfoException;
 import by.alesnax.qanda.service.ServiceException;
+import by.alesnax.qanda.service.UserService;
+import by.alesnax.qanda.service.impl.ServiceFactory;
 import by.alesnax.qanda.validation.UserValidation;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -16,10 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+import static by.alesnax.qanda.constant.CommandConstants.*;
+
 //static import
-import static by.alesnax.qanda.constant.CommandConstants.ERROR_REQUEST_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 /**
  * Class has method that processes registration of  new user. Access for unauthorised users, otherwise user will redirected to

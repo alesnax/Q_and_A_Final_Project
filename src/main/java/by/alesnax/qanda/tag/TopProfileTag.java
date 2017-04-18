@@ -3,11 +3,11 @@ package by.alesnax.qanda.tag;
 import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
 
-import java.io.IOException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
+import java.io.IOException;
 
 /**
  * The class {@code TopProfileTag} extends {@code TagSupport} class and implementation of custom user tag,

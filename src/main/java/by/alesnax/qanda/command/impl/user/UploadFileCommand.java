@@ -3,9 +3,9 @@ package by.alesnax.qanda.command.impl.user;
 import by.alesnax.qanda.command.Command;
 import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
-import by.alesnax.qanda.service.impl.ServiceFactory;
-import by.alesnax.qanda.service.UserService;
 import by.alesnax.qanda.service.ServiceException;
+import by.alesnax.qanda.service.UserService;
+import by.alesnax.qanda.service.impl.ServiceFactory;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.FileUploadException;
@@ -25,10 +25,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import static by.alesnax.qanda.constant.CommandConstants.*;
+
 //static import
-import static by.alesnax.qanda.constant.CommandConstants.ERROR_REQUEST_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 /**
  * Command has method that uploads file to server and writes file to server storage and name of file

@@ -10,8 +10,9 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-//static import
 import static by.alesnax.qanda.constant.CommandConstants.*;
+
+//static import
 
 /**
  * Command has method that redirects user to go_to_complaints command and put attribute into session which

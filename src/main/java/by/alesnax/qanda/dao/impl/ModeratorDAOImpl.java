@@ -3,14 +3,17 @@ package by.alesnax.qanda.dao.impl;
 import by.alesnax.qanda.dao.AbstractDAO;
 import by.alesnax.qanda.dao.DAOException;
 import by.alesnax.qanda.dao.ModeratorDAO;
-import by.alesnax.qanda.pagination.PaginatedList;
 import by.alesnax.qanda.entity.*;
+import by.alesnax.qanda.pagination.PaginatedList;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * Implements ModeratorDAO interface and extends AbstractDAO class.

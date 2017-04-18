@@ -4,13 +4,13 @@ import by.alesnax.qanda.dao.DAODuplicatedInfoException;
 import by.alesnax.qanda.dao.DAOException;
 import by.alesnax.qanda.dao.impl.DAOFactory;
 import by.alesnax.qanda.dao.impl.UserDAOImpl;
+import by.alesnax.qanda.entity.Friend;
+import by.alesnax.qanda.entity.User;
+import by.alesnax.qanda.entity.UserStatistics;
 import by.alesnax.qanda.pagination.PaginatedList;
 import by.alesnax.qanda.pool.ConnectionPool;
 import by.alesnax.qanda.pool.ConnectionPoolException;
 import by.alesnax.qanda.pool.WrappedConnection;
-import by.alesnax.qanda.entity.Friend;
-import by.alesnax.qanda.entity.User;
-import by.alesnax.qanda.entity.UserStatistics;
 import by.alesnax.qanda.service.ServiceDuplicatedInfoException;
 import by.alesnax.qanda.service.ServiceException;
 import by.alesnax.qanda.service.UserService;
@@ -18,7 +18,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 import java.util.Random;
 
@@ -253,8 +252,8 @@ class UserServiceImpl implements UserService {
         try {
             connection = ConnectionPool.getInstance().takeConnection();
             UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
-            password1 = encryptPassword(password1);
-            password2 = encryptPassword(password2);
+          //  password1 = encryptPassword(password1);
+          //  password2 = encryptPassword(password2);
             updated = userDAO.updatePassword(userId, password1, password2);
         } catch (ConnectionPoolException e) {
             throw new ServiceException("Error while taking connection from ConnectionPool", e);
@@ -373,11 +372,11 @@ class UserServiceImpl implements UserService {
     public String recoverPassword(String email, String keyWordType, String keyWordValue) throws ServiceException {
         WrappedConnection connection = null;
         String changedPassword = generateNewPassword();
-        String password = encryptPassword(changedPassword);
+      //  String password = encryptPassword(changedPassword);
         try {
             connection = ConnectionPool.getInstance().takeConnection();
             UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
-            boolean changed = userDAO.updateUserPassWordByKeyword(password, email, keyWordType, keyWordValue);
+            boolean changed = userDAO.updateUserPassWordByKeyword(changedPassword, email, keyWordType, keyWordValue);// temp variant
             if (!changed) {
                 changedPassword = null;
             }
@@ -404,7 +403,7 @@ class UserServiceImpl implements UserService {
     public boolean deleteAccount(int userId, String password) throws ServiceException {
         WrappedConnection connection = null;
         boolean deleted = false;
-        password = encryptPassword(password);
+       // password = encryptPassword(password);
         try {
             connection = ConnectionPool.getInstance().takeConnection();
             UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
@@ -432,7 +431,7 @@ class UserServiceImpl implements UserService {
     public void registerNewUser(String login, String password, String name, String surname, String email, String bDay,
                                 String bMonth, String bYear, String sex, String country, String city, String status, String keyWordType, String keyWordValue) throws ServiceException {
         WrappedConnection connection = null;
-        password = encryptPassword(password);
+       // password = encryptPassword(password);
         try {
             connection = ConnectionPool.getInstance().takeConnection();
             UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);
@@ -464,7 +463,7 @@ class UserServiceImpl implements UserService {
     public User userAuthorization(String email, String password) throws ServiceException {
         WrappedConnection connection = null;
         User user = null;
-        password = encryptPassword(password);
+       // password = encryptPassword(password);
         try {
             connection = ConnectionPool.getInstance().takeConnection();
             UserDAOImpl userDAO = DAOFactory.getInstance().getUserDAO(connection);

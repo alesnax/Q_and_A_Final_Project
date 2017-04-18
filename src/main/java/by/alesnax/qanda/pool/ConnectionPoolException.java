@@ -4,7 +4,7 @@ package by.alesnax.qanda.pool;
  * An exception that provides information on a database access
  * error or other errors.
  *
- * @see java.lang.Exception
+ * @see Exception
  * @author Aliaksandr Nakhankou
  */
 public class ConnectionPoolException extends Exception {

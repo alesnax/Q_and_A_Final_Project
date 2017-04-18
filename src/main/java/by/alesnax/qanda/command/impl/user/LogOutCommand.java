@@ -7,9 +7,10 @@ import by.alesnax.qanda.resource.ConfigurationManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-//static import
 import static by.alesnax.qanda.constant.CommandConstants.REQUEST_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
+
+//static import
 
 /**
  * Command has method that invalidates session and redirects to index.jsp page

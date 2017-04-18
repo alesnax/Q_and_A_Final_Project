@@ -1,7 +1,7 @@
 package by.alesnax.qanda.dao;
 
-import by.alesnax.qanda.pool.WrappedConnection;
 import by.alesnax.qanda.entity.Entity;
+import by.alesnax.qanda.pool.WrappedConnection;
 
 /**
  * The root class in the DAO hierarchy. DAO classes processes operations of

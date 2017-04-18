@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 
 public interface Command {
+
     /**
      * Executes definite operation with data parsed from request and put processed data and messages back into request
      * and returns value of page where request will be send.

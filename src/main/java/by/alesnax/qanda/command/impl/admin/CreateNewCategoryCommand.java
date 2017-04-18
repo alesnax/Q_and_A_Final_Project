@@ -5,8 +5,8 @@ import by.alesnax.qanda.command.util.QueryUtil;
 import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
 import by.alesnax.qanda.service.AdminService;
-import by.alesnax.qanda.service.impl.ServiceFactory;
 import by.alesnax.qanda.service.ServiceException;
+import by.alesnax.qanda.service.impl.ServiceFactory;
 import by.alesnax.qanda.validation.CategoryValidation;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -16,10 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
-//static import
 import static by.alesnax.qanda.constant.CommandConstants.*;
-import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
+
+//static import
 
 /**
  * Creates new category. Access for command is only for users with ADMIN role,

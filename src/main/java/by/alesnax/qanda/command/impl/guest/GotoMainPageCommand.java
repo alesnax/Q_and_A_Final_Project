@@ -8,9 +8,10 @@ import by.alesnax.qanda.resource.ConfigurationManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-//static import
 import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
+
+//static import
 
 /**
  * Command has method that redirects user to profile page if attribute 'user' exists  in session, otherwise

@@ -2,8 +2,8 @@ package by.alesnax.qanda.command.client;
 
 import by.alesnax.qanda.command.Command;
 import by.alesnax.qanda.command.impl.admin.*;
-import by.alesnax.qanda.command.impl.guest.ChangeLanguageCommand;
 import by.alesnax.qanda.command.impl.guest.*;
+import by.alesnax.qanda.command.impl.guest.ChangeLanguageCommand;
 import by.alesnax.qanda.command.impl.moderator.*;
 import by.alesnax.qanda.command.impl.user.*;
 

@@ -6,8 +6,8 @@ import by.alesnax.qanda.entity.Post;
 import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
 import by.alesnax.qanda.service.PostService;
-import by.alesnax.qanda.service.impl.ServiceFactory;
 import by.alesnax.qanda.service.ServiceException;
+import by.alesnax.qanda.service.impl.ServiceFactory;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,8 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
-//static import
 import static by.alesnax.qanda.constant.CommandConstants.*;
+
+//static import
 
 /**
  * Command has method that takes list of question and answers to it from service layer , put it as an attribute to request and returns

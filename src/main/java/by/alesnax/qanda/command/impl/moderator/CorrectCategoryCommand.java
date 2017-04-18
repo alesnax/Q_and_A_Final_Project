@@ -6,8 +6,8 @@ import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
 import by.alesnax.qanda.service.AdminService;
 import by.alesnax.qanda.service.ModeratorService;
-import by.alesnax.qanda.service.impl.ServiceFactory;
 import by.alesnax.qanda.service.ServiceException;
+import by.alesnax.qanda.service.impl.ServiceFactory;
 import by.alesnax.qanda.validation.CategoryValidation;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -18,8 +18,9 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
-//static import
 import static by.alesnax.qanda.constant.CommandConstants.*;
+
+//static import
 
 /**
  * Class has method that processes correcting category. Access for authorised users with role ADMIN or MODERATOR,

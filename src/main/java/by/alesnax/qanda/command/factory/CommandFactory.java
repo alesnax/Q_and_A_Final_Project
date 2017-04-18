@@ -1,9 +1,9 @@
 package by.alesnax.qanda.command.factory;
 
 import by.alesnax.qanda.command.Command;
+import by.alesnax.qanda.command.client.CommandHelper;
 import by.alesnax.qanda.command.impl.guest.GotoFirstPageCommand;
 import by.alesnax.qanda.command.impl.guest.GotoMainPageCommand;
-import by.alesnax.qanda.command.client.CommandHelper;
 import by.alesnax.qanda.command.impl.user.UploadFileCommand;
 import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;

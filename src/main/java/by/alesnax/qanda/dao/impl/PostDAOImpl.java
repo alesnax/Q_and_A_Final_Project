@@ -4,20 +4,22 @@ import by.alesnax.qanda.dao.AbstractDAO;
 import by.alesnax.qanda.dao.DAODuplicatedInfoException;
 import by.alesnax.qanda.dao.DAOException;
 import by.alesnax.qanda.dao.PostDAO;
-import by.alesnax.qanda.pagination.PaginatedList;
 import by.alesnax.qanda.entity.*;
+import by.alesnax.qanda.pagination.PaginatedList;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import static by.alesnax.qanda.constant.CommandConstants.*;
+
 // static import
-import static by.alesnax.qanda.constant.CommandConstants.OPERATION_FAILED;
-import static by.alesnax.qanda.constant.CommandConstants.OPERATION_PROCESSED;
-import static by.alesnax.qanda.constant.CommandConstants.USER_BANNED;
 
 /**
  * Implements PostDAO interface and extends AbstractDAO class.

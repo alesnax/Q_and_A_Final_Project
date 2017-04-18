@@ -5,8 +5,8 @@ import by.alesnax.qanda.command.util.QueryUtil;
 import by.alesnax.qanda.entity.Post;
 import by.alesnax.qanda.resource.ConfigurationManager;
 import by.alesnax.qanda.service.PostService;
-import by.alesnax.qanda.service.impl.ServiceFactory;
 import by.alesnax.qanda.service.ServiceException;
+import by.alesnax.qanda.service.impl.ServiceFactory;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,9 +14,9 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-//static import
 import static by.alesnax.qanda.constant.CommandConstants.*;
-import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
+
+//static import
 
 /**
  * Command has method that takes post by id from service layer , put it as an attribute to request and returns

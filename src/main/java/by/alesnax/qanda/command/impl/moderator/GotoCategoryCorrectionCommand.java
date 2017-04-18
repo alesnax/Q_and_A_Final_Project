@@ -3,7 +3,6 @@ package by.alesnax.qanda.command.impl.moderator;
 import by.alesnax.qanda.command.Command;
 import by.alesnax.qanda.command.util.QueryUtil;
 import by.alesnax.qanda.resource.ConfigurationManager;
-import by.alesnax.qanda.service.ServiceException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,8 +10,9 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-//static import
 import static by.alesnax.qanda.constant.CommandConstants.*;
+
+//static import
 
 
 /**

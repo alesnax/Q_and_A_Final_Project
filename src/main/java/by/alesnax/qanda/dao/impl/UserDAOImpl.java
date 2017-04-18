@@ -4,14 +4,16 @@ import by.alesnax.qanda.dao.AbstractDAO;
 import by.alesnax.qanda.dao.DAODuplicatedInfoException;
 import by.alesnax.qanda.dao.DAOException;
 import by.alesnax.qanda.dao.UserDAO;
-import by.alesnax.qanda.pagination.PaginatedList;
 import by.alesnax.qanda.entity.*;
+import by.alesnax.qanda.pagination.PaginatedList;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * Implements UserDAO interface and extends AbstractDAO class.

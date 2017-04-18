@@ -1,7 +1,5 @@
 package by.alesnax.qanda.dao;
 
-import by.alesnax.qanda.dao.DAOException;
-
 /**
  * Thrown to indicate that row with definite
  * key or unique attributes has already existed in database.

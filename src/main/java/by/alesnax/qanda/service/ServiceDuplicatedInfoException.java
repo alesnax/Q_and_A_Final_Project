@@ -1,7 +1,5 @@
 package by.alesnax.qanda.service;
 
-import by.alesnax.qanda.service.ServiceException;
-
 /**
  * Thrown to indicate that entity with definite
  * parameters has already existed in database.

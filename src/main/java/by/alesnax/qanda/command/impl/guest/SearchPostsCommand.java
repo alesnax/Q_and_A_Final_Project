@@ -7,8 +7,8 @@ import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.pagination.PaginatedList;
 import by.alesnax.qanda.resource.ConfigurationManager;
 import by.alesnax.qanda.service.PostService;
-import by.alesnax.qanda.service.impl.ServiceFactory;
 import by.alesnax.qanda.service.ServiceException;
+import by.alesnax.qanda.service.impl.ServiceFactory;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,8 +16,9 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-//static import
 import static by.alesnax.qanda.constant.CommandConstants.*;
+
+//static import
 
 /**
  * Class contains method that process finding questions or answers that related to key search words and returns it as attribute set into request.

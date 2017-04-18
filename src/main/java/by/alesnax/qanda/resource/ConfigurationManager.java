@@ -19,7 +19,7 @@ public class ConfigurationManager {
     /**
      * path of configuration file
      */
-    private final static String PATH = "resources.config";
+    private final static String PATH = "config";
 
     /**
      * instance of ResourceBundle

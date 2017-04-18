@@ -8,10 +8,9 @@ import by.alesnax.qanda.resource.ConfigurationManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import static by.alesnax.qanda.constant.CommandConstants.*;
+
 //static import
-import static by.alesnax.qanda.constant.CommandConstants.REQUEST_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 /**
  * Command implements method that redirects user to user_authorisation.jsp if user attribute

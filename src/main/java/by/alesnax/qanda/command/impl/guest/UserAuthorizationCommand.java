@@ -4,9 +4,9 @@ import by.alesnax.qanda.command.Command;
 import by.alesnax.qanda.command.util.QueryUtil;
 import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
-import by.alesnax.qanda.service.impl.ServiceFactory;
-import by.alesnax.qanda.service.UserService;
 import by.alesnax.qanda.service.ServiceException;
+import by.alesnax.qanda.service.UserService;
+import by.alesnax.qanda.service.impl.ServiceFactory;
 import by.alesnax.qanda.validation.UserValidation;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -16,9 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
-import static by.alesnax.qanda.constant.CommandConstants.ERROR_REQUEST_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
+import static by.alesnax.qanda.constant.CommandConstants.*;
 
 /**
  * Created by alesnax on 08.12.2016.

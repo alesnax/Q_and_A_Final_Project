@@ -1,15 +1,15 @@
 package by.alesnax.qanda.command.impl.user;
 
-import by.alesnax.qanda.command.Command;;
+import by.alesnax.qanda.command.Command;
 import by.alesnax.qanda.command.util.QueryUtil;
-import by.alesnax.qanda.entity.User;
 import by.alesnax.qanda.resource.ConfigurationManager;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
-//static import
 import static by.alesnax.qanda.constant.CommandConstants.*;
+
+;
+//static import
 
 /**
  * Command has method that redirects to edit_profile page if user authorised,

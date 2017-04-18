@@ -4,20 +4,18 @@ import by.alesnax.qanda.command.Command;
 import by.alesnax.qanda.command.factory.CommandFactory;
 import by.alesnax.qanda.resource.ConfigurationManager;
 
-import java.io.IOException;
-
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import static by.alesnax.qanda.constant.CommandConstants.*;
 
 // static import
-import static by.alesnax.qanda.constant.CommandConstants.REQUEST_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
-import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
 
 /**
  * Class-Servlet. This class process request methods (GET, POST) and sends response back.

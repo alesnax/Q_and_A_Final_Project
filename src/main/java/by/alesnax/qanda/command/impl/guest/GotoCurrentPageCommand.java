@@ -5,9 +5,10 @@ import by.alesnax.qanda.command.util.QueryUtil;
 
 import javax.servlet.http.HttpServletRequest;
 
-//static import
 import static by.alesnax.qanda.constant.CommandConstants.RESPONSE_TYPE;
 import static by.alesnax.qanda.constant.CommandConstants.TYPE_PAGE_DELIMITER;
+
+//static import
 
 /**
  * Command has method that redirects user to previous command that helps to remove
